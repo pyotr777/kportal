@@ -1,0 +1,10 @@
+<Data>
+        <KPServer>
+                <RootDir>/home/anlab/jobs</RootDir>
+                <AppMarketDomain>https://bounceme.anlab.info</AppMarketDomain>
+				<IconFolder>/etc/kportal/www/images</IconFolder>
+                <SampleImages> 
+                    <Image id="52131e549e18" tag="[sample] debian_sample:1"/>
+                </SampleImages>
+        </KPServer>
+</Data>

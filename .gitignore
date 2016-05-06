@@ -1,0 +1,15 @@
+.*
+!.gitignore
+*.tar
+*.zip
+/settings
+/doc/*
+/src/*
+/sample_application/C_MPI/src/.*
+!/src/AppMarket/*.xml
+!/src/**/Dockerfile
+!/src/docker_images
+!/src/release
+/src/release/*
+!/src/**/*.sh
+!/src/**/*.xml
