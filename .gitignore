@@ -14,3 +14,5 @@
 !/src/**/*.sh
 !/src/**/*.xml
 !/src/slavedaemon
+!/src/kpserver
+!/src/kptool

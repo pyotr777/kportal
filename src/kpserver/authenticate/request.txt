@@ -1,0 +1,9 @@
+{ "msg": "connect", "user": "userID", "pwd": "pwd" }
+
+
+{ "msg": "connect", "user": "tuannp12066@gmail.com", "pwd": "0986617948" }
+
+
+
+accountType=GOOGLE&Email=tuannp12066@gmail.com&Passwd=0986617948&service=apps&source=Google-cURL-Example
+

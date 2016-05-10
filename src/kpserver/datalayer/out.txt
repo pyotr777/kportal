@@ -1,0 +1,188 @@
+make: Warning: File `DataManager.cpp' has modification time 12 s in the future
+In file included from ../../include/libjson/libjson.h:4:0,
+                 from ../stdafx.h:34,
+                 from DataManager.cpp:1:
+../../include/libjson/_internal/Source/JSONDefs.h:157:6: warning: #warning , Release build of libjson, but NDEBUG is not on [-Wcpp]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from DataManager.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string()’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from DataManager.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h:180:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from DataManager.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string(const json_string&)’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:182:9: warning:   when initialized here [-Wreorder]
+DataManager.cpp: In member function ‘ResponseCode DataManager::createDB()’:
+DataManager.cpp:75:13: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+DataManager.cpp:100:13: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+DataManager.cpp:125:13: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+DataManager.cpp:144:13: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+DataManager.cpp:164:13: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+DataManager.cpp: In member function ‘bool DataManager::dbIsExist()’:
+DataManager.cpp:302:17: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+DataManager.cpp: In member function ‘ResponseCode DataManager::getAllService(std::vector<Service>&)’:
+DataManager.cpp:1087:16: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+In file included from ../../include/libjson/_internal/Source/JSON_Base64.h:7:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:10,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from DataManager.cpp:1:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = unsigned char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:119:3:   required from ‘STRINGTYPE libbase64::encode(const unsigned char*, size_t) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; size_t = long unsigned int]’
+../../include/libjson/_internal/Source/JSON_Base64.h:19:89:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<unsigned char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const unsigned char* libbase64_boundChecker<unsigned char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:229:3:   required from ‘std::string libbase64::decode(const STRINGTYPE&) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; std::string = std::basic_string<char>]’
+../../include/libjson/_internal/Source/JSON_Base64.h:27:83:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const char* libbase64_boundChecker<char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/libjson.h:4:0,
+                 from ../stdafx.h:34,
+                 from user.cpp:1:
+../../include/libjson/_internal/Source/JSONDefs.h:157:6: warning: #warning , Release build of libjson, but NDEBUG is not on [-Wcpp]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from user.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string()’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from user.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h:180:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from user.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string(const json_string&)’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:182:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/JSON_Base64.h:7:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:10,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from user.cpp:1:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = unsigned char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:119:3:   required from ‘STRINGTYPE libbase64::encode(const unsigned char*, size_t) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; size_t = long unsigned int]’
+../../include/libjson/_internal/Source/JSON_Base64.h:19:89:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<unsigned char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const unsigned char* libbase64_boundChecker<unsigned char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:229:3:   required from ‘std::string libbase64::decode(const STRINGTYPE&) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; std::string = std::basic_string<char>]’
+../../include/libjson/_internal/Source/JSON_Base64.h:27:83:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const char* libbase64_boundChecker<char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/libjson.h:4:0,
+                 from ../stdafx.h:34,
+                 from service.cpp:1:
+../../include/libjson/_internal/Source/JSONDefs.h:157:6: warning: #warning , Release build of libjson, but NDEBUG is not on [-Wcpp]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from service.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string()’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from service.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h:180:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from service.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string(const json_string&)’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:182:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/JSON_Base64.h:7:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:10,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from service.cpp:1:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = unsigned char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:119:3:   required from ‘STRINGTYPE libbase64::encode(const unsigned char*, size_t) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; size_t = long unsigned int]’
+../../include/libjson/_internal/Source/JSON_Base64.h:19:89:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<unsigned char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const unsigned char* libbase64_boundChecker<unsigned char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:229:3:   required from ‘std::string libbase64::decode(const STRINGTYPE&) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; std::string = std::basic_string<char>]’
+../../include/libjson/_internal/Source/JSON_Base64.h:27:83:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const char* libbase64_boundChecker<char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/libjson.h:4:0,
+                 from ../stdafx.h:34,
+                 from image_docker.cpp:1:
+../../include/libjson/_internal/Source/JSONDefs.h:157:6: warning: #warning , Release build of libjson, but NDEBUG is not on [-Wcpp]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from image_docker.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string()’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from image_docker.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h:180:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from image_docker.cpp:1:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string(const json_string&)’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:182:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/JSON_Base64.h:7:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:10,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from image_docker.cpp:1:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = unsigned char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:119:3:   required from ‘STRINGTYPE libbase64::encode(const unsigned char*, size_t) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; size_t = long unsigned int]’
+../../include/libjson/_internal/Source/JSON_Base64.h:19:89:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<unsigned char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const unsigned char* libbase64_boundChecker<unsigned char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:229:3:   required from ‘std::string libbase64::decode(const STRINGTYPE&) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; std::string = std::basic_string<char>]’
+../../include/libjson/_internal/Source/JSON_Base64.h:27:83:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const char* libbase64_boundChecker<char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+make: warning:  Clock skew detected.  Your build may be incomplete.

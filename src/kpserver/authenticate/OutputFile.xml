@@ -1,0 +1,41 @@
+<Service>
+	<Description>Description of this service</Description>
+	<RunMethods> <!—Root node of Run Methods -->
+		<RunMethod> 
+			<ID>1</ID > <!—ID of this Run Method -->
+			<Description>Description of Run Method 1 here</Description>
+			<Path>Path to binary executable program</Path>
+			<Outputs> <!— Root node of default outputs (if any), users can’t configure these outputs -->
+				<data isDir = “true”> <!—Folder or file name, isDir=”true” means this is a directory -->
+					<description>Meaning of this folder</description>
+					<data1 isDir = “true”>… </data1> <!—Nested folders and files -->
+				</data>
+				<out.txt stdout = “true”> <!—A  file name,  stdout = “true” means K-Portal must -->
+					<!--  redirect text to this file (this application output text to Console by default) -->
+					<description>Meaning of this file</description>
+				</out.txt>
+			</Outputs>
+			<Parameters> <!—Root node of input parameters. Non-option parameters must be in order -->
+			<Param isOutput = “true” optionName = “-output” isRequired = “true”> 
+					<id>1</id > <!—ID of this parameter -->
+				<!—Specifying “optionName” means this is an option -->
+				<!— isRequired = “true” means users can’t ignore this option -->
+				<!—isOutput = “true” means this is an output file or an output folder -->
+				<description>Meaning of this parameter</description>
+				<type>string</type><!—Data type of this parameter -->
+			</Param>
+			<Param>
+				<id>2</id > <!—ID of this parameter -->
+				<description>Meaning of this parameter</description>
+				<type>double</type><!—Data type of this parameter -->
+			</Param>
+			<Param>
+				<id>3 </id > <!—ID of this parameter -->
+				<description>Meaning of this parameter</description>
+				<type>i32</type><!—Data type of this parameter -->
+			</Param>
+			</Parameters>
+		</RunMethod>
+	</RunMethods>
+</Service>
+Hello World!

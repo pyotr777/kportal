@@ -1,0 +1,178 @@
+make: Warning: File `param_job.o' has modification time 11 s in the future
+In file included from ../../include/libjson/libjson.h:4:0,
+                 from ../stdafx.h:34,
+                 from job_manager.cpp:2:
+../../include/libjson/_internal/Source/JSONDefs.h:157:6: warning: #warning , Release build of libjson, but NDEBUG is not on [-Wcpp]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from job_manager.cpp:2:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string()’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from job_manager.cpp:2:
+../../include/libjson/_internal/Source/JSONSharedString.h:180:9: warning:   when initialized here [-Wreorder]
+In file included from ../../include/libjson/_internal/Source/internalJSONNode.h:11:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:5,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from job_manager.cpp:2:
+../../include/libjson/_internal/Source/JSONSharedString.h: In constructor ‘json_shared_string::json_shared_string(const json_string&)’:
+../../include/libjson/_internal/Source/JSONSharedString.h:297:17: warning: ‘json_shared_string::len’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:295:40: warning:   ‘json_shared_string::json_shared_string_internal* json_shared_string::_str’ [-Wreorder]
+../../include/libjson/_internal/Source/JSONSharedString.h:182:9: warning:   when initialized here [-Wreorder]
+job_manager.cpp: In member function ‘ResponseCode JobManager::Remove(const string&)’:
+job_manager.cpp:67:16: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+job_manager.cpp:78:1: warning: no return statement in function returning non-void [-Wreturn-type]
+job_manager.cpp: In member function ‘ResponseCode JobManager::UpdateJobStatusErr(const string&)’:
+job_manager.cpp:91:1: warning: no return statement in function returning non-void [-Wreturn-type]
+job_manager.cpp: In member function ‘ResponseCode JobManager::UpdateJobStatus(const string&, const string&, const string&, const string&, const string&, bool&)’:
+job_manager.cpp:115:20: error: no match for ‘operator==’ in ‘status == "RNO"’
+job_manager.cpp:115:20: note: candidates are:
+In file included from /usr/include/c++/4.7/bits/stl_algobase.h:65:0,
+                 from /usr/include/c++/4.7/bits/stl_tree.h:63,
+                 from /usr/include/c++/4.7/map:60,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_pair.h:206:5: note: template<class _T1, class _T2> bool std::operator==(const std::pair<_T1, _T2>&, const std::pair<_T1, _T2>&)
+/usr/include/c++/4.7/bits/stl_pair.h:206:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::pair<_T1, _T2>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
+                 from /usr/include/c++/4.7/bits/stl_tree.h:63,
+                 from /usr/include/c++/4.7/map:60,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_iterator.h:293:5: note: template<class _Iterator> bool std::operator==(const std::reverse_iterator<_Iterator>&, const std::reverse_iterator<_Iterator>&)
+/usr/include/c++/4.7/bits/stl_iterator.h:293:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::reverse_iterator<_Iterator>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/bits/stl_algobase.h:68:0,
+                 from /usr/include/c++/4.7/bits/stl_tree.h:63,
+                 from /usr/include/c++/4.7/map:60,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_iterator.h:343:5: note: template<class _IteratorL, class _IteratorR> bool std::operator==(const std::reverse_iterator<_IteratorL>&, const std::reverse_iterator<_IteratorR>&)
+/usr/include/c++/4.7/bits/stl_iterator.h:343:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::reverse_iterator<_IteratorL>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/bits/stl_tree.h:64:0,
+                 from /usr/include/c++/4.7/map:60,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/allocator.h:119:5: note: template<class _T1, class _T2> bool std::operator==(const std::allocator<_T1>&, const std::allocator<_T2>&)
+/usr/include/c++/4.7/bits/allocator.h:119:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::allocator<_T1>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/bits/stl_tree.h:64:0,
+                 from /usr/include/c++/4.7/map:60,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/allocator.h:124:5: note: template<class _Tp> bool std::operator==(const std::allocator<_Tp1>&, const std::allocator<_Tp1>&)
+/usr/include/c++/4.7/bits/allocator.h:124:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::allocator<_Tp1>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/map:60:0,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_tree.h:309:5: note: template<class _Val> bool std::operator==(const std::_Rb_tree_iterator<_Tp>&, const std::_Rb_tree_const_iterator<_Val>&)
+/usr/include/c++/4.7/bits/stl_tree.h:309:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::_Rb_tree_iterator<_Tp>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/map:60:0,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_tree.h:863:5: note: template<class _Key, class _Val, class _KeyOfValue, class _Compare, class _Alloc> bool std::operator==(const std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>&, const std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>&)
+/usr/include/c++/4.7/bits/stl_tree.h:863:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/map:61:0,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_map.h:889:5: note: template<class _Key, class _Tp, class _Compare, class _Alloc> bool std::operator==(const std::map<_Key, _Tp, _Compare, _Alloc>&, const std::map<_Key, _Tp, _Compare, _Alloc>&)
+/usr/include/c++/4.7/bits/stl_map.h:889:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::map<_Key, _Tp, _Compare, _Alloc>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/map:62:0,
+                 from job_manager.hpp:3,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_multimap.h:805:5: note: template<class _Key, class _Tp, class _Compare, class _Alloc> bool std::operator==(const std::multimap<_Key, _Tp, _Compare, _Alloc>&, const std::multimap<_Key, _Tp, _Compare, _Alloc>&)
+/usr/include/c++/4.7/bits/stl_multimap.h:805:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::multimap<_Key, _Tp, _Compare, _Alloc>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/bits/char_traits.h:42:0,
+                 from /usr/include/c++/4.7/string:42,
+                 from job.hpp:3,
+                 from job_manager.hpp:4,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/postypes.h:218:5: note: template<class _StateT> bool std::operator==(const std::fpos<_StateT>&, const std::fpos<_StateT>&)
+/usr/include/c++/4.7/bits/postypes.h:218:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::fpos<_StateT>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/string:54:0,
+                 from job.hpp:3,
+                 from job_manager.hpp:4,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/basic_string.h:2483:5: note: template<class _CharT, class _Traits, class _Alloc> bool std::operator==(const std::basic_string<_CharT, _Traits, _Alloc>&, const std::basic_string<_CharT, _Traits, _Alloc>&)
+/usr/include/c++/4.7/bits/basic_string.h:2483:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::basic_string<_CharT, _Traits, _Alloc>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/string:54:0,
+                 from job.hpp:3,
+                 from job_manager.hpp:4,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/basic_string.h:2490:5: note: template<class _CharT> typename __gnu_cxx::__enable_if<std::__is_char<_Tp>::__value, bool>::__type std::operator==(const std::basic_string<_CharT>&, const std::basic_string<_CharT>&)
+/usr/include/c++/4.7/bits/basic_string.h:2490:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::basic_string<_CharT>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/string:54:0,
+                 from job.hpp:3,
+                 from job_manager.hpp:4,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/basic_string.h:2504:5: note: template<class _CharT, class _Traits, class _Alloc> bool std::operator==(const _CharT*, const std::basic_string<_CharT, _Traits, _Alloc>&)
+/usr/include/c++/4.7/bits/basic_string.h:2504:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const _CharT*’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/string:54:0,
+                 from job.hpp:3,
+                 from job_manager.hpp:4,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/basic_string.h:2516:5: note: template<class _CharT, class _Traits, class _Alloc> bool std::operator==(const std::basic_string<_CharT, _Traits, _Alloc>&, const _CharT*)
+/usr/include/c++/4.7/bits/basic_string.h:2516:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::basic_string<_CharT, _Traits, _Alloc>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/vector:65:0,
+                 from job.hpp:4,
+                 from job_manager.hpp:4,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/stl_vector.h:1370:5: note: template<class _Tp, class _Alloc> bool std::operator==(const std::vector<_Tp, _Alloc>&, const std::vector<_Tp, _Alloc>&)
+/usr/include/c++/4.7/bits/stl_vector.h:1370:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::vector<_Tp, _Alloc>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/bits/locale_facets.h:50:0,
+                 from /usr/include/c++/4.7/bits/basic_ios.h:39,
+                 from /usr/include/c++/4.7/ios:45,
+                 from /usr/include/c++/4.7/istream:40,
+                 from /usr/include/c++/4.7/fstream:40,
+                 from ../authenticate/FileUtils.hpp:6,
+                 from job.hpp:7,
+                 from job_manager.hpp:4,
+                 from job_manager.cpp:1:
+/usr/include/c++/4.7/bits/streambuf_iterator.h:206:5: note: template<class _CharT, class _Traits> bool std::operator==(const std::istreambuf_iterator<_CharT, _Traits>&, const std::istreambuf_iterator<_CharT, _Traits>&)
+/usr/include/c++/4.7/bits/streambuf_iterator.h:206:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::istreambuf_iterator<_CharT, _Traits>’ and ‘KP_JobStatus’
+In file included from /usr/include/c++/4.7/iterator:66:0,
+                 from ../../include/rapidxml/rapidxml_iterators.hpp:10,
+                 from ../stdafx.h:42,
+                 from job_manager.cpp:2:
+/usr/include/c++/4.7/bits/stream_iterator.h:130:5: note: template<class _Tp, class _CharT, class _Traits, class _Dist> bool std::operator==(const std::istream_iterator<_Tp, _CharT, _Traits, _Dist>&, const std::istream_iterator<_Tp, _CharT, _Traits, _Dist>&)
+/usr/include/c++/4.7/bits/stream_iterator.h:130:5: note:   template argument deduction/substitution failed:
+job_manager.cpp:115:20: note:   mismatched types ‘const std::istream_iterator<_Tp, _CharT, _Traits, _Dist>’ and ‘KP_JobStatus’
+In file included from ../../include/libjson/_internal/Source/JSON_Base64.h:7:0,
+                 from ../../include/libjson/_internal/Source/JSONNode.h:10,
+                 from ../../include/libjson/libjson.h:177,
+                 from ../stdafx.h:34,
+                 from job_manager.cpp:2:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = unsigned char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:119:3:   required from ‘STRINGTYPE libbase64::encode(const unsigned char*, size_t) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; size_t = long unsigned int]’
+../../include/libjson/_internal/Source/JSON_Base64.h:19:89:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<unsigned char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const unsigned char* libbase64_boundChecker<unsigned char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h: In instantiation of ‘libbase64_boundChecker<T>::libbase64_boundChecker(const T*, const T*) [with T = char]’:
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:229:3:   required from ‘std::string libbase64::decode(const STRINGTYPE&) [with STRINGTYPE = std::basic_string<char>; CHARTYPE = char; UCHARTYPE = unsigned char; bool SAFETY = true; std::string = std::basic_string<char>]’
+../../include/libjson/_internal/Source/JSON_Base64.h:27:83:   required from here
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:33:13: warning: ‘libbase64_boundChecker<char>::upperbound’ will be initialized after [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:32:13: warning:   ‘const char* libbase64_boundChecker<char>::lowerbound’ [-Wreorder]
+../../include/libjson/_internal/Source/../Dependencies/libbase64++/libbase64++.h:25:3: warning:   when initialized here [-Wreorder]
+make: *** [job_manager.o] Error 1
