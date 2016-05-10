@@ -13,3 +13,4 @@
 /src/release/*
 !/src/**/*.sh
 !/src/**/*.xml
+!/src/slavedaemon
