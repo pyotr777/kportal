@@ -62,6 +62,10 @@ std::string APPMARKET_DOMAIN = "";
 
 std::string _KPSERVER_ = "kp_server";
 
+std::string g_admin_email_addr;
+
+std::string g_admin_email_pass;
+
 pthread_mutex_t g_tunnels_lock;
 
 //pthread_mutex_t g_listjobs_lock;
@@ -137,7 +141,7 @@ int main(int argc, char* argv[]) {
 
 
     /// Define num of threads, pool threads
-    size_t worker_threads = 5;
+    size_t worker_threads = 7;
     size_t pool_threads = 2;
 
     readConfigFile();

@@ -16,8 +16,8 @@
 #include "socket_exception.h"
 #include "system_command_utils.hpp"
 
-#define MAX_NUM_OF_RETRY 15
-const char* kHomeJobDIr = "/home/anlab/jobs/";
+#define MAX_NUM_OF_RETRY 60 
+std::string g_home_job_dir = "";
 const int BUFFER_SIZE = 512;
 //
 // Forwarder socket using for upload file to kdesk
@@ -50,18 +50,17 @@ int main (int argc, char **argv) {
       std::cout << "Usage: slavedaemon \n argc = " << argc << " is missing arg\n";
       return 0;
   }
-
-  std::string job_id = argv[1];
-  std::string kp_host = argv[2];
-  int kd_port = atoi(argv[3]);
-  int kp_port = atoi(argv[4]);
-  std::string exe_path = argv[5];
+  g_home_job_dir = argv[1];
+  std::string job_id = argv[2];
+  std::string kp_host = argv[3];
+  int kd_port = atoi(argv[4]);
+  int kp_port = atoi(argv[5]);
+  std::string exe_path = argv[6];
   std::vector<std::string> stgindirs;
-  for(int i = 6; i < argc; i ++){
+  for(int i = 7; i < argc; i ++){
     stgindirs.push_back(argv[i]);
   }
-
-  std::cout << "job id " << job_id << ", kp_host: " << kp_host << ", kd_port: "<< kd_port << ", kp_port: " << kp_port << ", exe_path = " << exe_path << std::endl;
+  std::cout <<"home job: " << g_home_job_dir << ", job id: " << job_id << ", kp_host: " << kp_host << ", kd_port: "<< kd_port << ", kp_port: " << kp_port << ", exe_path: " << exe_path << std::endl;
 
   // Connect kdeskdaemon
   Socket kdesk_socket;
@@ -156,67 +155,6 @@ int main (int argc, char **argv) {
     return 1;
   }
   std::cout << "submit job success\n";
-  return 0;
-
-
-  ///////////////////////////////////////////////////////////////////////////////
-  /// old code
-  // Create a shared tunnel object
-  //ConnectionThreadArg* thrd_args = new ConnectionThreadArg();
-  //thrd_args->tunnel = new Tunnel();
-  //
-  // Server socket
-  //
-  try {
-    // Create the socket
-    //ServerSocket server ( 30000 );
-    Socket server;
-    int port = atoi(argv[1]);
-    std::cout << "LISTEN_PORT = " << port << std::endl;
-    std::cout << "Home job folder: " << kHomeJobDIr << std::endl;
-    if ( ! server.Create() ) {
-      throw SocketException ( "Could not create server socket." );
-    }
-
-    if ( ! server.Bind ( port ) ) {
-      throw SocketException ( "Could not bind to port." );
-    }
-    puts("bind done");
-
-    if ( ! server.Listen() )
-    {
-      throw SocketException ( "Could not listen to socket." );
-    }
-    puts("Waiting for incoming connections...");
-
-    Socket new_sock;
-    while ( true ) {
-      //server.accept ( new_sock );
-      if ( ! server.Accept(new_sock) ) {
-          throw SocketException ( "Could not accept socket." );
-      }
-      //puts("Connection accepted");
-      std::cout << "Connection accepted\n";
-      //pthread_t sniffer_thread;
-      //thrd_args->socket = new_sock;
-
-      std::cout << "Handler assigned\n";
-      ConnectionHandler((void*) &new_sock);
-      std::cout << "Exit hanlder connection\n";
-      break;
-
-//      if (pthread_create( &sniffer_thread , NULL ,  ConnectionHandler , (void*) &new_sock) < 0) {
-//        perror("could not create thread");
-//        continue;
-//      }
-
-//      //Now join the thread , so that we dont terminate before the thread
-//      pthread_join( sniffer_thread , NULL);
-//      puts("Handler assigned");
-    }
-  } catch ( SocketException& e ) {
-    std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
-  }
   return 0;
 }
 
@@ -321,7 +259,7 @@ ResultCodes CopyExeFile(std::string& job_id, const std::string&exe_file){
   ResultCodes rlt = OK;
   std::cout << "job_id = " << job_id << ", ";
   std::stringstream ss;
-  ss << kHomeJobDIr << job_id ;
+  ss << g_home_job_dir << job_id ;
   std::string job_path = ss.str();
   ss.str("");
   ss << "cp -Rf " << exe_file << " " << job_path << ";";
@@ -343,7 +281,7 @@ ResultCodes Stagein(std::string& job_id, std::vector<std::string>&argv){
   ResultCodes rlt = OK;
   std::cout << "job_id = " << job_id << ", ";
   std::stringstream ss;
-  ss << kHomeJobDIr << job_id ;
+  ss << g_home_job_dir << job_id ;
   std::string job_path = ss.str();
   ss.str("");
 
@@ -463,7 +401,7 @@ ResultCodes WaitKdeskSubmitResult(Socket* kd_sock, const std::string& job_id){
 
   // wait file
   std::cout << "Wait output file\n";
-  std::string job_path = std::string(kHomeJobDIr) + job_id;
+  std::string job_path = std::string(g_home_job_dir) + job_id;
   std::cout <<"job dir use to save file: " << job_path << std::endl;
   if(rlt == OK){
     int status = kd_sock->RecvListFile(job_path);
@@ -484,7 +422,7 @@ ResultCodes WaitJobNotification(Socket& kd_sock, Socket& kp_sock, const std::str
   ResultCodes rlt = OK;
 
   std::stringstream ss;
-  ss << kHomeJobDIr << job_id ;
+  ss << g_home_job_dir << job_id ;
   std::string job_path = ss.str();
   std::cout <<"job dir use to save file: " << job_path << std::endl;
 
@@ -628,7 +566,7 @@ ResultCodes SendSubmitJobCommand(Socket* client_socket, std::string& job_id, std
 ResultCodes SendDataToKdeskDaemon(Socket* client_socket, std::string& job_id){
   std::cout << "SendDataToKdeskDaemon\n";
   std::stringstream ss;
-  ss << kHomeJobDIr << job_id;
+  ss << g_home_job_dir << job_id;
   std::string job_path = ss.str();
   std::cout << "job folder: " << job_path << std::endl;
   ResultCodes rlt = OK;

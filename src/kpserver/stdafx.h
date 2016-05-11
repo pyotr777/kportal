@@ -68,7 +68,8 @@ typedef unsigned char BYTE;
 #define IMAGE_TAG				"Image"
 #define ID_ATTR					"id"
 #define TAG_ATTR				"tag"
-
+#define ADMIN_EMAIL_ADDRESS_TAG  "MailAddr"
+#define ADMIN_EMAIL_PASSWORD_TAG "MailPass"
 
 
 

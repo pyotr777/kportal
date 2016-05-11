@@ -9,6 +9,8 @@ extern std::map<std::string, ImageDocker> SampleImages;
 template <typename request_endpoint_type>
 void request<request_endpoint_type>::process()
 {
+    try
+    {
 	std::string threadId = boost::lexical_cast<std::string>(boost::this_thread::get_id());
 	std::cout << "THREADID = " << threadId << std::endl;
 
@@ -97,7 +99,7 @@ void request<request_endpoint_type>::process()
         sendResult(header, (int)PERMISSION_DENIED);
 		return;
 	}
-
+//try{
     switch(type)
     {
 
@@ -300,6 +302,19 @@ void request<request_endpoint_type>::process()
     default:
         std::cout<<"Unknow request:"<<(int)type<<std::endl;
         break;
+    }
+//} catch (...){
+//   std::cout << "[EXC] A exception thrown.\n";
+//}
+
+}
+    catch (std::exception const &exc)
+    {
+        std::cerr << "[EXC]Exception caught " << exc.what() << "\n";
+    }
+    catch (...)
+    {
+        std::cerr << "[EXC]Unknown exception caught\n";
     }
 }
 
@@ -794,6 +809,7 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
         {
             std::cout << "Error: email && token info not match.\n";
         }
+
     }
     else if(loginId != "")
     {

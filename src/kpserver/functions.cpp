@@ -1,5 +1,8 @@
 #include "functions.hpp"
 #include "stdafx.h"
+extern std::string g_admin_email_addr;
+
+extern std::string g_admin_email_pass;
 
 extern std::string DEFAULT_CONFIG_FILE_PATH;
 
@@ -39,6 +42,19 @@ void readConfigFile()
 
 	if(kpserver_node != 0)
 	{
+		xml_node<> * s_email_nodes = kpserver_node->first_node(ADMIN_EMAIL_ADDRESS_TAG);
+                if(s_email_nodes != 0)
+                {
+                        g_admin_email_addr = s_email_nodes->value();
+                }
+
+                xml_node<> * s_pass_nodes = kpserver_node->first_node(ADMIN_EMAIL_PASSWORD_TAG);
+                if(s_pass_nodes != 0)
+                {
+                        g_admin_email_pass = s_pass_nodes->value();
+                }
+
+		
 		xml_node<> * s_root_nodes = kpserver_node->first_node(ROOT_DIR_TAG);
 		if(s_root_nodes != 0)
 		{

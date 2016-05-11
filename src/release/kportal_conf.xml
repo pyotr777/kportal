@@ -1,6 +1,8 @@
 <Data>
-        <KPServer>
-                <RootDir>/home/anlab/jobs</RootDir>
+    <KPServer>
+                <MailAddr>anlab.provider@gmail.com</MailAddr>
+                <MailPass>anlab123</MailPass>
+                <RootDir>/home/kportal/jobs</RootDir>
                 <AppMarketDomain>https://bounceme.anlab.info</AppMarketDomain>
 				<IconFolder>/etc/kportal/www/images</IconFolder>
                 <SampleImages> 

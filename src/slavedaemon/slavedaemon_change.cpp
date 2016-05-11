@@ -17,7 +17,7 @@
 #include "../kpforwarder/system_command_utils.hpp"
 
 //#define MAX_NUM_OF_RETRY 15
-const char* kHomeJobDIr = "/home/anlab/jobs/";
+const char* kHomeJobDIr = "/home/kportal/jobs/";
 const int BUFFER_SIZE = 512;
 //
 // Forwarder socket using for upload file to kdesk

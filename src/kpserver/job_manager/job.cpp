@@ -574,7 +574,8 @@ ResponseCode Job::Submit() {
 
   std::stringstream ss;
   //ss  << "{\"Cmd\":[\"sh\",\"/startslavedaemon.sh\"]"
-  ss  << "{\"Cmd\":[\"/bin/sh\",\"/bin/startslavedaemon.sh\",\"" << job_id << "\",\"" << g_docker_bridge_host << "\",\"" << tunnel_port <<"\",\"" << g_job_handler_port <<"\",\"" << sv.getPathExcuteFile() <<"\"" << stgindirs << "]"
+  std::string home_job_str = DEFAULT_JOB_FOLDER[DEFAULT_JOB_FOLDER.size() - 1] == '/' ? DEFAULT_JOB_FOLDER : DEFAULT_JOB_FOLDER + "/" ;
+  ss  << "{\"Cmd\":[\"/bin/sh\",\"/bin/startslavedaemon.sh\",\"" << home_job_str << "\",\"" << job_id << "\",\"" << g_docker_bridge_host << "\",\"" << tunnel_port <<"\",\"" << g_job_handler_port <<"\",\"" << sv.getPathExcuteFile() <<"\"" << stgindirs << "]"
       << ",\"Image\":\"" << imageId << "\""
       << ",\"HostConfig\": {\"Binds\":[\"/etc/localtime:/etc/localtime\"],\"VolumesFrom\":[\"" << containerIdOfMasterInstance << "\"]}"
       << "}\r\n";

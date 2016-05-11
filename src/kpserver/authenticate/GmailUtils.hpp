@@ -28,7 +28,6 @@ public:
   static bool Oauth20(std::string email, std::string token);
   static bool ClientLoginAuth(std::string userId, std::string pwd);
   static bool SendEmail(std::string to, std::string name, std::string message, const std::string public_key_str);
-  static bool SendEmail1(std::string to, std::string name, std::string message, const std::string public_key_str);
 private:
 	static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream);
 	static size_t payload_source(void *ptr, size_t size, size_t nmemb, void *userp);

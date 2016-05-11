@@ -1,6 +1,9 @@
 #include "GmailUtils.hpp"
 #include "CSmtp.h"
 
+extern std::string g_admin_email_addr;
+extern std::string g_admin_email_pass;
+
 bool GmailUtils::GenLoginID(std::string& id)
 {
     /// Part 1: date
@@ -71,12 +74,62 @@ size_t GmailUtils::write_to_string(void *ptr, size_t size, size_t count, void *s
   return size*count;
 }
 
+
+std::string Exec(const char* cmd) {
+  std::string data;
+  FILE * stream;
+  const int max_buffer = 256;
+  char buffer[max_buffer];
+  std::string cmd_str = cmd;
+  cmd_str.append(" 2>&1");
+
+  stream = popen(cmd_str.c_str(), "r");
+  if (stream) {
+    while (!feof(stream))
+    if (fgets(buffer, max_buffer, stream) != NULL)
+      data.append(buffer);
+    pclose(stream);
+  }
+  return data;
+         /*
+    std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) return "ERROR";
+    char buffer[128];
+    std::string result = "";
+    while (!feof(pipe.get())) {
+        if (fgets(buffer, 128, pipe.get()) != NULL)
+            result += buffer;
+    }
+    return result;*/
+}
+
 /*
  *	Check email & token matched
  */
 bool GmailUtils::Oauth20(std::string email, std::string token)
 {
 	std::cout << "Oauth20(email = " << email.c_str() << ", token = " << token.c_str() << ")"<< std::endl;
+	///
+	/// Confirm with curl command
+	//
+	std::string cmd = std::string("curl https://www.googleapis.com/oauth2/v1/userinfo?access_token=") + token;
+	std::cout << "Cmd: " << cmd.c_str() << std::endl;
+	std::string stdout = Exec(cmd.c_str());
+	if (stdout.find(email) != std::string::npos) {
+                        std::cout << "confirming gmail done!\n";
+                        //result = true;
+			return true;
+                } else {
+                        std::cout << "Email not matched!" << '\n';
+                        std::cout << "Response string: " << stdout;
+                }
+
+	///
+	return false;
+
+	///
+	/// Confirm use lib curl
+	///
 	std::stringstream ss;
 	string response;
 	std::string url;
@@ -136,6 +189,10 @@ bool GmailUtils::Oauth20(std::string email, std::string token)
 
 		/* always cleanup */
 		curl_easy_cleanup(curl);
+	}
+	else
+	{
+		std::cout << "ERR: curl can not create curl\n";
 	}
 	curl_global_cleanup();
 
@@ -235,9 +292,6 @@ bool GmailUtils::ClientLoginAuth(std::string userId, std::string pwd)
  * Note that this example requires libcurl 7.20.0 or above.
  */
 
-#define FROM    "<anlabprovider@gmail.com>"
-//#define TO      "<tuan.np@anlab.info>"
-//#define CC      "<long.nm@anlab.biz>"
 
 struct upload_data {
 	int lines_read;
@@ -299,10 +353,10 @@ bool GmailUtils::SendEmail(std::string to, std::string name, std::string url, co
 //    mail.SetSecurityType(USE_SSL);
 //#endif
 
-    mail.SetLogin("anlabprovider@gmail.com");
-    mail.SetPassword("anlab123");
+    mail.SetLogin(g_admin_email_addr.c_str());
+    mail.SetPassword(g_admin_email_pass.c_str());
     mail.SetSenderName("Kportal Admin");
-    mail.SetSenderMail("anlabprovider@gmail.com");
+    mail.SetSenderMail(g_admin_email_pass.c_str());
     //mail.SetReplyTo(to);
     mail.SetSubject("[kportal] Accept provider register");
     mail.AddRecipient(to.c_str());
@@ -338,122 +392,3 @@ bool GmailUtils::SendEmail(std::string to, std::string name, std::string url, co
   return !bError;
 }
 
-bool GmailUtils::SendEmail1(std::string to, std::string name, std::string url, const std::string public_key_str){
-  std::cout << "SendEmail(to = " << to.c_str() << ", name = "<< name << ", url = " << url << std::endl;
-	/// Create message
-  std::stringstream ss;
-  const char* message_lines[12];
-	ss << "To: " << to << "\r\n";
-	std::string l0 = ss.str();
-	message_lines[0] = l0.c_str();
-	message_lines[1] = "From: " FROM "Kportal Admin\r\n";
-	message_lines[2] = "Subject: [kportal] Accept provider register\r\n";
-	message_lines[3] = "\r\n";
-	ss.str(""); ss << "Hi, " << to << ", your email has accepted to Provider. You should logout and login again.\r\n"; std::string l4 = ss.str();
-	message_lines[4] = l4.c_str();
-	message_lines[5] = "Below is docker image base, you can use to create other image and upload to server. \r\n";
-	ss.str(""); ss << "Image name (repository): " << name << "\r\n"; std::string l6 = ss.str();
-	message_lines[6] = l6.c_str();
-  ss.str(""); ss << "Download url: " << url << "\r\n";
-  std::string l7 = ss.str();
-  message_lines[7] = l7.c_str();
-
-  ss.str(""); ss << "And one more, please accept below public keys.\r\n" ;
-  std::string l8 = ss.str();
-  message_lines[8] = l8.c_str();
-  message_lines[9] = public_key_str.c_str();
-  message_lines[10] = "\r\n";
-  message_lines[11] = NULL;
-
-	/// Send email by curl
-	bool result = true;
-	CURL *curl;
-	CURLcode res = CURLE_OK;
-	struct curl_slist *recipients = NULL;
-	struct upload_data upload_ctx;
-
-	upload_ctx.lines_read = 0;
-	upload_ctx.lines = message_lines;
-
-	curl = curl_easy_init();
-	if(curl) {
-		/* Set username and password */
-		curl_easy_setopt(curl, CURLOPT_USERNAME, "anlabprovider@gmail.com");
-		curl_easy_setopt(curl, CURLOPT_PASSWORD, "anlab123");
-
-		/* This is the URL for your mailserver. Note the use of port 587 here,
-		 * instead of the normal SMTP port (25). Port 587 is commonly used for
-		 * secure mail submission (see RFC4403), but you should use whatever
-		 * matches your server configuration. */
-    curl_easy_setopt(curl, CURLOPT_URL, "smtps://smtp.gmail.com:465");
-		//curl_easy_setopt(curl, CURLOPT_URL, "smtp://smtp.gmail.com:587");
-    //curl_easy_setopt(curl, CURLOPT_URL, "smtp://smtp.gmail.com:587");
-
-		/* In this example, we'll start with a plain text connection, and upgrade
-		 * to Transport Layer Security (TLS) using the STARTTLS command. Be careful
-		 * of using CURLUSESSL_TRY here, because if TLS upgrade fails, the transfer
-		 * will continue anyway - see the security discussion in the libcurl
-		 * tutorial for more details. */
-		curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
-
-		/* If your server doesn't have a valid certificate, then you can disable
-		 * part of the Transport Layer Security protection by setting the
-		 * CURLOPT_SSL_VERIFYPEER and CURLOPT_SSL_VERIFYHOST options to 0 (false).
-		 *   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-		 *   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-		 * That is, in general, a bad idea. It is still better than sending your
-		 * authentication details in plain text though.
-		 * Instead, you should get the issuer certificate (or the host certificate
-		 * if the certificate is self-signed) and add it to the set of certificates
-		 * that are known to libcurl using CURLOPT_CAINFO and/or CURLOPT_CAPATH. See
-		 * docs/SSLCERTS for more information. */
-    //curl_easy_setopt(curl, CURLOPT_CAINFO, "cacert.pem");
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-
-		/* Note that this option isn't strictly required, omitting it will result in
-		 * libcurl sending the MAIL FROM command with empty sender data. All
-		 * autoresponses should have an empty reverse-path, and should be directed
-		 * to the address in the reverse-path which triggered them. Otherwise, they
-		 * could cause an endless loop. See RFC 5321 Section 4.5.5 for more details.
-		 */
-		curl_easy_setopt(curl, CURLOPT_MAIL_FROM, FROM);
-
-		/* Add two recipients, in this particular case they correspond to the
-		 * To: and Cc: addressees in the header, but they could be any kind of
-		 * recipient. */
-		recipients = curl_slist_append(recipients, to.c_str());
-		//recipients = curl_slist_append(recipients, CC);
-		curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
-
-		/* We're using a callback function to specify the payload (the headers and
-		 * body of the message). You could just use the CURLOPT_READDATA option to
-		 * specify a FILE pointer to read from. */
-		curl_easy_setopt(curl, CURLOPT_READFUNCTION, payload_source);
-		curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
-		curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
-
-		/* Since the traffic will be encrypted, it is very useful to turn on debug
-		 * information within libcurl to see what is happening during the transfer.
-		 */
-		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-
-		/* Send the message */
-		res = curl_easy_perform(curl);
-
-		/* Check for errors */
-		if(res != CURLE_OK)
-		  fprintf(stderr, "curl_easy_perform() failed: %s\n",
-				  curl_easy_strerror(res));
-
-		/* Free the list of recipients */
-		curl_slist_free_all(recipients);
-
-		/* Always cleanup */
-		curl_easy_cleanup(curl);
-	} else {
-		std::cout << "ERROR: curl_easy_init fail\n";
-	}
-	std::cout << "Curl code = " << res << endl;
-	result = res == 0;
-	return result;
-}
