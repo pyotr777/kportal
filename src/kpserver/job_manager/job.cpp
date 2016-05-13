@@ -676,8 +676,8 @@ ResponseCode Job::Submit() {
   fileNetworkUtil.Close();
 
   // Save status
-   status = JOB_START;
-
+  status = JOB_START;
+  container_id = containerId;
   //
   // Connect to job container (slavedaemon) & send submit job command
   //
@@ -1324,17 +1324,17 @@ KP_JobStatus Job::ConvertKdeskJobState(const std::string& kd_jstate){
   ResponseCode Job::Clear() {
     std::cout << "delete job container \n";
     ResponseCode ret = DATA_ERROR;
-  //  while ((ret = getStat()) == DATA_SUCCESS && status == JOB_RUNNING) {
-  //    ret = Stop();
-  //    if (ret != DATA_SUCCESS) {
-  //    //    return ret;
-  //    }
-  //  }
-    ret = DATA_SUCCESS;
+    while ((ret = getStat()) == DATA_SUCCESS && status == JOB_RUNNING) {
+      ret = Stop();
+      if (ret != DATA_SUCCESS) {
+      //    return ret;
+      }
+    }
+    //ret = DATA_SUCCESS;
     if (ret == DATA_SUCCESS) {
       //delete from docker server
       std::stringstream ss;
-      ss << "DELETE /containers/" << container_id << " HTTP/1.1\r\n";
+      ss << "DELETE /containers/" << container_id << "?v=1&force=1 HTTP/1.1\r\n";
       ss << "Host: " << DockerTcp_IP << "\r\n\r\n";
 
       std::string request = ss.str();
@@ -1376,18 +1376,18 @@ KP_JobStatus Job::ConvertKdeskJobState(const std::string& kd_jstate){
   ResponseCode Job::Delete() {
     std::cout << "delete job \n";
     ResponseCode ret = DATA_ERROR;
-    /*
+    
     while ((ret = getStat()) == DATA_SUCCESS && status == JOB_RUNNING) {
       ret = Stop();
       if (ret != DATA_SUCCESS) {
       //    return ret;
       }
-    }*/
-    ret = DATA_SUCCESS;
+    }
+    //ret = DATA_SUCCESS;
     if (ret == DATA_SUCCESS) {
       //delete from docker server
       std::stringstream ss;
-      ss << "DELETE /containers/" << container_id << " HTTP/1.1\r\n";
+      ss << "DELETE /containers/" << container_id << "?v=1&force=1 HTTP/1.1\r\n";
       ss << "Host: " << DockerTcp_IP << "\r\n\r\n";
 
       std::string request = ss.str();

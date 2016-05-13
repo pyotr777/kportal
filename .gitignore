@@ -6,6 +6,8 @@
 /doc/*
 /src/*
 /sample_application/C_MPI/src/.*
+**/kp_server
+**/kp_tool
 !/src/AppMarket/*.xml
 !/src/**/Dockerfile
 !/src/docker_images
