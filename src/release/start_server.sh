@@ -14,5 +14,5 @@ if [ ! "$(brctl show | grep bridge0)" ]; then
 fi
 docker -H 127.0.0.1:9555 images &>/dev/null
 if [[ "$?"=="1" ]]; then
-    sudo docker -d -H 127.0.0.1:9555 -b=bridge0 &
+    sudo docker daemon -D -H 127.0.0.1:9555 -b=bridge0 --storage-driver=devicemapper --storage-opt dm.datadev=/dev/vg-docker/data --storage-opt dm.metadatadev=/dev/vg-docker/metadata &
 fi
