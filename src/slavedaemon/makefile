@@ -4,7 +4,8 @@ CP=cp
 INCDIR=-I.
 OBJDIR=./obj
 CFLAGS= $(INCDIR) -c -Wall -fPIC
-LDFLAGS=-Wall -lpthread
+LDFLAGS=-Wall
+LDLIBRARIES=-lpthread
 
 CPPFILES=message.cpp header.cpp system_command_utils.cpp \
          message_socket.cpp slavedaemon.cpp
@@ -14,7 +15,7 @@ all : $(TARGET)
 $(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) $^ -o $@
 $(TARGET) : $(OBJS)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBRARIES)
 clean:
 	$(RM) $(OBJDIR)/*.o $(TARGET)
 install:

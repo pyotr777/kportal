@@ -5,7 +5,8 @@ INCDIR=-I.
 MESSINCDIR=-I../kpforwarder -I../slavedaemon/
 OBJDIR=./obj
 CFLAGS= $(INCDIR) $(MESSINCDIR) -c -Wall -fPIC
-LDFLAGS=-Wall -lpthread
+LDFLAGS=-Wall
+LDLIBRARIES=-lpthread
 
 CPPFILES=message.cpp header.cpp system_command_utils.cpp \
          message_socket.cpp kdeskdaemon.cpp
@@ -19,7 +20,7 @@ $(OBJDIR)/%.o : ../slavedaemon/%.cpp
 $(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) $^ -o $@
 $(TARGET) : $(OBJS)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBRARIES)
 	mkdir -p ../release/
 	$(CP) $(TARGET) ../release/
 clean:
