@@ -33,4 +33,5 @@ private:
 	static size_t payload_source(void *ptr, size_t size, size_t nmemb, void *userp);
 };
 
+std::string Exec(const char* cmd);
 #endif //GMAIL_UTILS_HPP

@@ -98,7 +98,7 @@ public:
 //	long m_end;
 	//request();
 	~request(){
-		std::cout << "Request destructor!" << std::endl;
+		//std::cout << "Request destructor!" << std::endl;
 	}
 	void process();
 

@@ -1265,7 +1265,119 @@ ResponseCode ClientSession::createImage(ImageDocker &images) {
 /*
  * Continue to create a ImageDocker
  */
+
+  // Update tag name
 ResponseCode ClientSession::createImageContinue(ImageDocker &image) {
+  std::cout << "createImageContinue "<< std::endl;
+  std::string pathTarFile = image.getTarStr();
+  std::cout << "path tmp dir: " << pathTarFile.c_str() << std::endl;
+ 
+  ResponseCode ret = DATA_SUCCESS; 
+  std::stringstream ss;
+  std::string stdout, cmd;
+  std::string delimiter = "\n";
+  std::vector<std::string> after_images;
+  std::vector<std::string> before_images;
+  
+  // Run command get list images
+  ss.str("");
+  ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " images -q ";
+  cmd = ss.str();
+  std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  StringUtils::Split(stdout, before_images, delimiter);
+  
+  // Run command load image
+  ss.str("");
+  ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " load -i " << pathTarFile;
+  cmd = ss.str();
+  std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  
+  // Get new image id
+  ss.str("");
+  ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " images -q ";
+  cmd = ss.str();
+  std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  StringUtils::Split(stdout, after_images, delimiter);
+  std::string image_id = "";
+  for (size_t a = 0; a < after_images.size(); a++){
+    for(size_t b = 0; b < before_images.size(); b++){
+      if(after_images[a] == before_images[b])
+      {
+        break;
+      } 
+      else
+      {
+        if(b == before_images.size() - 1){
+         image_id = after_images[a];
+         break;
+        }
+      }
+    }
+    if(image_id.size() != 0)
+      break;
+  }
+  std::cout << "image id new: " << image_id.c_str() << std::endl;
+  if(image_id.size() == 0)
+  {
+	std::cout << "try to load image fail.\n";
+	return REQUEST_DOCKER_ERROR; 
+  }  
+  image.setImageId(image_id);
+  
+  // Update tag name
+  ss.str("");
+  ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " tag " << image_id << " " << image.getImageName();
+  cmd = ss.str();
+  std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  
+  //backup Tarball Image
+  extern std::string ICON_FOLDER_PATH;
+  std::string pathBackupImageDocker = ICON_FOLDER_PATH + PATH_SEPARATOR + image.getImageName() + ".tar";
+  ss.str("");
+  ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " save -o "<< pathBackupImageDocker << " " << image_id << " " ;
+  cmd = ss.str();
+  std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  
+  //delete Tarball Image
+  if (remove(image.getTarStr().c_str()) != 0) {
+    std::cout << "remove error: " << image.getTarStr() << std::endl;
+  }
+  image.setTarStr(pathBackupImageDocker);
+
+  DataManager data_manager(PATH_OF_DATABASE);
+  if ( data_manager.connectDB() == DATA_SUCCESS) {
+  //add image to db
+    if ((ret = data_manager.beginTransaction()) == DATA_SUCCESS) {
+      ret = data_manager.insertImageDocker(image);
+      if (ret == DATA_SUCCESS)
+        ret = data_manager.endTransaction();
+      else
+        data_manager.rollback();
+    }
+    if (data_manager.disConnectDB() != DATA_SUCCESS) {
+      std::cout << "Error close db when createImageContinue. \n";
+    }
+    if (_image != NULL) {
+      delete _image;
+      _image = NULL;
+    }
+  }
+  
+  return ret;
+}
+
+
+ResponseCode ClientSession::createImageContinue1(ImageDocker &image) {
   std::cout << "createImageContinue \n";
   ResponseCode ret = DATA_SUCCESS;
 

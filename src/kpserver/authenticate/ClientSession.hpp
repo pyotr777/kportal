@@ -118,6 +118,7 @@ public:
   ResponseCode getImageByName(std::string name, ImageDocker &image);
   ResponseCode createImage(ImageDocker &images);
   ResponseCode createImageContinue(ImageDocker &image);
+  ResponseCode createImageContinue1(ImageDocker &image);
   ResponseCode updateImage(ImageDocker &images);
   ResponseCode deleteImage(ImageDocker &image);
   ResponseCode checkNameImage(std::string name);
