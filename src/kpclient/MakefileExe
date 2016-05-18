@@ -1,0 +1,24 @@
+BOOST_LIBS=boost_system boost_thread boost_regex boost_random
+
+include ../common.mk
+
+#CFLAGS = -I. -I./Objects -I./Utils -I./Exceptions
+
+LDFLAGS := $(LDFLAGS) -lpthread -lrt
+k_client: main.o KP_Manager.o KP_Service.o KP_Job.o ResUtils.o KP_ParametersList.o KP_Parameter.o StringUtils.o FileUtils.o StringUtils.o
+	$(CXX) $(CFLAGS) $^ -g -o $@ $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) -g -c $(CFLAGS) -o $@ $^
+
+# cleanup by removing generated files
+#
+.PHONY:		clean
+clean:
+		rm -f *.o k_client k_client
+
+install:
+	    cp k_client /usr/bin/
+
+uninstall:
+	    rm -rf /usr/bin/k_client

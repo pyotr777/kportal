@@ -1,0 +1,141 @@
+@CHARSET "UTF-8";
+body {
+    margin: 0px;
+    padding: 0px;
+	color: #333;
+	/*font: 300 13px/1.4 "Roboto",Arial,sans-serif;*/
+	font: "Roboto",Arial,sans-serif;
+	background-color: #E5E5E5;
+	color: #333;
+	height: 100%;
+	text-rendering: optimizeLegibility;
+}
+
+div, p, a, td {
+	/* font-family: 300 13px/1.4 "Roboto",Arial,sans-serif; */
+	/* font-family: 400 "Roboto",Arial,sans-serif; */
+	/* font: 300 13px/1.4 "Roboto",Arial,sans-serif; */
+	font: 400 14px/1.4 "Roboto",Arial,sans-serif;
+	cursor: auto;
+}
+
+.message-popup {
+	text-align:center;
+	min-width:150px;
+	max-width:250px; 
+	/* padding-bottom:2em; */
+}
+
+.ui-header {
+	min-width:250px;
+}
+
+
+.ui-icon-custom 
+{
+	background: url("../images/icons/download.png")no-repeat;    
+    background-size: 18px 18px;
+    -webkit-box-shadow: none;
+}
+
+.ui-li-aside { 
+	float: right; 
+	width: 50%; 
+	text-align: right; 
+	margin: .3em 0; 
+	/* color: #B3C833; */
+	/* background: white; */
+	/* cursor: pointer; */
+	/* display: inline-block; */
+	font-size: 13px;
+	font-weight: 900;
+	line-height: 17px;
+	/* padding-left: 2px; */
+	/* position: relative; */
+	/* text-align: right; */
+	/* text-transform: uppercase; */
+}
+
+.ui-table-reflow.ui-responsive {
+	display:table;
+}
+
+.table-stroke thead th {
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+.table-stroke tbody th,
+.table-stroke tbody td {
+  border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+/* stack all grids below 45em (720px) */
+@media all and (max-width: 45em) {
+    .grid-breakpoint .ui-block-a,
+    .grid-breakpoint .ui-block-b,
+    .grid-breakpoint .ui-block-c,
+    .grid-breakpoint .ui-block-d,
+    .grid-breakpoint .ui-block-e {
+        width: 100%;
+        float: none;
+    }
+}
+
+
+@media ( min-width: 50em ) {
+	Show the table header rows and set all cells to display: table-cell
+	.my-custom-breakpoint td,
+	.my-custom-breakpoint th,
+	.my-custom-breakpoint tbody th,
+	.my-custom-breakpoint tbody td,
+	.my-custom-breakpoint thead td,
+	.my-custom-breakpoint thead th {
+		display: table-cell;
+		margin: 0;
+	}
+	Hide the labels in each cell
+	.my-custom-breakpoint td .ui-table-cell-label,
+	.my-custom-breakpoint th .ui-table-cell-label {
+		display: none;
+	}
+}
+
+/*
+*	Prevent text cussor
+*/
+/* label {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;	
+}
+
+label{
+    cursor:default;
+}
+
+* {
+  -webkit-user-select: none;
+}
+
+*:active,
+*:hover {
+  cursor: pointer;
+} */
+
+/*
+*
+*/
+.long-name{
+ 	 max-width: 350px; 
+ 	 overflow:hidden;
+ 	 text-overflow: ellipsis;
+}
+.detail-name {
+	max-length:60%;
+	overflow:hidden;
+	/*overflow:scroll;*/
+	text-overflow: ellipsis;	
+}
+ 

@@ -1,0 +1,185 @@
+@CHARSET "UTF-8";
+<style>
+
+div {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font-weight: normal;
+	vertical-align: baseline;
+	background: transparent;
+	display: block;
+}
+
+a {
+	color: #333;
+	text-decoration: none;
+	cursor: auto;
+}
+
+body {
+	color: #333;
+	/* font: 300 13px/1.4 "Roboto",Arial,sans-serif; */
+	font: "Roboto",Arial,sans-serif; 
+	background-color: #E5E5E5;
+	color: #333;
+	height: 100%;
+	text-rendering: optimizeLegibility;
+}
+
+.card-list {
+	min-width:280px;
+	height: auto;
+	max-height: none;
+	background-color: #E5E5E5;
+}
+
+.card {
+	height: 168px;
+	width: 126px;
+	display: inline-block;
+	margin: 5px;
+	position: relative;
+	text-align: left;
+	vertical-align: top;
+	white-space: normal;
+	cursor: hand;
+}
+
+.card-content	{
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	background: white;
+	height: 100%;
+	position: relative;
+	text-decoration: none;
+	vertical-align: top;	
+}
+
+.card-cover	{
+	width:126px;
+	height:126px;
+	background-color: white;
+
+	-moz-border-radius: 2px 2px 0 0;
+	-webkit-border-radius: 2px 2px 0 0;
+	border-radius: 2px 2px 0 0;
+	background-color: whiteSmoke;
+	overflow: hidden;
+	position: relative;
+}
+
+.cover-inner-align {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.cover-image-container {
+	height: 110%;
+	left: -5%;
+	position: relative;
+	top: -5%;
+	width: 110%;
+}
+
+.card-cover-image	{
+	
+	width:101px;
+	height:100px;
+	max-height: 92%;
+	max-width: 73%;
+	vertical-align: middle;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.cover-outer-align {
+display: table;
+height: 100%;
+width: 100%;
+}
+
+.cover-inner-align {
+display: table-cell;
+text-align: center;
+vertical-align: middle;
+}
+
+.details {
+	max-height: 50px;
+	/* //width:101 */
+	padding-top: 1px;
+	box-sizing: border-box;
+	display: block;
+	overflow: hidden;
+	padding: 7px 10px 0;
+	position: relative;
+}
+
+.title {
+	
+	color: #333;
+	display: block;
+	max-height: 36px;
+	overflow: hidden;
+	text-decoration: none;
+	position: relative;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	
+	/* font-size: 14px; */
+	line-height: 17px;
+	margin-bottom: -2px;
+	margin-top: 2px;
+	min-height: 17px;
+	cursor: pointer;
+}
+
+.card-click-target {
+	/* display: table-cell; */ 
+	display: block;
+	vertical-align: middle; 
+	text-align: center;
+	bottom: 0;
+	left: 0;
+	/*position: absolute;*/
+	right: 0;
+	top: 0;
+}
+
+.subtitle-container {
+	display: block;
+	position: relative;
+	width: 100%;
+	min-height: 18px;
+}
+
+.price-container {
+	bottom: 0;
+	position: absolute;
+	right: 0;
+	text-align: left;
+}
+
+.price {
+	color: #B3C833;
+	background: white;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 12px;
+	/* font-weight: 400; */
+	line-height: 17px;
+	padding-left: 2px;
+	position: relative;
+	text-align: right;
+	text-transform: uppercase;
+}
+
+</style>

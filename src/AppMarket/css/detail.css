@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+.detail-image-container {
+	float:inherit;
+	display: block;
+	vertical-align: middle; 
+	text-align: center;
+}
+.detail-image{
+	float:inherit;
+	display: block;
+	vertical-align: middle; 
+	text-align: center;	
+	align: center;
+	max-width: 95%;
+	min-height: 128px;
+	max-height: 256px;
+}

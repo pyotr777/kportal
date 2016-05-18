@@ -1,0 +1,14 @@
+#images-detail-list-info label
+{
+	width:15%;
+}
+
+.ui-table-columntoggle-btn 
+{
+    display: none !important;
+}
+
+#images-table tr
+{
+	padding:50px;
+}

@@ -1,0 +1,83 @@
+@CHARSET "UTF-8";
+
+.app-icon {
+		align: center;
+		width: 60px;
+		height: 60px;
+		top: 0px;
+		display: block;
+		cursor: hand;
+		cursor: pointer;
+}
+#home .ui-block-a .ui-block-b .ui-block-c .ui-block-d { min-width: 90px; height: 100px; height: 100px; position: relative; }
+.icon-springboard { position: absolute; bottom: 0; width: 100%; }
+.icon-label {
+		align: center;
+		max-width: 150px;
+		min-width: 90px;
+		color: #333;
+		/* font: 300 13px/1.4 "Roboto",Arial,sans-serif; */
+		font: 400 14px/1.4 "Roboto",Arial,sans-serif;
+		/*font: 300 "Roboto",Arial,sans-serif;*/ 
+		/* color: #CCC;  */
+		display: block; 
+		/* font-size:12px; */
+		overflow: hidden;
+		text-decoration: none;
+		position: relative;
+		text-overflow: ellipsis;
+		white-space: nowrap; 
+}
+	
+.selection-bar {
+	width: 100px;
+	height: 5px;
+}
+.center-wrapper{
+	text-align: center;
+}
+
+/* .ui-btn-active {
+	color: #7F7F7F !important; 
+} */
+/*******************************************************
+*
+*	For swipe home page <-> jobs page
+*
+*********************************************************/
+/* Speed transition slide */
+.in, .out {
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-duration: 350ms !important;
+}
+
+/*******************************************************
+*
+*	For 2 button on list view
+*
+*********************************************************/
+
+.split-button-custom {
+    float: right;
+    margin-right: 10px;
+    margin-top: -32px;
+    border-bottom-left-radius: 1em 1em;
+    border-bottom-right-radius: 1em 1em;
+    border-top-left-radius: 1em 1em;
+    border-top-right-radius: 1em 1em;   
+}
+
+.split-button-custom span.ui-btn-inner {
+    border-bottom-left-radius: 1em 1em;
+    border-bottom-right-radius: 1em 1em;
+    border-top-left-radius: 1em 1em;
+    border-top-right-radius: 1em 1em;
+    padding-right: 0px;
+}
+
+.split-button-custom span.ui-icon {
+    margin-top: 0px;
+    right: 0px;
+    top: 0px;
+    position: relative;
+}
