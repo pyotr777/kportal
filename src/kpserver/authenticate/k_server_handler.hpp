@@ -308,7 +308,7 @@ public:
         std::cout << "client " << con << " left the kpserver." << std::endl;
 		/// Clear temp session dir
 
-	sleep(5);
+	sleep(15);
 		std::cout << "Clear connection session: start\n";
         m_connections.erase(it);
 		std::cout << "Clear connection session: end\n";

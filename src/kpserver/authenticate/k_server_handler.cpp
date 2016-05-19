@@ -9,8 +9,6 @@ extern std::map<std::string, ImageDocker> SampleImages;
 template <typename request_endpoint_type>
 void request<request_endpoint_type>::process()
 {
-    try
-    {
 	std::string threadId = boost::lexical_cast<std::string>(boost::this_thread::get_id());
 	std::cout << "THREADID = " << threadId << std::endl;
 
@@ -99,7 +97,7 @@ void request<request_endpoint_type>::process()
         sendResult(header, (int)PERMISSION_DENIED);
 		return;
 	}
-//try{
+
     switch(type)
     {
 
@@ -302,19 +300,6 @@ void request<request_endpoint_type>::process()
     default:
         std::cout<<"Unknow request:"<<(int)type<<std::endl;
         break;
-    }
-//} catch (...){
-//   std::cout << "[EXC] A exception thrown.\n";
-//}
-
-}
-    catch (std::exception const &exc)
-    {
-        std::cerr << "[EXC]Exception caught " << exc.what() << "\n";
-    }
-    catch (...)
-    {
-        std::cerr << "[EXC]Unknown exception caught\n";
     }
 }
 
@@ -795,8 +780,10 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
             lm -> addLoginInfo(loginId, userInfo);
 
             /// Set user info to connection
+            std::cout << "setUserID " << userId.c_str() << std::endl;
             cs -> setUserId(userId);
-			cs -> setLogined(true);
+            std::cout << "setLogined TRUE" << std::endl;
+            cs -> setLogined(true);
 
             //// Send response report num of packet data
             resNode.push_back(JSONNode(TAG_REQUEST_ID_STR, header.getRequestID()));
@@ -809,7 +796,6 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
         {
             std::cout << "Error: email && token info not match.\n";
         }
-
     }
     else if(loginId != "")
     {
@@ -860,7 +846,7 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
     }
 
     response = resNode.write_formatted();
-
+     std::cout <<" before send login response\n";
     std::cout<<"JSONNode content:"<<std::endl<<response<<std::endl;
     con -> send(response);
     return;
@@ -2582,17 +2568,19 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
         i = n.find(TAG_NUMBER_OF_NODES_STR);
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
           service->setNumberOfNode(i->as_int());
-        }else {
-          service->setNumberOfNode(0);
         }
+	//else {
+        //  service->setNumberOfNode(0);
+        //}
 
         /// Elapse time
         i = n.find(TAG_MAX_ESLAPSED_TIME_STR);
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
           service->setMaxElapseTime(i->as_int());
-        } else {
-          service->setMaxElapseTime(0);
-        }
+        } 
+	//else {
+        //  service->setMaxElapseTime(0);
+        //}
 
         /// Icon
         i = n.find(TAG_ICON_STR);
