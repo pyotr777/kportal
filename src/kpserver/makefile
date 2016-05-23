@@ -1,10 +1,10 @@
-#BOOST_LIBS=boost_system boost_date_time boost_program_options boost_thread boost_regex
+BOOST_LIBS=boost_system boost_date_time boost_program_options boost_thread boost_regex
 
 include ../common.mk
 OBJDIR 			= ../../../../release/
 
 #LDFLAGS := $(LDFLAGS) -lboost_regex -lldap -lcrypto -lssl
-LDFLAGS := -L$(BOOST_LIBS) $(LDFLAGS) -lboost_regex -lcrypto -lssl -ltar  -lgomp
+LDFLAGS := $(LDFLAGS) -lboost_regex -lcrypto -lssl -ltar  -lgomp
 
 KP_LFLAGS := ../lib/libwebsocketpp.a
 
@@ -53,7 +53,6 @@ $(EXECUTABLE): $(REFER_OBJECTS) $(OBJECTS)
 	mkdir -p ../release
 	cp $(EXECUTABLE) ../release
 .cpp.o:
-	$(info Building $@. LDFLAGS: $(LDFLAGS)\n )
 	$(CC) $(LDFLAGS) $(OFLAGS) $< -o $@
 $(BIN)/%.o : ../kpforwarder/%.cpp
 	$(CC) $(REFERFLAGS) $^ -o $@
