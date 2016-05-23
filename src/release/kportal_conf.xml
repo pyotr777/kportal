@@ -1,12 +1,12 @@
 <Data>
-        <KPServer>
-		<MailAddr>anlab.provider@gmail.com</MailAddr>
-		<MailPass>anlab123</MailPass>
-                <RootDir>/home/anlab/jobs</RootDir>
-                <AppMarketDomain>https://bounceme.anlab.info</AppMarketDomain>
-				<IconFolder>/etc/kportal/www/images</IconFolder>
-                <SampleImages> 
-                    <Image id="52131e549e18" tag="[sample] debian_sample:1"/>
-                </SampleImages>
-        </KPServer>
+    <KPServer>
+        <MailAddr>kportal.aics.riken@gmail.com</MailAddr>
+    	<MailPass>***</MailPass>
+        <RootDir>/home/kportal/jobs</RootDir>
+        <AppMarketDomain>https://localhost:9005</AppMarketDomain>
+        <IconFolder>/etc/kportal/www/images</IconFolder>
+        <SampleImages> 
+            <Image id="***" tag="***"/>
+        </SampleImages>
+    </KPServer>
 </Data>
