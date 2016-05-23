@@ -59,10 +59,10 @@ void ReceiveMessage(int sock, Message &mes) {
     std::string msg = "";
 
     int read_size = 0;
-    while (msg.size() <= sizeHeader && ((read_size = recv(sock, buffer, BUFSIZ, 0)) > 0)) {
+    while ((int)msg.size() <= sizeHeader && ((read_size = recv(sock, buffer, BUFSIZ, 0)) > 0)) {
         msg += std::string(buffer,read_size);
     }
-    if (msg.size() <= sizeHeader) {
+    if ((int)msg.size() <= sizeHeader) {
         std::cout << "message received error\n";
         return;
     }

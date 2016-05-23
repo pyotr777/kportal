@@ -176,11 +176,12 @@ ResponseCode FileNetworkUtils::Write(std::string buffer) {
 	NetworkUtil::ReceiveMessage(sock, mesToReceive);
 	if (mesToReceive.typeMes != Binary) {
 		std::cout << "Server invalid \n";
-		return REQUEST_RECEIVE_REQUEST_ERROR;
+		ret = REQUEST_RECEIVE_REQUEST_ERROR;
 	}
-
-	offset += buffer.size();
-
+	else
+	{
+		offset += buffer.size();
+	}
 	close(sock);
 	return ret;
 }

@@ -16,7 +16,7 @@
 #include "socket_exception.h"
 #include "system_command_utils.hpp"
 
-#define MAX_NUM_OF_RETRY 60 
+#define MAX_NUM_OF_RETRY 20
 std::string g_home_job_dir = "";
 const int BUFFER_SIZE = 512;
 //

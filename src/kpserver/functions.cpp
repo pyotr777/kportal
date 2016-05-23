@@ -148,11 +148,13 @@ ResponseCode ReloadListJob() {
 				if ((*it).second) {
 					std::string pathFileInfo = DEFAULT_JOB_FOLDER + PATH_SEPARATOR + jobId + PATH_SEPARATOR + jobId + ".info";
 					FileNetworkUtils fileNetworkUtil(host, Container_Com_Port, pathFileInfo);
+					std::cout << "get file size: " << pathFileInfo.c_str() << std::endl;
 					fileNetworkUtil.Open();
 					size_t file_size = -1;
 					ret = fileNetworkUtil.GetSize(file_size);
 					if (ret != FILE_ACTION_SUCCESS) {
-						break;
+						//break;
+						continue;
 					}
 					size_t read_length;
 					std::string infoJob_str = "";

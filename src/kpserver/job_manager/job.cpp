@@ -654,13 +654,12 @@ ResponseCode Job::Submit() {
   }
   //}
 
+  // Save container id & Save status
+  status = JOB_START;
+  container_id = containerId;
+  
+  // Save job info to master container
   std::cout << "job container ip:" << job_containner_ip.c_str() << std::endl;
-  //job_containner_ip = "10.0.0.3"; // hardcode to test
-  //std::cout << "job container ip hardcode:" << job_containner_ip.c_str() << std::endl;
-
-  //
-  // Create message response to client
-  //
   std::string json_str;
   generateJsonStr(json_str);
   FileNetworkUtils fileNetworkUtil(host, Container_Com_Port, pathJob + PATH_SEPARATOR + job_id + ".info");
@@ -675,9 +674,9 @@ ResponseCode Job::Submit() {
   }
   fileNetworkUtil.Close();
 
-  // Save status
-  status = JOB_START;
-  container_id = containerId;
+//  // Save status
+//  status = JOB_START;
+//  container_id = containerId;
   //
   // Connect to job container (slavedaemon) & send submit job command
   //

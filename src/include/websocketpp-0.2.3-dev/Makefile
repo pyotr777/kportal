@@ -29,7 +29,7 @@
 
 
 objects = network_utilities.o sha1.o base64.o md5.o uri.o hybi_header.o hybi_util.o data.o
-BOOST_PREFIX ?= /home/kportal/usr/local
+BOOST_PREFIX ?= /home/anlab/usr/local
 
 #BOOST_PREFIX ?= /usr/local
 BOOST_LIB_PATH		?= $(BOOST_PREFIX)/lib

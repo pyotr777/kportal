@@ -578,6 +578,8 @@ ResponseCode NetworkUtil::ProcessUploadFile(std::string host, std::string port, 
 			remain_data -= sent_bytes;
 			fprintf(stdout, "Sent %d bytes from file's data, offset is now : %d and remaining data = %d\n", sent_bytes, offset, remain_data);
 		}
+          // Close descriptor for file that was sent */
+          close(fd);
 	}
 	close(sock);
 	return ret;

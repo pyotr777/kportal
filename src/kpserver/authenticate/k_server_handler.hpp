@@ -34,6 +34,8 @@
 #include <string>
 #include <vector>
 #include <sys/time.h>
+#include <pthread.h>
+#include <time.h>
 
 #include "../../include/websocketpp-0.2.3-dev/src/endpoint.hpp"
 #include "../../include/websocketpp-0.2.3-dev/src/roles/client.hpp"
@@ -62,6 +64,8 @@
 #define TLS_CERT_CHAIN_FILE "/etc/kportal/ssl/server.crt"
 #define TLS_PRIVATE_KEY_FILE "/etc/kportal/ssl/server.key"
 #define TLS_TMP_DH_FILE "/etc/kportal/ssl/dh.pem"
+
+extern pthread_mutex_t g_connections_lock;
 
 using websocketpp::server;
 using websocketpp::server_tls;
@@ -287,7 +291,9 @@ public:
 		ClientSession cs;
 		std::string str = get_con_id(con);
 		cs.setConId(str);
+		pthread_mutex_lock(&g_connections_lock);
 		m_connections.insert(std::pair<connection_ptr, ClientSession>(con, cs));
+		pthread_mutex_unlock(&g_connections_lock);
 
     };
 
@@ -308,9 +314,11 @@ public:
         std::cout << "client " << con << " left the kpserver." << std::endl;
 		/// Clear temp session dir
 
-	sleep(15);
+	sleep(5);
 		std::cout << "Clear connection session: start\n";
+	pthread_mutex_lock(&g_connections_lock);
         m_connections.erase(it);
+	pthread_mutex_unlock(&g_connections_lock);
 		std::cout << "Clear connection session: end\n";
     };
     
@@ -338,7 +346,7 @@ private:
     	s << "{\"type\":\"participants\",\"value\":[";
 
         typename std::map<connection_ptr,std::string>::iterator it;
-
+	pthread_mutex_lock(&g_connections_lock);
     	for (it = m_connections.begin(); it != m_connections.end(); it++) {
         	s << "\"" << (*it).second << "\"";
         	if (++it != m_connections.end()) {
@@ -348,7 +356,7 @@ private:
     	}
 
     	s << "]}";
-
+	pthread_mutex_unlock(&g_connections_lock);
     	return s.str();
     };
 

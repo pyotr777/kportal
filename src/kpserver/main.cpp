@@ -70,6 +70,8 @@ pthread_mutex_t g_tunnels_lock;
 
 //pthread_mutex_t g_listjobs_lock;
 
+pthread_mutex_t g_connections_lock;
+
 const std::string kKdeskHost = "k.aics.riken.jp";
 int g_kpserver_port = 9001;
 std::string g_docker_bridge_host = "10.0.0.1";
@@ -139,6 +141,10 @@ int main(int argc, char* argv[]) {
   //  return 1;
   //}
 
+  if (pthread_mutex_init(&g_connections_lock, NULL) != 0){
+    printf("\n connections_lock mutex init failed\n");
+    return 1;
+  }
 
     /// Define num of threads, pool threads
     size_t worker_threads = 7;

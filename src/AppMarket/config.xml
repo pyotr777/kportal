@@ -8,6 +8,7 @@
 		<uri>wss://bounceme.anlab.info:9001/kportal</uri>
 	</websocket>
 	<oauth20>
+		<!--anlab.appmarket@gmail.com -->
 		<clientid>757378906290-hmnm6v1ci90r2l3uhgoofe54c75i1d8l.apps.googleusercontent.com</clientid> 
 		<!--<clientid>270730678057-a9ml338n4kffukaqovtseul8u28547e8.apps.googleusercontent.com</clientid>-->
 		<!--<redirect>https://localhost:9005/AppMarket/</redirect>-->

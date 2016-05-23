@@ -20,7 +20,8 @@ int main(int argc , char *argv[])
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
-        printf("Could not create socket");
+        std::cout << "[ERR] Could not create socket\n";
+        return 1;
     }
     puts("Socket created");
 
@@ -33,7 +34,8 @@ int main(int argc , char *argv[])
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
     {
         //print the error message
-        perror("bind failed. Error");
+        //perror("bind failed. Error");
+        std::cout << "[ERR] bind failed.\n";
         return 1;
     }
     puts("bind done");
@@ -44,14 +46,20 @@ int main(int argc , char *argv[])
     //Accept and incoming connection
     puts("Waiting for incoming connections...");
 	c = sizeof(struct sockaddr_in);
+    bool isAcceptFailLast = false;
     while( true )
     {
         client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
         if (client_sock < 0)
         {
-            perror("accept failed");
+            //perror("accept failed");
+            if(!isAcceptFailLast) {
+              std::cout << "[ERR] accept failed\n";
+              isAcceptFailLast = true; 
+	    }
             continue;
         }
+        isAcceptFailLast = false;
         puts("Connection accepted");
 
         pthread_t sniffer_thread;
@@ -60,7 +68,8 @@ int main(int argc , char *argv[])
 
         if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) new_sock) < 0)
         {
-            perror("could not create thread");
+            //perror("could not create thread");
+            std::cout << "[ERR] could not create thread\n";
             continue;
         }
 
@@ -68,6 +77,7 @@ int main(int argc , char *argv[])
         //pthread_join( sniffer_thread , NULL);
         puts("Handler assigned");
     }
+    close(socket_desc);
     return 0;
 }
 
@@ -95,7 +105,7 @@ void *connection_handler(void *socket_desc)
         std::string message = "";
         mes.typeMes = (TypeMessage)buffer[0];
 
-        if (read_size > (sizeof(unsigned long) + sizeof(BYTE))) {
+        if (read_size > (int)(sizeof(unsigned long) + sizeof(BYTE))) {
             mes.sizeMes = *(unsigned long*)(buffer + sizeof(BYTE));
             message += std::string(buffer + sizeof(unsigned long) + sizeof(BYTE), read_size - sizeof(unsigned long) - sizeof(BYTE));
         }
@@ -135,6 +145,10 @@ void *connection_handler(void *socket_desc)
     {
         perror("recv failed");
     }
+
+    
+    // Close the socket and exit this thread
+    close(sock);
 
     //Free the socket pointer
     free(socket_desc);
@@ -219,8 +233,10 @@ ResultCode ProcessUploadRequest(Message mes, int sock) {
     {
         fwrite(buffer, sizeof(char), read_size, received_file);
         remain_data -= read_size;
-        fprintf(stdout, "Receive %d bytes and we hope :- %d bytes\n", read_size, remain_data);
+        fprintf(stdout, "Receive %i bytes and we hope :- %li bytes\n", read_size, remain_data);
     }
+    
+    //Free the socket pointer
     fclose(received_file);
     return Success;
 }
@@ -230,7 +246,7 @@ ResultCode ProcessDownloadRequest(Message mes, int sock) {
     char buffer[BUFSIZ];
     std::cout << "Start send file to client\n";
     std::string sourceFile = mes.content.substr(DOWNLOAD_FILE_REQUEST.size());
-
+    std::cout << "source file: " << sourceFile << std::endl;
     int fd = open(sourceFile.c_str(), O_RDONLY);
     if (fd == -1)
     {
@@ -243,14 +259,15 @@ ResultCode ProcessDownloadRequest(Message mes, int sock) {
     if (fstat(fd, &file_stat) < 0)
     {
             fprintf(stderr, "Error fstat --> %s", strerror(errno));
+	    close(fd);
             return Fail;
     }
 
-    fprintf(stdout, "File Size: %d bytes\n", file_stat.st_size);
+    fprintf(stdout, "File Size: %li bytes\n", file_stat.st_size);
 
     /* Sending file size */
 
-  sprintf(buffer, "%d", file_stat.st_size);
+  sprintf(buffer, "%li", file_stat.st_size);
 
   std::cout << "buffer to send: " << buffer << std::endl;
 
@@ -266,18 +283,21 @@ ResultCode ProcessDownloadRequest(Message mes, int sock) {
     if (len < 0)
     {
           fprintf(stderr, "Error on sending greetings --> %s", strerror(errno));
+	  close(fd);
           return Fail;
     }
 
     ReceiveMessage(sock,mesToReceive);
     if (mesToReceive.typeMes != Binary || mesToReceive.sizeMes != sizeof(BYTE)) {
         std::cout << "Client invalid (1).\n";
+        close(fd);
         return Fail;
     }
 
     ResultCode rc = (ResultCode)(*(BYTE*)mesToReceive.content.data());
     if (rc != Success) {
         std::cout << "Receive file fail (1).\n";
+	close(fd);
         return rc;
     }
 
@@ -288,15 +308,19 @@ ResultCode ProcessDownloadRequest(Message mes, int sock) {
     while (((sent_bytes = sendfile(sock, fd, (off_t*)&offset, BUFSIZ)) > 0) && (remain_data > 0))
     {
         remain_data -= sent_bytes;
-        fprintf(stdout, "Sent %d bytes from file's data, offset is now : %d and remaining data = %d\n", sent_bytes, offset, remain_data);
+        fprintf(stdout, "Sent %i bytes from file's data, offset is now : %li and remaining data = %li\n", sent_bytes, offset, remain_data);
 	}
 	ReceiveMessage(sock, mesToReceive);
+    // Close file
+    close(fd);
     return Success;
 }
 
 ResultCode ProcessGetListEntryRequest(Message mes, int sock) {
     std::string pathDir = mes.content.substr(GETLISTENTRY_REQUEST.size());
 //    std::map<string, bool> listEntry;
+    std::cout << "Start get list entry of job\n";
+    std::cout << "path dir - " << pathDir << std::endl;
     std::string msg = "";
     DIR *dir;
     struct dirent *ent;
@@ -348,14 +372,16 @@ int delete_folder_tree (const char* directory_name) {
 		}
 	}
 	}
-	std::cout << "close dir after read\n";
+	//std::cout << "close dir after read\n";
 	closedir(dp);
-	std::cout << "close dir finished\n";
+	//std::cout << "close dir finished\n";
 	return rmdir(directory_name);
 }
 
 ResultCode ProcessDeleteDirectoryRequest(Message mes) {
+	std::cout << "Start delete directory\n";
 	std::string pathDir = mes.content.substr(DELETEDIRECTORY_REQUEST.size());
+	std::cout << "path - " << pathDir.c_str() << std::endl;
 	if (!delete_folder_tree(pathDir.c_str())) {
 		return Success;
 	} else {
@@ -366,12 +392,13 @@ ResultCode ProcessDeleteDirectoryRequest(Message mes) {
 ResultCode ProcessGetFileSizeRequest(Message mes, int sock) {
 	Message mesToReceive;
 	std::cout << "Start send file size to client\n";
-	std::string sourceFile = mes.content.substr(GETFILESIZE_REQUEST.size());
 
+	std::string sourceFile = mes.content.substr(GETFILESIZE_REQUEST.size());
+        std::cout << "path file: " << sourceFile.c_str() << std::endl;
 	int fd = open(sourceFile.c_str(), O_RDONLY);
 	if (fd == -1)
 	{
-			fprintf(stderr, "Error opening file --> %s", strerror(errno));
+			fprintf(stderr, "Error opening file --> %s\n", strerror(errno));
 			return Fail;
 	}
 
@@ -380,16 +407,16 @@ ResultCode ProcessGetFileSizeRequest(Message mes, int sock) {
 	if (fstat(fd, &file_stat) < 0)
 	{
 			fprintf(stderr, "Error fstat --> %s", strerror(errno));
+			close(fd);
 			return Fail;
 	}
 
-	fprintf(stdout, "File Size: %d bytes\n", file_stat.st_size);
+	fprintf(stdout, "File Size: %li bytes\n", file_stat.st_size);
 
 	/* Sending file size */
 	std::stringstream ss;
 	ss << file_stat.st_size;
 	std::string size_file = ss.str();
-  std::cout << "Bp: size_file: " << size_file << std::endl;
 
 	Message mesToSend;
 	mesToSend.typeMes = Text;
@@ -398,6 +425,8 @@ ResultCode ProcessGetFileSizeRequest(Message mes, int sock) {
 	std::cout << "send - file_size\n";
 	SendMessage(sock, mesToSend);
 	ReceiveMessage(sock,mesToReceive);
+        // Close the file 
+        close(fd);
 	return Success;
 }
 
@@ -425,7 +454,7 @@ ResultCode ProcessReadFileRequest(Message mes, int sock) {
 	pFile = fopen ( pathFile.c_str() , "rb" );
 	if (pFile==NULL)
 	{
-		fprintf(stderr,"Open file error:%d\n", pathFile.c_str());
+		fprintf(stderr,"Open file error:%s\n", pathFile.c_str());
 		return Fail;
 	}
 	fseek ( pFile , offset , SEEK_SET );
@@ -446,6 +475,10 @@ ResultCode ProcessReadFileRequest(Message mes, int sock) {
 	std::cout << "send - buffer read file\n";
 	SendMessage(sock, mesToSend);
 	ReceiveMessage(sock,mesToReceive);
+	// close the file
+	fclose(pFile);
+	// relese buffer
+	delete[] buffer;
 	return Success;
 }
 
@@ -478,7 +511,7 @@ ResultCode ProcessWriteFileRequest(Message mes) {
 	}
 	if (pFile==NULL)
 	{
-		fprintf(stderr,"Open file error:%d\n", pathFile.c_str());
+		fprintf(stderr,"Open file error:%s\n", pathFile.c_str());
 		return Fail;
 	}
 	result = fwrite (buffer.data() , 1, buffer.size(), pFile);

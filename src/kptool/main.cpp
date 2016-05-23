@@ -4,7 +4,6 @@
 #include "../kpserver/datalayer/DataManager.hpp"
 
 const char *argp_program_version = "kptool 2.0";
-const char *argp_program_bug_address = "<long.nm@anlab.vn>";
 static char doc[] =
         "Kptool example: ./kptool -s Service1 -u User1 add-user \n program with somewhat more complicated\
         \n \t \t options\

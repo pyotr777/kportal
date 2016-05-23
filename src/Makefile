@@ -22,7 +22,7 @@ install:
 	mkdir -p $(PREFIX)
 	mkdir -p $(PREFIX)/log
 	chmod 777 -R $(PREFIX)
-	$(CP) -rf $(INCLUDE)/ssl/ $(PREFIX)
+	$(CP) -rf ssl/ $(PREFIX)
 	$(CP) -rf $(APPMARKET_DIR) $(DOCUMENT_ROOT)
 	$(CP) $(RELEASE_DIR)/kdeskdaemon /bin/
 	chmod 666  /bin/kdeskdaemon
