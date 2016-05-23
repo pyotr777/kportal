@@ -1,7 +1,8 @@
 language: cpp
 env:
  - BOOST_INCLUDES="/home/kportal/usr/include/boost" BOOST_LIBS="/home/kportal/usr/lib" CPATH="/home/kportal/usr/include/" CPLUS_INCLUDE_PATH="/home/kportal/usr/include/" BOOST_INCLUDE_PATH="/home/kportal/usr/include/boost"
-before_install: sudo useradd -m kportal && pwd && ls -l && lsb_release -a && mkdir -p /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj && echo "Check lib/libboost_system.a" && ls -l /home/kportal/usr/lib && echo -e "#######\nFinished before install\n#######\n"
+before_install: sudo useradd -m kportal && pwd && ls -l && lsb_release -a && mkdir -p /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj 
+after_install: echo "Check lib/libboost_system.a" && ls -l /home/kportal/usr/lib && echo "#######" && echo "Finished after install" && echo "#######"
 install: sudo ./installkportal_ubuntu.sh
 script:
  - cd /home/travis/build/pyotr777/kportal/src && make && sudo make install
