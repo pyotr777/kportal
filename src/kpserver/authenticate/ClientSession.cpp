@@ -18,7 +18,7 @@ extern std::string DEFAULT_JOB_FOLDER;
 extern std::string APPMARKET_DOMAIN;
 extern int g_kpserver_port;
 extern std::string g_docker_bridge_host;
-
+extern std::string DEFAULT_TEMPLATE_JOB_SCRIPT_FILE;
 
 ClientSession::ClientSession()
 {
@@ -299,7 +299,7 @@ ResponseCode ClientSession::InitJob(JSONNode& n, Job &newJob) {
     if(params[k].getIsRequired()){
       unsigned int ik = 0;
       for(;ik < param_existed_idxs.size(); ik++){
-        if(k == param_existed_idxs[ik]){
+        if((int)k == param_existed_idxs[ik]){
           break;
         }
       }
@@ -407,59 +407,6 @@ ResponseCode ClientSession::submitJob(Job &job) {
     //pthread_mutex_unlock(&g_listjobs_lock);
   }
   return ret;
-}
-
-//
-// Check / configure a ssh tunnel for provider
-//
-ResponseCode ClientSession::ConfigureSshTunnel(Job & job){
-  std::cout << "ClientSession::ConfigureSshTunnel" << std::endl;
-  // Check if kpforwarder has started
-
-  // Check if ssh tunnel has already started
-  ResponseCode res_code = DATA_ERROR;
-  try {
-    Socket client_socket;
-    // ClientSocket client_socket ( _host, _port );
-    if ( ! client_socket.Create() ) {
-      throw SocketException ( "Could not create client socket." );
-    }
-
-    std::string forwarder_host = "127.0.0.1";
-    int forwarder_port = 8999;
-    std::cout << "connect forwarder_host: " <<  forwarder_host << ":" << forwarder_port << std::endl;
-    if ( ! client_socket.Connect( forwarder_host, forwarder_port)) {
-      throw SocketException ( "Could not connect to port." );
-    }
-
-    // Check ssh tunnel
-    std::cout << "send a setting tunnel up command to kpforwarder \n";
-    Message req(Header(MT_COMMAND, 0, 0, 0, CMD_CREATETUNNEL), NULL), res;
-    std::string kaccount = "a03320";
-    int tunnel_port = 5000;
-    req.AddArgv(kaccount);
-    req.AddArgv(tunnel_port);
-
-    // send request
-    if(client_socket.Send(req)){
-      // get response
-      client_socket.Recv(res);
-      if(res.GetHeader()->GetCommand() == CMD_ACK_OK){
-        // Get port
-        res_code = DATA_SUCCESS;
-        job.setTunnelPort(tunnel_port);
-      } else {
-        std::cout << "kpforwarder can not create tunnel.\n";
-      }
-    } else {
-      std::cout << "kpforwarder not response.\n";
-    }
-  } catch ( SocketException& e ) {
-    std::cout << "Exception was caught:" << e.description() << "\n";
-  }
-  sleep(5);
-  // Create port forward via SSH (ssh tunneling)
-  return res_code;
 }
 
 std::string ClientSession::getOutputFile(std::string jobId, std::string pathFile) {
@@ -1041,7 +988,7 @@ ResponseCode ClientSession::getInfoUser(User &user) {
     ret = data_manager.getUserDb(user);
     std::cout << "Bp:getInfoUser:data_manager.disConnectDB start\n";
     if (data_manager.disConnectDB() != DATA_SUCCESS) {
-      std::cout << "Error close db when getAllWaitProviders\n";
+      std::cout << "[ERR] close db when get user info \n";
     }
     std::cout << "Bp:getInfoUser:data_manager.disConnectDB end\n";
   }
@@ -1061,10 +1008,9 @@ ResponseCode ClientSession::getAllWaitProviders(std::vector<User> &listWaitProvi
   return ret;
 }
 
-const std::string kSshKeyDir = "~/.ssh/kportal/";
-const std::string kDeskHost = "k.aics.riken.jp";
-
-//int providerKdeskPort = 5000;
+extern std::string kSshKeyDir;
+extern std::string kKdeskHost;
+extern std::string kDockerImagesUrl;
 ResponseCode ClientSession::addProviders(std::vector<User> &listProvides) {
   ResponseCode ret = DATA_SUCCESS;
 
@@ -1072,19 +1018,26 @@ ResponseCode ClientSession::addProviders(std::vector<User> &listProvides) {
   if ( data_manager.connectDB() == DATA_SUCCESS) {
     //insert provider
     if ((ret = data_manager.beginTransaction()) == DATA_SUCCESS) {
-      for (int i = 0; i < listProvides.size(); i++) {
-        // Add ssh config
-        // = &listProvides[i];
+      for (int i = 0; i < (int)listProvides.size(); i++) {
+        // Check kdesk account 
         User tmp(listProvides[i].getEmail());
         data_manager.getUserDb(tmp);
+        bool isExists = false;
+        if(data_manager.checkKdeskAccExists( tmp.getEmail(), tmp.getKdeskAcc(), isExists) != DATA_SUCCESS || isExists)
+        {
+          std::cout << "[ERR] The kdesk account already exists by other provider.\n";
+          ret = ERROR_KDESK_ACC_EXISTS;
+          break;
+        }
+        // Add ssh config
         std::stringstream ss;
-        ss << kSshKeyDir << tmp.getKdeskAcc() << "." << kDeskHost;
+        ss << kSshKeyDir << tmp.getKdeskAcc() << "." << kKdeskHost;
         std::string ssh_key_file = ss.str();
         std::string ssh_public_key_str;
         std::string remote_user = tmp.getKdeskAcc();
         std::cout << "ssh key file: " << ssh_key_file << ", kdesk user: " << remote_user << std::endl;
         if(SshUtils::GenerateSshKey(ssh_key_file,ssh_public_key_str)){
-          if(SshUtils::AddHost(kDeskHost, remote_user, ssh_key_file)){
+          if(SshUtils::AddHost(kKdeskHost, remote_user, ssh_key_file)){
             std::cout << "Insert users to DB\n";
             listProvides[i].setPublicKey(ssh_public_key_str);
             //listProvides[i].setKdeskPort(providerKdeskPort++);
@@ -1099,7 +1052,7 @@ ResponseCode ClientSession::addProviders(std::vector<User> &listProvides) {
         }
 
         if (ret == DATA_SUCCESS) {
-          std::string url = APPMARKET_DOMAIN + "/images/docker_images/imageBase.tar";
+          std::string url = APPMARKET_DOMAIN + kDockerImagesUrl;
           // Send email to provider user
           std::string email = listProvides[i].getEmail();
           if( ! GmailUtils::SendEmail(email, "image_base", url, ssh_public_key_str)){
@@ -1165,12 +1118,12 @@ ResponseCode ClientSession::deleteWaitProviders(std::vector<User> &listProvides)
   if ( data_manager.connectDB() == DATA_SUCCESS) {
     //remove wait provider
     //if ((ret = data_manager.beginTransaction()) == DATA_SUCCESS) {
-    for (int i = 0; i < listProvides.size(); i++) {
+    for (int i = 0; i < (int)listProvides.size(); i++) {
       if ((listProvides[i].getType() & PROVIDER_GROUP) > 0) {
         // Remove list docker image
         std::vector<ImageDocker> listImages;
         data_manager.getAllImageDockerOfProvider(listProvides[i].getEmail(),listImages);
-        for (int j = 0; j < listImages.size(); j++) {
+        for (int j = 0; j < (int)listImages.size(); j++) {
           ret = deleteImage(listImages[j]);
         }
 
@@ -1622,7 +1575,7 @@ ResponseCode ClientSession::outProviderGroup() {
     User user(_userId, PROVIDER_GROUP);
         std::vector<ImageDocker> listImages;
         getAllImageDockerOfProvider(listImages);
-        for (int i = 0; i < listImages.size(); i++) {
+        for (int i = 0; i < (int)listImages.size(); i++) {
             ret = deleteImage(listImages[i]);
         }
     ret = data_manager.deleteUser(user);
@@ -1664,7 +1617,7 @@ ResponseCode ClientSession::getPublicImageByKey(std::string key, std::vector<Ima
     for (std::string::size_type i=0; i<key.length(); ++i) {
       tmp_key += std::toupper(key[i],loc);
     }
-    for (int i = 0; i < listImages_temp.size(); i++) {
+    for (int i = 0; i < (int)listImages_temp.size(); i++) {
       std::string name = listImages_temp[i].getImageName();
       std::string tmp_name;
       for (std::string::size_type j=0; j<name.length(); ++j) {
@@ -1685,28 +1638,180 @@ ResponseCode ClientSession::getPublicImageByKey(std::string key, std::vector<Ima
  */
 ResponseCode ClientSession::createService(Service &service) {
   _service = new Service(service);
-    ResponseCode ret = DATA_ERROR;
-    DataManager data_manager(PATH_OF_DATABASE);
-    ret = data_manager.connectDB();
-  if ( ret == DATA_SUCCESS) {
-    //check path excute file
-    ret = data_manager.checkNameService(service.getServiceName());
-    if (ret != DATA_SELECT_EMPTY) {
-            if (data_manager.disConnectDB() != DATA_SUCCESS) {
-        std::cout << "Error close db when createService\n";
-            }
-      return ret;
-        } else {
-      if (service.getIconStr().size() > 0) {
-        ret = ACTION_WAIT_ICON;
-      } else {
-        ret = DATA_SUCCESS;
-            }
-        }
-    }
+  ResponseCode ret = DATA_ERROR;
+  DataManager data_manager(PATH_OF_DATABASE);
+  ret = data_manager.connectDB();
+  
+  // check service name
+  ret = data_manager.checkNameService(service.getServiceName());
+  if (ret != DATA_SELECT_EMPTY) {  
+    data_manager.disConnectDB();
+    ret = ERROR_SERVICE_INVALID_NAME;
     return ret;
+  }
+  
+  //check path excute file & check template sh file
+  ret = browsePathInsideImage(*_service, USF_ISNEW);
+  if ( ret == DATA_SUCCESS) {
+    if (service.getIconStr().size() > 0) {
+      ret = ACTION_WAIT_ICON;
+    }
+  }
+  return ret;
 }
 
+ResponseCode ClientSession::checkValidInfo(Service &service, const unsigned char usf_flags)
+{
+  std::cout << "checkValidInfo\n";
+  ResponseCode ret = DATA_SUCCESS;
+  if(usf_flags & USF_NAME)
+  {
+    DataManager data_manager(PATH_OF_DATABASE);
+    ret = data_manager.connectDB();
+    // check service name 
+    ret = data_manager.checkNameService(service.getServiceName());
+    if (ret != DATA_SELECT_EMPTY) {  
+      data_manager.disConnectDB();
+      ret = ERROR_SERVICE_INVALID_NAME;
+      return ret;
+    }
+    else 
+    {
+      data_manager.disConnectDB();
+      ret = DATA_SUCCESS;
+    }
+  }
+  // Check path exists
+  if(usf_flags & USF_IMAGE || usf_flags & USF_EXEPATH || usf_flags & USF_SHPATH || usf_flags & USF_STGINDIR)
+    ret = browsePathInsideImage(service, usf_flags);
+  return ret;
+}
+
+ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsigned char usf_flags)
+{
+  std::cout << "browsePathInsideImage: usf_flags = " << usf_flags << ", image = " << service.getImageId() << std::endl;
+  
+  ResponseCode ret = DATA_SUCCESS;
+  std::stringstream ss;
+  std::string stdout, cmd;
+  std::string container_id;
+  std::string image_id = service.getImageId();
+  std::string flag_str = "exists";
+  
+  // create temp container
+  std::cout << "start a daemon container\n";
+  ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " create " << image_id << " /bin/sh -c \"while true; do sleep 1; done\"";
+  cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  container_id = stdout.substr(0, stdout.size() - 1);
+  
+  // start temp deamon 
+  ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " start " << container_id;
+  cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  
+  // check deamon 
+  //docker -H 127.0.0.1:9555 inspect  82ba5e4a2aa9b81fcd61965c3a9684089e288b3660cbdf458f32b3c4b9ba4e9c  | grep '"Running": true'
+  ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " inspect " << container_id << " | grep Running ";
+  cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  if(stdout.find("\"Running\": true") == std::string::npos){
+    ret = ERROR_SERVICE_SLAVEDAEMON_NOTFOUND;
+    std::cout << "[ERR] Can not create a container from this image.\n";
+  }
+
+  // check slavedaemon exists
+  if(ret == DATA_SUCCESS) {
+    // docker -H 127.0.0.1:9555 exec 82ba5e4a2aa9b81fcd61965c3a9684089e288b3660cbdf458f32b3c4b9ba4e9c test -f bin/startslavedaemon.sh && echo 1
+    ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f bin/startslavedaemon.sh && echo " << flag_str << " ";
+    cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+    stdout = Exec(cmd.c_str());
+    std::cout << "stdout: " << stdout.c_str() << std::endl;
+    if(stdout.find(flag_str) == std::string::npos){
+      std::cout << "[ERR] The slavedaemon not found. Image is invalid\n";
+      ret = ERROR_SERVICE_SLAVEDAEMON_NOTFOUND;
+    }
+  }
+  //check the execute file exists
+  if(ret == DATA_SUCCESS && usf_flags & USF_EXEPATH) {
+    std::string exe_path = service.getPathExcuteFile();
+    if(exe_path == ""){
+      std::cout << "[ERR] The exe file \"" << exe_path << "\" not found. Path is invalid\n";
+      ret = ERROR_SERVICE_EXEPATH_NOTFOUND;
+    }
+    exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path.substr(1) : exe_path;
+    ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f \"" << exe_path << "\" && echo " << flag_str << " ";
+    cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+    stdout = Exec(cmd.c_str());
+    std::cout << "stdout: " << stdout.c_str() << std::endl;
+    if(stdout.find(flag_str) == std::string::npos){
+      std::cout << "[ERR] The exe file \"" << exe_path << "\" not found. Path is invalid\n";
+      ret = ERROR_SERVICE_EXEPATH_NOTFOUND;
+    }
+  }
+  
+  //check the stgin_dir_path file exists
+  if(ret == DATA_SUCCESS && usf_flags & USF_STGINDIR) {
+    std::string stgin_dir_path = service.getStageinDirs() -> size() > 0 ? service.getStageinDirs() -> at(0) : "";
+    if(stgin_dir_path != ""){
+      stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path.substr(1) : stgin_dir_path;
+      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -d \"" << stgin_dir_path << "\" && echo " << flag_str << " ";
+      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+      stdout = Exec(cmd.c_str());
+      std::cout << "stdout: " << stdout.c_str() << std::endl;
+      if(stdout.find(flag_str) == std::string::npos){
+        std::cout << "[ERR] The stage-in directory \"" << stgin_dir_path << "\" not found.\n";
+        ret = ERROR_SERVICE_STAGEINDIR_NOTFOUND;
+        return ret;
+      }    
+    } else {
+      std::cout << "Have not stage-in dir\n";
+    }
+  }
+
+  // get the template job script file.
+  if(ret == DATA_SUCCESS && usf_flags & USF_SHPATH) {
+    std::string sh_content; 
+    // check template sh file
+    if(service.getPathShFile() == ""){
+      // get default job script file
+      std::ifstream ifs(DEFAULT_TEMPLATE_JOB_SCRIPT_FILE.c_str());
+      if(ifs.is_open()){
+        sh_content.assign( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>()) );
+        ret = DATA_SUCCESS;
+      } else {
+        std::cout << "[ERR] Read default jobs script file.\n";
+        ret = ERROR_SERVICE_SHPATH_NOTFOUND;
+      }
+    } else{
+      std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile().substr(1) : service.getPathShFile();
+      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec " << container_id << " cat \"" << sh_file << "\" ";
+      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+      stdout = Exec(cmd.c_str());
+      std::cout << "stdout: " << stdout.c_str() << std::endl;
+      if(stdout.find("#PJM") == std::string::npos){
+        std::cout << "[ERR] The sh file \"" << sh_file << "\" not found.\n";
+        ret = ERROR_SERVICE_STAGEINDIR_NOTFOUND;
+      }
+      sh_content = stdout;
+    }
+    std::cout << "Ssh content: \n" << sh_content << std::endl;
+    service.setShTemplate(sh_content);
+  }
+  
+  // remove temp container
+  ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " rm -f " << container_id;
+  cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+  stdout = Exec(cmd.c_str());
+  std::cout << "stdout: " << stdout.c_str() << std::endl;
+  if(stdout.find(container_id) == std::string::npos){
+    std::cout << "[ERR] Can not remove the temp container \"" << container_id << "\". Need manual remove it.\n";
+  }
+  return ret;
+}
 
 /*
  * Process continue create service
@@ -1758,12 +1863,33 @@ ResponseCode ClientSession::updateService(Service &service) {
   DataManager data_manager(PATH_OF_DATABASE);
   ret = data_manager.connectDB();
   if ( ret == DATA_SUCCESS) {
+    // check docker image
     ret = data_manager.checkIdImageDocker(service.getImageId());
     if (ret != DATA_IS_EXISTED) {
         if (data_manager.disConnectDB() != DATA_SUCCESS) {
             std::cout << "Error close db when insert service\n";
         }
     } else {
+      /*
+      // check service name
+      if(service.getServiceName() != ""){
+        ret = data_manager.checkNameService(service.getServiceName());
+        if (ret != DATA_SELECT_EMPTY) {  
+          data_manager.disConnectDB();
+          ret = ERROR_SERVICE_INVALID_NAME;
+          return ret;
+        }
+      }
+
+      // check sh file
+      if(service.getPathShFile() != ""){
+        ret = browsePathInsideImage(service);
+	if(ret != DATA_SUCCESS) {
+          data_manager.disConnectDB(); 
+          return ret;
+        }
+      }
+      */
       if (data_manager.beginTransaction() == DATA_SUCCESS) {
         ret = data_manager.updateService(service);
         if (ret == DATA_SUCCESS) {

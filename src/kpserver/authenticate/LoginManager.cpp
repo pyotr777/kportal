@@ -23,17 +23,18 @@ void LoginManager::addLoginInfo(const std::string loginId, const UserInfoObject 
 /*
  * Get UserInfoObject by loginId
  */
-UserInfoObject* LoginManager::getUserInfo(const std::string loginId)
+UserInfoObject LoginManager::getUserInfo(const std::string loginId)
 {
     boost::unique_lock<boost::mutex> lock(m_lock);
-
+    UserInfoObject uio;
     map<std::string, UserInfoObject>::iterator it = m_users.find(loginId);
     if(it != m_users.end())
     {
-        return &m_users[loginId];
+        lock.unlock();
+        return m_users[loginId];
     }
     lock.unlock();
-    return NULL;
+    return uio;
 }
 
 /*

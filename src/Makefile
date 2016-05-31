@@ -5,6 +5,7 @@ KPSERVER_DIR = ./kpserver
 KDESKDAEMON_DIR = ./kdeskdaemon
 RELEASE_DIR = ./release
 KP_CONFIG_FILE = kportal_conf.xml
+DEFAULT_JOBSH_FILE = default_job_script.sh
 APPMARKET_DIR = ./AppMarket
 DOCUMENT_ROOT = $(PREFIX)/www
 KPTOOL_DIR = ./kptool
@@ -21,7 +22,6 @@ all:
 install:
 	mkdir -p $(PREFIX)
 	mkdir -p $(PREFIX)/log
-	chmod 777 -R $(PREFIX)
 	$(CP) -rf ssl/ $(PREFIX)
 	$(CP) -rf $(APPMARKET_DIR) $(DOCUMENT_ROOT)
 	$(CP) $(RELEASE_DIR)/kdeskdaemon /bin/
@@ -30,8 +30,10 @@ install:
 	$(CP) $(RELEASE_DIR)/kp_server.sh /bin/
 	$(CP) $(RELEASE_DIR)/kp_server /bin/
 	$(CP) $(RELEASE_DIR)/kp_tool /bin/
+	$(CP) $(RELEASE_DIR)/$(DEFAULT_JOBSH_FILE) $(PREFIX)
 	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)
-	
+
+	chmod 777 -R $(PREFIX)	
 uninstall:
 	rm -rf $(PREFIX)
 clean:

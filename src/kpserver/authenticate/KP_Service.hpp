@@ -19,6 +19,7 @@ public:
                int         numberOfWaitUser,
                std::string description,
                std::string pathExcuteFile,
+			   std::string pathShFile,
                std::string providerId,
                unsigned int timeElapse)
 	{
@@ -31,6 +32,7 @@ public:
         this -> numberOfWaitUser = numberOfWaitUser;
         this -> description = description;
         this -> pathExcuteFile = pathExcuteFile;
+        this -> pathShFile = pathShFile;
         this -> providerId = providerId;
         this -> maxElapseTime = timeElapse;
     }
@@ -46,6 +48,7 @@ public:
         this -> numberOfWaitUser = copy.numberOfWaitUser;
         this -> description = copy.description;
         this -> pathExcuteFile = copy.pathExcuteFile;
+		this -> pathShFile = copy.pathShFile;
         this -> providerId = copy.providerId;
         this -> maxElapseTime = copy.maxElapseTime;
         this -> act = copy.act;
@@ -61,6 +64,7 @@ public:
     int         numberOfWaitUser;
     std::string description;
     std::string pathExcuteFile;
+	std::string pathShFile;
 	std::string providerId;
     std::string iconStr;
     unsigned int maxElapseTime;

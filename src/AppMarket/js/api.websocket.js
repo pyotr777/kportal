@@ -1196,6 +1196,7 @@ function ws_createService( service, callback ){
     //request.provider = service.provider;
     request.name = service.name;
     request.path = service.path;
+    request.shpath = service.shpath;
     request.image = service.image;
 	// stagin folders
 	request.stageinDirs = service.stageinDirs;

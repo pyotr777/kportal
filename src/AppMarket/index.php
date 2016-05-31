@@ -755,6 +755,10 @@
 						<label for="pnaf-path">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Path *</label>
 						<input type="text" data-clear-btn="false" name="pnaf-path" id="pnaf-path" value="" pattern="[^><$]*" title="without [^><$] character" data-clear-btn="true" required>
 					</div>
+					<div data-role="fieldcontain">
+						<label for="pnaf-shpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Template job script file path</label>
+						<input type="text" data-clear-btn="false" name="pnaf-shpath" id="pnaf-shpath" value="" title="without [^><$] character" data-clear-btn="true">
+					</div>
 					<!-- <div data-role="fieldcontain">					
 						<label for="provider-newapp-producer">Producer</label>
 						<input type="text" data-clear-btn="true" name="provider-newapp-producer" id="provider-newapp-producer" value="">
@@ -774,12 +778,12 @@
 						<input type="file" data-clear-btn="true" name="pnaf-icon" id="pnaf-icon" value="" accept="image/*">
 					</div>
 					<div data-role="fieldcontain">	
-						<label for="provider-newapp-elapsed">Max elapsed time (s)</label>
-						<input type="number" data-clear-btn="true" name="provider-newapp-elapsed" id="provider-newapp-elapsed" value="" pattern="[0-9]{1,10}" required>	
+						<label for="pnaf-elapsed">Max elapsed time (s)</label>
+						<input type="number" data-clear-btn="true" name="pnaf-elapsed" id="pnaf-elapsed" value="" pattern="[0-9]{1,10}" required>	
 					</div>
 					<div data-role="fieldcontain">	
-						<label for="provider-newapp-nodes">Number of nodes</label>
-						<input type="number" data-clear-btn="true" name="provider-newapp-nodes" id="provider-newapp-nodes" value="" pattern="[0-9]{1,10}" required >
+						<label for="pnaf-nodes">Number of nodes</label>
+						<input type="number" data-clear-btn="true" name="pnaf-nodes" id="pnaf-nodes" value="" pattern="[0-9]{1,10}" required >
 					</div>
 					<div data-role="fieldcontain">	
 						<label for="pnaf-descript">Description</label>
@@ -1308,6 +1312,15 @@
 						<label for="provider-editapp-path">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Path</label>
 						<input type="text" data-clear-btn="false" name="provider-newapp-path" id="provider-editapp-path" class="provider-editapp-input" value="" pattern="[^><$]*" title="without [><$] character" data-clear-btn="true" required>
 					</div>
+					
+					<div data-role="fieldcontain">
+						<label for="provider-editapp-shpath"><h2>Template Script File Path</h2></label>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="provider-editapp-shpath">Template Script File Path</label>
+						<input type="text" data-clear-btn="false" name="provider-newapp-shpath" id="provider-editapp-shpath" class="provider-editapp-input" value="" pattern="[^><$]*" title="without [><$] character" data-clear-btn="true" required>
+					</div>
+					
 					
 					<div data-role="fieldcontain">
 						<label for="provider-editapp-icon">Icon</label>

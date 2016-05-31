@@ -285,7 +285,6 @@ ResponseCode Job::generateShFile(Service& sv) {
   DataManager data_manager(PATH_OF_DATABASE);
   std::vector<Parameter> listParamOfService;
   if ( data_manager.connectDB() == DATA_SUCCESS) {
-    Service sv;
     sv.setServiceID(service_id);
     ret = data_manager.getParamOfService(sv, listParamOfService);
     if (ret != DATA_SUCCESS) {
@@ -319,8 +318,9 @@ ResponseCode Job::generateShFile(Service& sv) {
       }
     }
   }
-
+  
   // stage-in dirs
+  /*
   for(unsigned int i = 0; i < sv.getStageinDirs()->size(); i++){
     std::string stgindirs = sv.getStageinDirs()->at(i), dirname;
     std::vector<std::string>names;
@@ -351,23 +351,52 @@ ResponseCode Job::generateShFile(Service& sv) {
   }
 
   std::string stg = stagging_ss.str();
-  std::string filename = FileUtils::GetFileName(sv.getPathExcuteFile());
-  std::string args = argss.str();
-  ss << "#!/bin/sh -x\n"
-     << "#PJM --rsc-list  \"node=" << numberOfNode <<"\"\n"
-     << "#PJM --rsc-list  \"elapse=" << elapsedTime_ss.str() << "\"\n"
-     << "#PJM --stg-transfiles all\n"
-     //<< "#PJM --stgin \"/home/ra000007/a03320/services/" << sv.getPathExcuteFile()  << " ./\"\n"
-     << "#PJM --stgin \"./" << filename << " ./\"\n"
-     << stg
-     //<< "#PJM --stgin \"./ ./\"\n"
-     << "#PJM -s\n"
-     << "#\n"
-     << ". /work/system/Env_base\n"
-     << "#\n"
-     << "./" << FileUtils::GetFileName(sv.getPathExcuteFile()) << " " << args << "\n";
-
-  std::string content = ss.str();
+  */
+//  std::string filename = FileUtils::GetFileName(sv.getPathExcuteFile());
+//  std::string args = argss.str();
+//  ss << "#!/bin/sh -x\n"
+//     << "#PJM --rsc-list  \"node=" << numberOfNode <<"\"\n"
+//     << "#PJM --rsc-list  \"elapse=" << elapsedTime_ss.str() << "\"\n"
+//     << "#PJM --stg-transfiles all\n"
+//     //<< "#PJM --stgin \"/home/ra000007/a03320/services/" << sv.getPathExcuteFile()  << " ./\"\n"
+//     << "#PJM --stgin \"./" << filename << " ./\"\n"
+//     << stg
+//     //<< "#PJM --stgin \"./ ./\"\n"
+//     << "#PJM -s\n"
+//     << "#\n"
+//     << ". /work/system/Env_base\n"
+//     << "#\n"
+//     << "./" << FileUtils::GetFileName(sv.getPathExcuteFile()) << " " << args << "\n";
+//  std::string content = ss.str();
+  std::string content = sv.getShTemplate();
+  
+  
+  std::string replaceWith, replaceTo;
+  ss.str(""); ss << numberOfNode; replaceWith = ss.str();
+  ss.str(""); ss << TAG_NUMBER_OF_NODE; replaceTo = ss.str();
+  StringUtils::ReplaceAll(content, replaceTo, replaceWith);
+  
+  replaceWith = elapsedTime_ss.str();
+  ss.str(""); ss << TAG_MAX_ELAPSE_TIME; replaceTo = ss.str();
+  StringUtils::ReplaceAll(content, replaceTo, replaceWith);
+  
+  
+  ss.str(""); ss << TAG_EXE_FILE; replaceTo = ss.str();
+  replaceWith = FileUtils::GetFileName(sv.getPathExcuteFile());
+  StringUtils::ReplaceAll(content, replaceTo, replaceWith);
+  
+  ss.str(""); ss << TAG_STAGE_EXE_ARGS; replaceTo = ss.str();
+  replaceWith = argss.str();
+  StringUtils::ReplaceAll(content, replaceTo, replaceWith);
+  
+  ss.str(""); ss << TAG_STAGE_IN_DIR; replaceTo = ss.str();
+  replaceWith = sv.getStageinDirs()->size() > 0 ? FileUtils::GetDirectoryName(sv.getStageinDirs()->at(0)) : "";
+  StringUtils::ReplaceAll(content, replaceTo, replaceWith);
+  
+  ss.str(""); ss << TAG_STAGE_OUT_DIR; replaceTo = ss.str();
+  replaceWith = sv.getStageoutDirs()->size() > 0 ? FileUtils::GetDirectoryName(sv.getStageoutDirs()->at(0)) : "";
+  StringUtils::ReplaceAll(content, replaceTo, replaceWith);
+  
   std::cout << "sh content: \n";
   std::cout << content << std::endl;
   FILE * pFile;

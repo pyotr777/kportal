@@ -17,5 +17,7 @@ public:
     static std::string genIdString();
     static void convertStandardStr(std::string &string_src);
     static bool GetSecondsFromDuration(const std::string duration_str, double& seconds);
+    static void ReplaceAll(std::string& str, const std::string& from, const std::string& to);
+    static bool Replace(std::string& str, const std::string& from, const std::string& to);
 };
 #endif // STRINGUTILS_HPP

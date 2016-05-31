@@ -32,6 +32,7 @@
 #include "datalayer/DataManager.hpp"
 #include "../include/libtar-1.2.11/lib/libtar.h"
 #include "../include/libjson/libjson.h"
+#include "authenticate/Constants.hpp"
 #include "authenticate/TarUtil.hpp"
 #include "authenticate/FileUtils.hpp"
 #include "authenticate/StringUtils.hpp"

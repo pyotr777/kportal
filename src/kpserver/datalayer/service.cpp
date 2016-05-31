@@ -10,13 +10,15 @@ Service::Service() {
     numberOfWaitUser = 0;
     description = "";
     pathExcuteFile = "";
+    pathShFile = "";
+    shTemplate = "";
     image_id = "";
     providerEmail = "";
 	iconStr = "";
 	act = 0;
 }
 
-Service::Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string imageId, std::string provEmail) {
+Service::Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string shpath, std::string imageId, std::string provEmail) {
     serviceID = id;
     serviceName = name;
     producer = prod;
@@ -25,6 +27,8 @@ Service::Service(std::string id, std::string name, std::string prod, bool st, in
     numberOfWaitUser = nOWU;
     description = des;
     pathExcuteFile = path;
+    pathShFile = shpath;
+    shTemplate = "";
     image_id = imageId;
     providerEmail = provEmail;
 }
@@ -39,6 +43,8 @@ Service::Service(const Service& copy)
 	this -> numberOfWaitUser = copy.numberOfWaitUser;
 	this -> description = copy.description;
 	this -> pathExcuteFile = copy.pathExcuteFile;
+	this -> pathShFile = copy.pathShFile;
+	this -> shTemplate = copy.shTemplate;
 	this -> providerEmail = copy.providerEmail;
 	this -> act = copy.act;
 	this -> listParam = copy.listParam;
@@ -115,6 +121,22 @@ void Service::setPathExcuteFile(std::string path) {
 
 std::string Service::getPathExcuteFile() {
     return pathExcuteFile;
+}
+
+void Service::setPathShFile(std::string path) {
+    pathShFile = path;
+}
+
+std::string Service::getPathShFile() {
+    return pathShFile;
+}
+
+void Service::setShTemplate(std::string content) {
+    shTemplate = content;
+}
+
+std::string Service::getShTemplate() {
+    return shTemplate;
 }
 
 void Service::setImageId(std::string imageId) {

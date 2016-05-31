@@ -35,6 +35,22 @@ std::string FileUtils::GetFileName(std::string path)
     return filename;
 }
 
+std::string FileUtils::GetDirectoryName(std::string dir_path)
+{
+    std::string filename = "";
+    if(dir_path.find_last_of(PATH_SEPARATOR) == dir_path.length() - 1)
+    {
+      filename = dir_path.substr(dir_path.find_last_of(PATH_SEPARATOR, 0, dir_path.length() - 1) + 1, dir_path.length());
+    }
+    else 
+    {
+      filename = dir_path.substr(dir_path.find_last_of(PATH_SEPARATOR) + 1, dir_path.length());
+      //std::cout << "Bp:FileName:"<< filename << std::endl;
+    }
+    return filename;
+}
+
+
 std::string FileUtils::GetPathDir(std::string pathFile) {
 	std::string pathDir = "";
 	pathDir = pathFile.substr(0, pathFile.find_last_of(PATH_SEPARATOR));

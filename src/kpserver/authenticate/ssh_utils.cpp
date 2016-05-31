@@ -20,27 +20,15 @@ bool SshUtils::AddHost(const std::string& remote_host, const std::string& remote
   std::vector<std::string> lines;
   //int begin_index = -1, end_index = -1;
 
-  // Find position
+  // Find exist
   try{
     while (std::getline(cf, line)) {
       lines.push_back(line);
-      //Start scope
-//      if(begin_index < 0 && end_index < 0){
-//        std::size_t found = line.find_first_of(kHostTag);
-//        std::size_t host_found = line.find_first_of(remote_host);
-//        if (found == 0){
-//          if(host_found != std::string::npos && host_found > found) {
-//            begin_index = lines.size() - 1;
-//            end_index = begin_index;
-//            continue;
-//          }
-//        }
-
-//        std::size_t identityfile_found = line.find_first_of(kIdentityFileTag);
-//        if(identityfile_found != std::string::npos && begin_index > 0){
-//          end_index = lines.size() - 1;
-//        }
-//      }
+      if(line.find(remote_host) != std::string::npos){
+        cf.close();
+        std::cout << "the host name " << remote_host << " is exists. Ignore add host.\n";
+        return true;
+      }
     }
     cf.close();
   } catch (int & ex){
@@ -137,6 +125,7 @@ bool SshUtils::GenerateSshKey(const std::string path_to_save, std::string& publi
   // Gen
   std::stringstream ss;
   ss << "mv " << path_to_save  << " " << path_to_save << "1;"
+	 << "mv " << path_to_save << ".pub"  << " " << path_to_save << ".pub1;"
      << "ssh-keygen -t rsa -N \"\" -f " << path_to_save <<";"
      << "chmod 700 " <<path_to_save << ";";
   std::string cmd = ss.str();

@@ -261,6 +261,7 @@ ResponseCode ReloadListJob() {
 }
 
 ResponseCode StartMasterInstance() {
+	std::cout << "StartMasterInstance\n";
 	ResponseCode ret = DATA_SUCCESS;
 	vector<User> listUsers;
 	DataManager data_manager(PATH_OF_DATABASE);
@@ -273,7 +274,9 @@ ResponseCode StartMasterInstance() {
 
 	if (ret == DATA_SUCCESS) {
 		for (int i = 0; i < listUsers.size(); i++) {
+			std::cout << "user: " << listUsers[i].getEmail();
 			std::string containerId = listUsers[i].getContainerId();
+			std::cout << ", " << containerId << std::endl;
 			//start master-instance of user
 			std::stringstream ss;
 			ss.str("");

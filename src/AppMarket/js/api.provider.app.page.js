@@ -285,15 +285,35 @@ $(document).on('submit', '#provider-editapp-form', function( e ){
 			}
 			break;
 
+		case "provider-newapp-shpath":
+			if( pappObj.service.shpath !== value ){
+				pappObj.service.shpath = value;
+				updates.push("shpath");
+			}
+			break;
+
 		case "provider-newapp-stgin":
-		//alert("stgin = " + value );
-			providerObj.service.stageinDirs = [];
-			providerObj.service.stageinDirs.push({"path":value});
+			if(pappObj.service.stageinDirs && pappObj.service.stageinDirs [0] && pappObj.service.stageinDirs [0] !== value) {
+				pappObj.service.stageinDirs = [];
+				pappObj.service.stageinDirs.push({"path":value});
+				updates.push("stageinDirs");
+			} else {
+				pappObj.service.stageinDirs = [];
+				pappObj.service.stageinDirs.push({"path":value});
+				updates.push("stageinDirs");
+			}
 			break;
 			
 		case "provider-newapp-stgout":
-			providerObj.service.stageoutDirs = [];
-			providerObj.service.stageoutDirs.push({"path":value})
+                        if(pappObj.service.stageoutDirs && pappObj.service.stageoutDirs [0] && pappObj.service.stageoutDirs [0] !== value) {
+                                pappObj.service.stageoutDirs = [];
+                                pappObj.service.stageoutDirs.push({"path":value});
+                                updates.push("stageoutDirs");
+                        } else {
+                                pappObj.service.stageoutDirs = [];
+                                pappObj.service.stageoutDirs.push({"path":value});
+                                updates.push("stageoutDirs");
+                        }
 			break;
 			
 		case "provider-newapp-elapsed":
@@ -777,6 +797,9 @@ function papp_loadDataDetails(){
 	
 	/// Path
 	$("#provider-editapp-path").val( pappObj.service.path );
+	
+	/// Job script file path
+	$("#provider-editapp-shpath").val( pappObj.service.shpath );
 	
 	/// Stage-in
 	console.log( pappObj.service.stageinDirs);

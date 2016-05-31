@@ -217,6 +217,9 @@ JSONNode JsonUtils::toJSONNode(Service& service)
     std::cout << "Path = " << service.getPathExcuteFile() << std::endl;
     item.push_back(*(toJSONNode(TAG_PATH_EXCUTE_FILE_STR, service.getPathExcuteFile()).begin()));
 
+    /// ShPath
+    item.push_back(*(toJSONNode(TAG_PATH_SH_FILE_STR, service.getPathShFile()).begin()));
+
     // Stage-in dirs
     JSONNode stginArr(JSON_ARRAY);
     stginArr.set_name(TAG_STAGEINDIRS_STR);

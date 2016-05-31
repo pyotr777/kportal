@@ -799,12 +799,12 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
     }
     else if(loginId != "")
     {
-        UserInfoObject* uio = lm -> getUserInfo(loginId);
-        if(uio != NULL)
+        UserInfoObject uio = lm -> getUserInfo(loginId);
+        if(uio.getEmail() != "")
         {
 			std::string userType = string(TYPE_USER_STR);
-			User usr(uio -> getEmail());
-			std::cout << "LoginID: " << loginId << ", email: " << uio -> getEmail() << std::endl;
+			User usr(uio.getEmail());
+			std::cout << "LoginID: " << loginId << ", email: " << uio.getEmail() << std::endl;
 
 			ResponseCode ret = cs -> getInfoUser(usr);
 			if(ret == DATA_SUCCESS){
@@ -826,10 +826,10 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
 
             /// Set user info to connection
       std::cout << "before set user info to connection: uio -> getEmail() "<<
-                    uio -> getEmail() << std::endl;
+                    uio.getEmail() << std::endl;
       if(cs != NULL)
         try{
-            cs -> setUserId( uio -> getEmail() );
+            cs -> setUserId( uio.getEmail() );
             cs -> setLogined(true);
 
             std::cout << "after set user info to connection\n";
@@ -2317,6 +2317,12 @@ void request<request_endpoint_type>::processCreateService(MessageHeader& header,
     if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
         service -> setPathExcuteFile(i->as_string());
     }
+	
+    /// Path of template job script file
+    i = n.find(TAG_PATH_SH_FILE_STR);
+    if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
+        service -> setPathShFile(i->as_string());
+    }
 
     // Stage-in folders
     std::vector<std::string> dirs;
@@ -2482,10 +2488,14 @@ void request<request_endpoint_type>::processCreateService(MessageHeader& header,
         /// Get file upload
         cs -> setWorkStatus(ret);
         requestUploadFile(header, service -> getIconStr());
-	} else {
-		ret = cs -> createServiceContinue();
-        responseCreateService(header, service -> getServiceID(),ret);
-	}
+    }
+    else if(ret == DATA_SUCCESS) 
+    {
+      ret = cs -> createServiceContinue();
+      responseCreateService(header, service -> getServiceID(),ret);
+    } else {
+      responseCreateService(header, service -> getServiceID(),ret);
+    }
     delete service;
 }
 
@@ -2507,36 +2517,15 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
     }
 
     ResponseCode ret = cs->getService(*service);
+    unsigned char usf_flags = 0; // all flags/options turned off to start
     if (ret == DATA_SUCCESS) {
         /// Service name
         i = n.find(TAG_SERVICE_NAME_STR);
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
             service -> setServiceName(i->as_string());
+            usf_flags |= USF_NAME;
         }
 
-        /// Image
-        i = n.find(TAG_IMAGE_STR);
-        if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
-            service -> setImageId(i->as_string());
-            /*
-            std::string name = i->as_string();
-            ImageDocker img;
-            ResponseCode ret = cs -> getImageByName(name, img);
-            if(ret == DATA_SUCCESS){
-                service -> setImageId(img.getImageId());
-            } else {
-                std::cout << "ERR: image not exist!" << std::endl;
-                sendResult(header, ret);
-                delete service;
-                return;
-            }*/
-        }
-
-        /// Producer
-        //i = n.find(TAG_PRODUCER_STR);
-        //if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
-        //    service -> setProducer(i->as_string());
-        //}
 
         /// Status
         i = n.find(TAG_STATUS_STR);
@@ -2555,12 +2544,22 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
         i = n.find(TAG_PATH_EXCUTE_FILE_STR);
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
             service -> setPathExcuteFile(i->as_string());
+            usf_flags |= USF_EXEPATH;
         }
+        
+        /// Path of sh file
+        i = n.find(TAG_PATH_SH_FILE_STR);
+        if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
+            service -> setPathShFile(i->as_string());
+            usf_flags |= USF_SHPATH;
+        }
+
 
         /// Image id
         i = n.find(TAG_IMAGE_STR);
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
             service -> setImageId(i->as_string());
+            usf_flags |= USF_IMAGE;
         }
 
 
@@ -2568,19 +2567,46 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
         i = n.find(TAG_NUMBER_OF_NODES_STR);
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
           service->setNumberOfNode(i->as_int());
+          usf_flags |= USF_NONODE;
         }
-	//else {
-        //  service->setNumberOfNode(0);
-        //}
 
         /// Elapse time
         i = n.find(TAG_MAX_ESLAPSED_TIME_STR);
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
           service->setMaxElapseTime(i->as_int());
+          usf_flags |= USF_ETIME;
         } 
-	//else {
-        //  service->setMaxElapseTime(0);
-        //}
+
+        // Stage-in folders
+        std::vector<std::string> dirs;
+        i = n.find(TAG_STAGEINDIRS_STR);
+        if (i != n.end() && i -> type() == JSON_ARRAY) {
+          for (JSONNode::const_iterator j = i->begin(); j != i->end(); j++) {
+            JSONNode::const_iterator k = j->find(TAG_PATH_STR);
+            if (k != j->end() && k -> type() != JSON_ARRAY && k -> type() != JSON_NODE) {
+                dirs.push_back(k->as_string());
+                std::cout <<"stage-in dir " << dirs.size() << " " << k->as_string() <<std::endl;
+            }
+          }
+          service->setStageinDirs(dirs);
+          usf_flags |= USF_STGINDIR;
+        }
+        dirs.clear();
+
+        // Stage-out folders
+        i = n.find(TAG_STAGEOUTDIRS_STR);
+        if (i != n.end() && i -> type() == JSON_ARRAY) {
+          for (JSONNode::const_iterator j = i->begin(); j != i->end(); j++) {
+            JSONNode::const_iterator k = j->find(TAG_PATH_STR);
+            if (k != j->end() && k -> type() != JSON_ARRAY && k -> type() != JSON_NODE) {
+              dirs.push_back(k->as_string());
+              std::cout <<"stage-out dir " << dirs.size() << " " << k->as_string() <<std::endl;
+            }
+          }
+          service->setStageoutDirs(dirs);
+          //usf_flags |= USF_STGOUTDIR;
+        }
+
 
         /// Icon
         i = n.find(TAG_ICON_STR);
@@ -2589,7 +2615,6 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
         } else {
             service -> setIconStr("");
         }
-
         /// Params
         i = n.find(TAG_PARAMS_STR);
         if (i != n.end() && i -> type() == JSON_NODE) {
@@ -2668,32 +2693,40 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
             }
         }
 
-        if (service -> getIconStr().length() == 0) {
-            ret = cs->updateService(*service);
-        } else {
-            service -> setAct(EDIT);
-            ret = ACTION_WAIT_ICON;
-            cs -> setWorkStatus(ret);
-            cs -> setServiceTmp(service);
-            requestUploadFile(header, service -> getIconStr());
+        // Check valid service info    
+        ret = cs -> checkValidInfo(*service, usf_flags);
+        
+        if (ret == DATA_SUCCESS) {
+          if (service -> getIconStr().length() == 0) {
+              ret = cs->updateService(*service);
+          } else {
+              service -> setAct(EDIT);
+              ret = ACTION_WAIT_ICON;
+              cs -> setWorkStatus(ret);
+              cs -> setServiceTmp(service);
+              requestUploadFile(header, service -> getIconStr());
 
-            /// Check exist file to remove
-            std::string fullPath = ICON_FOLDER_PATH;
-            std::string path = service -> getServiceID() + ".png";
-            if(fullPath.size() > 0 && fullPath.data()[fullPath.size() - 1] == '/')
-            {
-                fullPath += path;
-            }
-            else
-            {
-                fullPath = fullPath + string("/") + path;
-            }
-            cout << "FullPath:" << fullPath << endl;
-            std::ofstream fout(fullPath.c_str(), std::ios::out | std::ios::binary);
-            if(fout.is_open()){
-                fout.close();
-            }
+              /// Check exist file to remove
+              std::string fullPath = ICON_FOLDER_PATH;
+              std::string path = service -> getServiceID() + ".png";
+              if(fullPath.size() > 0 && fullPath.data()[fullPath.size() - 1] == '/')
+              {
+                  fullPath += path;
+              }
+              else
+              {
+                  fullPath = fullPath + string("/") + path;
+              }
+              cout << "FullPath:" << fullPath << endl;
+              std::ofstream fout(fullPath.c_str(), std::ios::out | std::ios::binary);
+              if(fout.is_open()){
+                  fout.close();
+              }
+          }
+        } else  {
+          std::cout << "Updating the service is invalid:" << ret << std::endl;
         }
+          
         //ret = cs -> updateService(service,listParam);
     }
 
@@ -3468,19 +3501,20 @@ void request<request_endpoint_type>::processBinaryData(){
         cout << "Directory: " << dirPath << endl;
         //FileUtils::CreateDirectory(dirPath);
 
+        for( int i = 0; i < msg->get_payload().size(); i ++ )
+        {
+          if(i < NOB_REQUEST_ID){
+            requestId += msg->get_payload().data()[i];
+          }
+        }
+
         fout.open(fullPath.c_str(), std::ios::app | std::ios::out | std::ios::binary);
         if(fout.is_open()){
-            for( int i = 0; i < msg->get_payload().size(); i ++ )
-            {
-				if(i < NOB_REQUEST_ID){
-                    requestId += msg->get_payload().data()[i];
-                } else {
-                    fout << msg->get_payload().data()[i];
-                }
-            }
-            fout.close();
+          fout.write(msg->get_payload().data() + NOB_REQUEST_ID, msg->get_payload().size() - NOB_REQUEST_ID);
+          fout.close();
         } else {
-            ret = FILE_ACTION_ERROR;
+          std::cout << "[ERR] Can not create file to write.";
+          ret = FILE_ACTION_ERROR;
         }
         hdr.setRequestId(requestId);
 

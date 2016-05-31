@@ -162,164 +162,151 @@ function padetail_deleteApp(){
 }
 
 function padetail_submitApp( publish ){
-	loading_show();
+  loading_show();
 	
-	/// Send request create service to server
-	switch ( padetailObj.fromTab ){
+  /// Send request create service to server
+  switch ( padetailObj.fromTab ){
 	
-	case "newapp":
-		if( publish ){
-			padetailObj.service.status = true;
-		} else {
-			padetailObj.service.status = false;
-		}
-		//alert("from newapp: localStorage.email = " + localStorage.email);
-		ws_createService( padetailObj.service, function( res ){
-			if( res.uploadFile != undefined && res.uploadFile == padetailObj.service.iconfile.name ){
-				ws_sendFile(res.requestId, padetailObj.service.iconfile, function(res){
-					loading_hide();
-					if(res.result == ResponseCodes.DATA_SUCCESS){
-						alert("Create service success !");
-						/// Change to list apps tab (provider page) when success
-						$.mobile.changePage( '#provider?from=newapp', { /*reloadPage:true,*/ transition: "slideup" });
-					} else if(res.result == ResponseCodes.FILE_ACTION_ERROR || res.result == ResponseCodes.DATA_IS_EXISTED){
-						alert("Upload service icon fail !");
-					} else {
-						alert("Create service fail!");
-					}
-				});
-			}else if( res.service && res.result != undefined) {
-				switch( res.result ){
-				case ResponseCodes.DATA_SUCCESS:
-					loading_hide();
-					$.mobile.changePage( '#provider?id=' + providerObj.service.id + "&from=newapp", { transition: "slideup" });
-					break;
-					/*
-				case ResponseCodes.ACTION_WAIT_ICON:	// ==1
-					if( padetailObj.service.iconfile ){
-						ws_uploadIcon( res.requestId, res.service, padetailObj.service.iconfile, function( res ){
-							//console.log( "response after uploadIcon " + res );
-							switch( res.result ) {
-							case ResponseCodes.DATA_SUCCESS:
-								loading_hide();
-								/// Change to list apps tab (provider page) when success
-//								$.mobile.changePage( '#provider?id=' + providerObj.service.id + "&from=newapp",
-								$.mobile.changePage( '#provider?from=newapp', { /*reloadPage:true,* / transition: "slideup" });
-								break;
-							case ResponseCodes.ERROR_DUPLICATE_PATH_EXCUTE:
-								$("#padetail-msg").html("Create service fail: Application path in use!");
-								break;
-							default:
-								loading_hide();
-								$("#padetail-msg").html("Create service fail: Upload icon file fail!");
-								return;
-							}
-						} );
-					} else {
-						//alert("ws_createService false");
-						console.log("Error: ws_updateService() fail");
-						$("#padetail-msg").html("Create service fail: Icon file not found!");
-					}
-					break;*/
-				default:
-					$("#padetail-msg").html("Create service fail!");
-					break;
-				}
-				/*if( padetailObj.service.icon ){
-					ws_sendFile( res.requestId, padetailObj.service.icon, function(){
-						loading_hide();
-						/// Change to list apps tab (provider page) when success
-						$.mobile.changePage( '#provider?id=' + providerObj.service.id + "&from=newapp", { transition: "slideup" });
-					} );
-				} else {
-					loading_hide();
-					$.mobile.changePage( '#provider?id=' + providerObj.service.id + "&from=newapp", { transition: "slideup" });
-				}*/
-			} else {
-				padetail_showMessage("Create service fail");
-				//console.error("Error: ws_createService() fail");
-				loading_hide();
-			}
-		});
+  case "newapp":
+    if( publish ){
+      padetailObj.service.status = true;
+    } else {
+      padetailObj.service.status = false;
+    }
+    //alert("from newapp: localStorage.email = " + localStorage.email);
+    ws_createService( padetailObj.service, function( res ){
+      if( res.uploadFile != undefined && res.uploadFile == padetailObj.service.iconfile.name ){
+        ws_sendFile(res.requestId, padetailObj.service.iconfile, function(res){
+          loading_hide();
+          if(res.result == ResponseCodes.DATA_SUCCESS){
+            alert("Create service success !");
+            /// Change to list apps tab (provider page) when success
+            $.mobile.changePage( '#provider?from=newapp', { /*reloadPage:true,*/ transition: "slideup" });
+          } else if(res.result == ResponseCodes.FILE_ACTION_ERROR || res.result == ResponseCodes.DATA_IS_EXISTED){
+            alert("Upload service icon fail !");
+          } else {
+            alert("Create service fail!");
+          }
+        });
+      } else {
+        var msg = "Create service fail.";
+        switch( res.result ){
+        case ResponseCodes.DATA_SUCCESS:
+          if(res.service) {
+            loading_hide();
+            $.mobile.changePage( '#provider?id=' + providerObj.service.id + "&from=newapp", { transition: "slideup" });
+            return;
+          }
+          break;
+        case ResponseCodes.ERROR_SERVICE_INVALID_NAME:
+          msg = "The name is already being used."
+          break;
+        case ResponseCodes.ERROR_SERVICE_EXEPATH_NOTFOUND:
+          msg = "The executable file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_SHPATH_NOTFOUND:
+          msg = "The template job script file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_SLAVEDAEMON_NOTFOUND:
+          msg = "The slavedaemon file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_STAGEINDIR_NOTFOUND:
+          msg = "The stage-in directory not found in docker image.";
+          break;
+        default:
+          break;
+        }
+        padetail_showMessage(msg);
+        loading_hide();
+     }
+    });
+    break;
+  case "apps":
+  case "editapp":
+    if( publish !== undefined && publish !== padetailObj.service.status ){
+      padetailObj.service.status = publish;
+      if ( ! padetailObj.service.updates ){
+        padetailObj.service.updates = [];
+      }
+      padetailObj.service.updates.push ("status");
+      /*if ( padetailObj.service.updates.length > 0 ){
+	padetailObj.service.updates.push ("status");
+	} else {
+	console.error("padetailObj.service.updates is empty.");
+	console.log(padetailObj.service)
+	return;
+      }*/
+    } else {
+      console.log("No update status");
+    }
 		
-		break;
-	case "apps":
-	case "editapp":
-		if( publish !== undefined && publish !== padetailObj.service.status ){
-			padetailObj.service.status = publish;
-			if ( ! padetailObj.service.updates ){
-				padetailObj.service.updates = [];
-			}
-			padetailObj.service.updates.push ("status");
-			/*if ( padetailObj.service.updates.length > 0 ){
-				padetailObj.service.updates.push ("status");
-			} else {
-				console.error("padetailObj.service.updates is empty.");
-				console.log(padetailObj.service)
-				return;
-			}*/
-		} else {
-			console.log("No update status");
-		}
-		
-		/// Check updates
-		if ( ( padetailObj.service.updates == undefined || padetailObj.service.updates.length == 0 ) 
-				&& ( padetailObj.service.params == undefined || Object.size( padetailObj.service.params ) == 0 )) 
-		{
-			console.error("padetailObj.service.updates is empty.");
-			console.log(padetailObj.service)
-			return;
-		}
-		ws_updateService( padetailObj.service, function( res ){
-			if( res.uploadFile != undefined && res.uploadFile == padetailObj.service.iconfile.name ){
-				ws_sendFile(res.requestId, padetailObj.service.iconfile, function(res){
-					loading_hide();
-					if(res.result == ResponseCodes.DATA_SUCCESS){
-						alert("Update service success !");
-						/// Set notify for update change
-						gl_providerChangeService( res.service );
-						/// Change to list apps tab (provider page) when success
-						$.mobile.changePage( '#provider?id=' + res.service + "&from=apps", { transition: "slideup", reverse: false});//, changeHash: false });
-					} else if(res.result == ResponseCodes.FILE_ACTION_ERROR || res.result == ResponseCodes.DATA_IS_EXISTED){
-						alert("Upload service icon fail !");
-					} else {
-						alert("Update image fail!");
-					}
-				});
-			}
-			else if( res.result === ResponseCodes.DATA_SUCCESS)// ||  res.result == ResponseCodes.ACTION_WAIT_ICON)// && res.service )
-			{
-				alert("Update service success !");
-				loading_hide();
-				/// Set notify for update change
-				gl_providerChangeService( res.service );
-				$.mobile.changePage( '#provider?id=' + res.service + "&from=editapp", { transition: "slideup", reverse: false});//, changeHash: false });
-				/*
-				//if( padetailObj.service.icon && padetailObj.service.icon.file ){
-				if( padetailObj.service.iconfile && res.result == ResponseCodes.ACTION_WAIT_ICON ){
-					ws_uploadIcon( res.requestId, padetailObj.serviceId, padetailObj.service.iconfile, function(){
-						loading_hide();
-						/// Set notify for update change
-						gl_providerChangeService( res.service );
-						/// Change to list apps tab (provider page) when success
-						$.mobile.changePage( '#provider?id=' + res.service + "&from=editapp", { transition: "slideup" });
-					} );
-				} else {
-					loading_hide();
-					/// Set notify for update change
-					gl_providerChangeService( res.service );
-					$.mobile.changePage( '#provider?id=' + res.service + "&from=editapp", { transition: "slideup" });
-				}*/
-			} else {
-				console.log("Error: ws_updateService() fail");
-				$("#padetail-msg").html("Update service fail!");
-			}
-		});
-		break;
-	default:		
-		console.log("Unknow from tag.");
-		break;
-	}
+    /// Check updates
+    if ( ( padetailObj.service.updates == undefined || padetailObj.service.updates.length == 0 ) 
+ 	&& ( padetailObj.service.params == undefined || Object.size( padetailObj.service.params ) == 0 )) 
+    {
+      console.error("padetailObj.service.updates is empty.");
+      console.log(padetailObj.service)
+      return;
+    }
+    ws_updateService( padetailObj.service, function( res ){
+      if( res.uploadFile != undefined && res.uploadFile == padetailObj.service.iconfile.name ){
+        ws_sendFile(res.requestId, padetailObj.service.iconfile, function(res){
+          loading_hide();
+          if(res.result == ResponseCodes.DATA_SUCCESS){
+	    alert("Update service success !");
+	    /// Set notify for update change
+            gl_providerChangeService( res.service );
+            /// Change to list apps tab (provider page) when success
+            $.mobile.changePage( '#provider?id=' + res.service + "&from=apps", { transition: "slideup", reverse: false});//, changeHash: false });
+          } else if(res.result == ResponseCodes.FILE_ACTION_ERROR || res.result == ResponseCodes.DATA_IS_EXISTED){
+             alert("Upload service icon fail !");
+          } else {
+            alert("Update image fail!");
+	  }
+       });
+      }
+      else //if( res.result === ResponseCodes.DATA_SUCCESS)// ||  res.result == ResponseCodes.ACTION_WAIT_ICON)// && res.service )
+      {
+        var msg = "Create service fail.";
+        switch( res.result ){
+        case ResponseCodes.DATA_SUCCESS:
+          loading_hide();
+          alert("Update service success !");
+          /// Set notify for update change
+          gl_providerChangeService( res.service );
+          $.mobile.changePage( '#provider?id=' + res.service + "&from=editapp", { transition: "slideup", reverse: false});//, changeHash: false });
+          return;
+          break;
+        case ResponseCodes.ERROR_SERVICE_INVALID_NAME:
+          msg = "The name is already being used."
+          break;
+        case ResponseCodes.ERROR_SERVICE_EXEPATH_NOTFOUND:
+          msg = "The executable file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_SSHPATH_NOTFOUND:
+          msg = "The template job script file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_SLAVEDAEMON_NOTFOUND:
+          msg = "The slavedaemon file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_STAGEINDIR_NOTFOUND:
+          msg = "The slavedaemon file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_SHPATH_NOTFOUND:
+          msg = "The slavedaemon file not found in docker image.";
+          break;
+        default:
+          break;
+        }
+        padetail_showMessage(msg);
+	loading_hide();
+      }
+    });
+    break;
+  default:		
+    console.log("Unknow from tag.");
+    break;
+  }
 }
 
 function padetail_clearData(){

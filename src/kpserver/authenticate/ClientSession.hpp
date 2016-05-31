@@ -19,7 +19,7 @@
 #include "FileUtils.hpp"
 #include "ClientSession.hpp"
 #include "ssh_utils.hpp"
-
+#include "Constants.hpp"
 #include "../../include/libjson/libjson.h"
 #include "../authenticate/TagKeys.hpp"
 #include "StringUtils.hpp"
@@ -128,7 +128,8 @@ public:
 
   ResponseCode getProviderTimeResource(const std::string& provider_email, std::string& unit, double& limit, double& usage, double& avaiable, double& limitkp, double& usagekp, double& avaiablekp, std::string& public_key);
 
-  //EH0011
+  ResponseCode browsePathInsideImage(Service&, const unsigned char);
+  ResponseCode checkValidInfo(Service &service, const unsigned char);
   ResponseCode createService(Service &service);
   ResponseCode updateService(Service &service);
   ResponseCode deleteService(Service &service);
@@ -139,11 +140,8 @@ public:
   ResponseCode checkPathOfService(Service &kp_sv);
   ResponseCode checkNameService(std::string name);
   ResponseCode createServiceContinue();
-  //EH0011 end
-  /// EH004
   int enqueueFileReceive(std::string requestId, std::string path);
   int dequeueFileReceive(struct FileReceive & fr);
-  /// EH004 end
   bool checkRequestTimeout();
   ResponseCode saveTarFile(const char* data, std::string fileName);
   ResponseCode addNewUser(DataManager data_manager, std::string userEmail);

@@ -302,7 +302,9 @@ public:
      */
     void on_close(connection_ptr con){
         //typename std::map<connection_ptr,std::string>::iterator it = m_connections.find(con);
+	pthread_mutex_lock(&g_connections_lock);
         typename std::map<connection_ptr,ClientSession>::iterator it = m_connections.find(con);
+	pthread_mutex_unlock(&g_connections_lock);
         if (it == m_connections.end()) {
             // this client has already disconnected, we can ignore this.
             // this happens during certain types of disconnect where there is a
@@ -314,12 +316,15 @@ public:
         std::cout << "client " << con << " left the kpserver." << std::endl;
 		/// Clear temp session dir
 
-	sleep(5);
+	//sleep(5);
 		std::cout << "Clear connection session: start\n";
 	pthread_mutex_lock(&g_connections_lock);
-        m_connections.erase(it);
+        it = m_connections.find(con);
+        if (it == m_connections.end()) {
+          m_connections.erase(it);
+        }
 	pthread_mutex_unlock(&g_connections_lock);
-		std::cout << "Clear connection session: end\n";
+	std::cout << "Clear connection session: end\n";
     };
     
     /*
@@ -332,7 +337,9 @@ public:
         request<endpoint_type> r;
         r.con = con;
         r.msg = msg;
+pthread_mutex_lock(&g_connections_lock);
         r.cs = &m_connections[con];
+pthread_mutex_unlock(&g_connections_lock);
         //generate_id32(r.request_id);
         // LOG4CXX_INFO(logger, "Request: " << r.request_id << " queued");
         std::cout << "Request: " << r.con << " queued" << std::endl;

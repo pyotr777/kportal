@@ -74,6 +74,7 @@
 #define TAG_PRODUCER_STR            "producer"
 #define TAG_DESCRIPTION_STR         "description"
 #define TAG_PATH_EXCUTE_FILE_STR    "path"
+#define TAG_PATH_SH_FILE_STR        "shpath"
 #define TAG_NUMBER_OF_NODES_STR     "numberOfNodes"
 #define TAG_NUMBER_OF_USER_STR      "numberOfUsers"
 #define TAG_NUMBER_OF_WAIT_USER_STR     "numberOfWaitUsers"

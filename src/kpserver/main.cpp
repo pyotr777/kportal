@@ -54,6 +54,8 @@ std::string DEFAULT_CONFIG_FILE_PATH = "/etc/kportal/kportal_conf.xml";
 
 std::string DEFAULT_HOME_FOLDER = "/etc/kportal";
 
+std::string DEFAULT_TEMPLATE_JOB_SCRIPT_FILE = "/etc/kportal/default_job_script.sh";
+
 std::string DEFAULT_JOB_FOLDER = "/etc/kportal/jobs";
 
 std::string ICON_FOLDER_PATH = "";
@@ -71,8 +73,9 @@ pthread_mutex_t g_tunnels_lock;
 //pthread_mutex_t g_listjobs_lock;
 
 pthread_mutex_t g_connections_lock;
-
-const std::string kKdeskHost = "k.aics.riken.jp";
+std::string kSshKeyDir = "~/.ssh/kportal/";
+std::string kKdeskHost = "k.aics.riken.jp";
+std::string kDockerImagesUrl = "images/docker_images/base_image.tar";
 int g_kpserver_port = 9001;
 std::string g_docker_bridge_host = "10.0.0.1";
 int g_job_handler_port = 9999;

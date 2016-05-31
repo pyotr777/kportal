@@ -12,6 +12,8 @@ private:
     int         numberOfWaitUser;
     std::string description;
     std::string pathExcuteFile;
+    std::string pathShFile;
+    std::string shTemplate;
     std::string image_id;
     std::string providerEmail;
     std::string iconStr;
@@ -25,8 +27,8 @@ private:
 public:
     Service();
     //Service(std::string id, std::string name, std::string prod, bool st, int nON, int nOU, int nOWU, std::string des, std::string path, std::string provId, unsigned int timeElapse);
-	Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string imageId, std::string provId);
-	Service(const Service &copy);
+    Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string shpath, std::string imageId, std::string provId);
+    Service(const Service &copy);
     ~Service();
 
     void setServiceID(std::string svID);
@@ -52,6 +54,12 @@ public:
 
     void setPathExcuteFile(std::string path);
     std::string getPathExcuteFile();
+	
+    void setPathShFile(std::string path);
+    std::string getPathShFile();
+
+    void setShTemplate(std::string path);
+    std::string getShTemplate();
 
     void setImageId(std::string imageId);
     std::string getImageId();

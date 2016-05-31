@@ -91,6 +91,7 @@ public:
 	ResponseCode getImageDockerById(std::string id, ImageDocker &outImageDocker);
 	ResponseCode getImageDockerByName(std::string name, ImageDocker &outImageDocker);
 	ResponseCode getAllPublicImageDocker(std::vector<ImageDocker> &listImages);
+    ResponseCode checkKdeskAccExists(std::string email, std::string kdeskacc, bool& isExists);
 
 };
 

@@ -183,10 +183,11 @@ function provider_loadServicesList( resServices ){
 				}
 				
 				var service = {};
-				service.id = this.service,
-				service.icon = uIcon_genIconPath( service.id );//( service.id ? ( uIcon_genIconPath( service.id ) ) : '' ), 
-				service.name = ( ( this.name && this.name !== "") ? this.name : "(No name)" ),
+				service.id = this.service;
+				service.icon = uIcon_genIconPath( service.id );//( service.id ? ( uIcon_genIconPath( service.id ) ) : '' );
+				service.name = ( ( this.name && this.name !== "") ? this.name : "(No name)" );
 				service.path = this.path;
+				service.shpath = this.shpath;
 				service.image = this.image;
 				//service.producer = ( this.producer ? this.producer : '' );
 				service.noUsers = ( this.numberOfUsers ? this.numberOfUsers : 0 );
@@ -326,8 +327,13 @@ $(document).on('submit', '#provider-newapp-form', function( e ){
 		case "pnaf-path":
 			providerObj.service.path = value;
 			if( value == "" ){
-				msg = "Name without only space.";
+				msg = "Path without only space.";
 			}
+		case "pnaf-shpath":
+			providerObj.service.shpath = value;
+			/*if( value == "" ){
+				msg = "Path without only space.";
+			}*/
 		case "pnaf-stgin":
 			providerObj.service.stageinDirs = [];
 			providerObj.service.stageinDirs.push({"path":value});
@@ -341,7 +347,7 @@ $(document).on('submit', '#provider-newapp-form', function( e ){
 /*		case "pnaf-icon":
 			providerObj.service.icon = value;
 			break;*/
-		case "provider-newapp-elapsed":
+		case "pnaf-elapsed":
 			//providerObj.service.maxElapsedTime = value;
 			try{
 				var val = parseInt(value);
@@ -354,7 +360,7 @@ $(document).on('submit', '#provider-newapp-form', function( e ){
 				msg = "Number is invalid";
 			}
 			break;
-		case "provider-newapp-nodes":
+		case "pnaf-nodes":
 			//providerObj.service.noNodes = value;
 			try{
 				var val = parseInt(value);
@@ -475,7 +481,7 @@ $(document).on("change", "#provider-newapp-form input", function(e) {
 function provider_inputChange(){
 	
 	/// Check require fields
-	if($("#pnaf-path").val().trim() == "" || $("#pnaf-image").val().trim() == "" || $("#pnaf-path").val().trim() == "") {
+	if($("#pnaf-path").val().trim() == "" || $("#pnaf-image").val().trim() == "" ){
 		$( "#provider-newapp-submit-btn" ).button('disable'); 
 		$( "#provider-newapp-reset-btn" ).button('disable'); 
 		providerObj.isEnableBtn = false;

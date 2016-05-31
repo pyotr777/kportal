@@ -1017,7 +1017,7 @@ function jdetail_loadDataEntriesInfo ( resEntries, parentEntry ){
 			}
 		}
 		if(parentEntry != undefined  && parentEntry != ""){
-			alert("grandEntry " + grandEntry);
+			//alert("grandEntry " + grandEntry);
 			var menuId = 'job-detail-download-'+ level;
 			//html += '<li><a href="#" class="job-detail-download" data-entry="' + entry + '">';
 			html += '<li><a href="#' + menuId +'" data-rel="popup" data-position-to="origin" data-transition="pop">';

@@ -13,7 +13,7 @@ public:
     LoginManager();
     ~LoginManager();
     void addLoginInfo(const std::string loginId, const UserInfoObject userInfo);
-    UserInfoObject* getUserInfo(const std::string loginId);
+    UserInfoObject getUserInfo(const std::string loginId);
     bool removeUserInfo(const std::string loginId);
 
 private:

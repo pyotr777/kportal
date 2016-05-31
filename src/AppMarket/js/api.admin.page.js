@@ -255,18 +255,22 @@ function addmin_rejectRegister(userId) {
  * 
  */
 function addmin_acceptRegister(userId) {
-    console.log("acceptRegister");
-	$.mobile.loading("show");
-    ws_acceptProviderRegister(userId, function( msg ) {
-       if (msg.result === ResponseCodes.DATA_SUCCESS) {
-           alert("Add user success");
-       } else {
-            alert("Add user fail");
-	   }
-	   //load_CandidateOfService();
-	   admin_loadWaitTab();
-	   $.mobile.loading("hide");
-    });
+  console.log("acceptRegister");
+  $.mobile.loading("show");
+  ws_acceptProviderRegister(userId, function( msg ) {
+    if (msg.result === ResponseCodes.DATA_SUCCESS) {
+      alert("Add user success");
+    } else {
+      if(msg.result !== ResponseCodes.ERROR_KDESK_ACC_EXISTS){
+        alert("Accept the provider register fail.");
+      } else {
+        alert("Accept the provider register fail.\nThe k-computer account already in use by other Provider.");
+      }
+    }
+    //load_CandidateOfService();
+    admin_loadWaitTab();
+    $.mobile.loading("hide");
+  });
 }
 
 /*
