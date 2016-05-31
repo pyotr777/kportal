@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<websocket>
-		<!--<uri>wss://localhost:9001/kportal</uri>-->
-		<!-- Dev host -->
-		<!--uri>ws://192.168.1.69:9001/kportal</uri-->
-		<!--<uri>wss://bounceme.anlab.info:9005/kportal</uri>-->
-		<uri>wss://bounceme.anlab.info:9001/kportal</uri>
-	</websocket>
-	<oauth20>
-		<!--anlab.appmarket@gmail.com -->
-		<clientid>757378906290-hmnm6v1ci90r2l3uhgoofe54c75i1d8l.apps.googleusercontent.com</clientid> 
-		<!--<clientid>270730678057-a9ml338n4kffukaqovtseul8u28547e8.apps.googleusercontent.com</clientid>-->
-		<!--<redirect>https://localhost:9005/AppMarket/</redirect>-->
-		<redirect>https://bounceme.anlab.info/AppMarket/</redirect>
-		<!--redirect>http://localhost:9080</redirect-->
-	</oauth20>
+    <websocket>
+        <uri>wss://ec2-52-196-224-123.ap-northeast-1.compute.amazonaws.com:9004/kportal</uri>
+    </websocket>
+    <oauth20>
+        <clientid>995434600520-1v845bj1mqma9l5me5k5a01e73araehr.apps.googleusercontent.com</clientid>
+        <redirect>https://ec2-52-196-224-123.ap-northeast-1.compute.amazonaws.com:9005</redirect>
+    </oauth20>
 </configuration>
