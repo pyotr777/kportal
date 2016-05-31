@@ -9,4 +9,3 @@
 **/kp_server
 **/kp_tool
 travis.yml
-/src/release/*
