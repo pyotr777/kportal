@@ -12,5 +12,5 @@ $docker ps -a
 $docker build -t $image .
 $docker save -o "$image".tar $image
 $docker rmi $image
-$docker load -i "$image".tar
+#$docker load -i "$image".tar
 echo "Done." 
