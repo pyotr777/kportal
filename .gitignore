@@ -3,6 +3,7 @@
 !.travis.yml
 *.tar
 *.zip
+*.log
 /settings
 /doc/*
 /sample_application/C_MPI/src/.*
