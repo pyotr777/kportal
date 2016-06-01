@@ -1,12 +1,14 @@
 .*
-!.gitignore
-!.travis.yml
+!/.gitignore
+!/.travis.yml
 *.tar
 *.zip
 *.log
+*.o
 /settings
 /doc/*
 /sample_application/C_MPI/src/.*
 **/kp_server
 **/kp_tool
 travis.yml
+src/include/websocketpp-0.2.3-dev/.travis.yml
