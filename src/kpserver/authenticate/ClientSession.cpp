@@ -1726,7 +1726,7 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
   // check slavedaemon exists
   if(ret == DATA_SUCCESS) {
     // docker -H 127.0.0.1:9555 exec 82ba5e4a2aa9b81fcd61965c3a9684089e288b3660cbdf458f32b3c4b9ba4e9c test -f bin/startslavedaemon.sh && echo 1
-    ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f bin/startslavedaemon.sh && echo " << flag_str << " ";
+    ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f /bin/startslavedaemon.sh && echo " << flag_str << " ";
     cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
     stdout = Exec(cmd.c_str());
     std::cout << "stdout: " << stdout.c_str() << std::endl;
@@ -1742,7 +1742,8 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
       std::cout << "[ERR] The exe file \"" << exe_path << "\" not found. Path is invalid\n";
       ret = ERROR_SERVICE_EXEPATH_NOTFOUND;
     }
-    exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path.substr(1) : exe_path;
+    //exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path.substr(1) : exe_path;
+    exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path : std::string(PATH_SEPARATOR + exe_path);
     ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f \"" << exe_path << "\" && echo " << flag_str << " ";
     cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
     stdout = Exec(cmd.c_str());
@@ -1757,7 +1758,8 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
   if(ret == DATA_SUCCESS && usf_flags & USF_STGINDIR) {
     std::string stgin_dir_path = service.getStageinDirs() -> size() > 0 ? service.getStageinDirs() -> at(0) : "";
     if(stgin_dir_path != ""){
-      stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path.substr(1) : stgin_dir_path;
+      //stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path.substr(1) : stgin_dir_path;
+      stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path : std::string(PATH_SEPARATOR + stgin_dir_path);
       ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -d \"" << stgin_dir_path << "\" && echo " << flag_str << " ";
       cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
       stdout = Exec(cmd.c_str());
@@ -1787,7 +1789,8 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
         ret = ERROR_SERVICE_SHPATH_NOTFOUND;
       }
     } else{
-      std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile().substr(1) : service.getPathShFile();
+      //std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile().substr(1) : service.getPathShFile();
+      std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile() : std::string(PATH_SEPARATOR + service.getPathShFile());
       ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec " << container_id << " cat \"" << sh_file << "\" ";
       cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
       stdout = Exec(cmd.c_str());
