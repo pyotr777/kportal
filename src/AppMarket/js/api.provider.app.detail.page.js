@@ -283,17 +283,14 @@ function padetail_submitApp( publish ){
         case ResponseCodes.ERROR_SERVICE_EXEPATH_NOTFOUND:
           msg = "The executable file not found in docker image.";
           break;
-        case ResponseCodes.ERROR_SERVICE_SSHPATH_NOTFOUND:
+        case ResponseCodes.ERROR_SERVICE_SHPATH_NOTFOUND:
           msg = "The template job script file not found in docker image.";
           break;
         case ResponseCodes.ERROR_SERVICE_SLAVEDAEMON_NOTFOUND:
           msg = "The slavedaemon file not found in docker image.";
           break;
         case ResponseCodes.ERROR_SERVICE_STAGEINDIR_NOTFOUND:
-          msg = "The slavedaemon file not found in docker image.";
-          break;
-        case ResponseCodes.ERROR_SERVICE_SHPATH_NOTFOUND:
-          msg = "The slavedaemon file not found in docker image.";
+          msg = "The stage-in directory path not found in docker image.";
           break;
         default:
           break;

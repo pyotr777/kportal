@@ -1797,7 +1797,7 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
       std::cout << "stdout: " << stdout.c_str() << std::endl;
       if(stdout.find("#PJM") == std::string::npos){
         std::cout << "[ERR] The sh file \"" << sh_file << "\" not found.\n";
-        ret = ERROR_SERVICE_STAGEINDIR_NOTFOUND;
+        ret = ERROR_SERVICE_SHPATH_NOTFOUND;
       }
       sh_content = stdout;
     }
