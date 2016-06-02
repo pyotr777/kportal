@@ -358,27 +358,13 @@ ResponseCode ClientSession::submitJob(Job &job) {
     std::string unit = "Ms", public_key;
     double total = 0, remain = 0, usage = 0, totalkp = 0, remainkp = 0, usagekp = 0;
     ret = getProviderTimeResource(p_job->getProviderEmail(), unit, total, remain, usage, totalkp, remainkp, usagekp, public_key);
-
-//    if(ret == REQUEST_SUCCESS){
-//      double usableTime = remain / 10;
-//      std::cout << "usable time = " << usableTime << std::endl;
-//      ret = updateProviderTimeUsable(p_job->getProviderEmail(), usableTime);
-//      if(ret == DATA_SUCCESS){
-//        owner.setTimeUsable(usableTime);
-//      } else {
-//        std::cout << "update time usable fail\n";
-//      }
-//    } else {
-//      std::cout << "get time resource fail\n";
-//    }
-  } else {
-    // Check if ssh tunnel (a provider / a tunnel) has already started
-    TunnelManager tunnel_mng;
-    unsigned int kport = 0;
-    tunnel_mng.ConfigureTunnel(owner.getKdeskAcc(), kport);
-    std::cout << "tunnel port: " << kport << std::endl;
-    p_job->setTunnelPort(kport);
   }
+  // Check if ssh tunnel (a provider / a tunnel) has already started
+  TunnelManager tunnel_mng;
+  unsigned int kport = 0;
+  tunnel_mng.ConfigureTunnel(owner.getKdeskAcc(), kport);
+  std::cout << "tunnel port: " << kport << std::endl;
+  p_job->setTunnelPort(kport);
 
   // Check quota time
   if(owner.getTimeUsable() - owner.getTimeUsage() < (job.getMaxElapseTime() / 1000000)){
@@ -1725,8 +1711,10 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
 
   // check slavedaemon exists
   if(ret == DATA_SUCCESS) {
-    // docker -H 127.0.0.1:9555 exec 82ba5e4a2aa9b81fcd61965c3a9684089e288b3660cbdf458f32b3c4b9ba4e9c test -f bin/startslavedaemon.sh && echo 1
-    ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f /bin/startslavedaemon.sh && echo " << flag_str << " ";
+    /// docker -H 127.0.0.1:9555 exec 82ba5e4a2aa9b81fcd61965c3a9684089e288b3660cbdf458f32b3c4b9ba4e9c test -f bin/startslavedaemon.sh && echo 1
+    std::string slavedaemon_path = "/bin/startslavedaemon.sh";
+    //std::string slavedaemon_path = "bin/startslavedaemon.sh";
+    ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f " << slavedaemon_path << " && echo " << flag_str << " ";
     cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
     stdout = Exec(cmd.c_str());
     std::cout << "stdout: " << stdout.c_str() << std::endl;
