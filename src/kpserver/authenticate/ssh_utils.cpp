@@ -19,14 +19,15 @@ bool SshUtils::AddHost(const std::string& remote_host, const std::string& remote
   std::string line;
   std::vector<std::string> lines;
   //int begin_index = -1, end_index = -1;
-
+  std::string config_host_name = std::string (remote_user + "." + remote_host);
+  std::cout << "Add host: " << config_host_name << std::endl;
   // Find exist
   try{
     while (std::getline(cf, line)) {
       lines.push_back(line);
-      if(line.find(remote_host) != std::string::npos){
+      if(line.find(config_host_name) != std::string::npos){
         cf.close();
-        std::cout << "the host name " << remote_host << " is exists. Ignore add host.\n";
+        std::cout << "the host name " << config_host_name << " is exists. Ignore add host.\n";
         return true;
       }
     }

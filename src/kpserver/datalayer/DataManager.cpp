@@ -515,7 +515,7 @@ ResponseCode DataManager::updateUserDb(User &user) {
 
 ResponseCode DataManager::checkKdeskAccExists(std::string email, std::string kdeskacc, bool& isExists) {
     std::stringstream strm;
-    strm << "SELECT * FROM USER WHERE KDESKACC='" << kdeskacc << "' AND EMAIL <> '" << email << "';";
+    strm << "SELECT * FROM USER WHERE KDESKACC='" << kdeskacc << "' AND EMAIL <> '" << email << "' AND TYPE&" << PROVIDER_GROUP << ";";
 
     std::string s = strm.str();
     std::cout << "Query: " << s << std::endl;
@@ -595,31 +595,29 @@ ResponseCode DataManager::getUserDb(User &user) {
     char *query = str;
     if ( sqlite3_prepare(db, query, -1, &statement, 0 ) == SQLITE_OK )
     {
-        int res = 0;
+      int res = 0;
 
-        res = sqlite3_step(statement);
-        if ( res == SQLITE_ROW )
-        {
-            user.setEmail((char*)sqlite3_column_text(statement, 0));
-			std::cout << "email = " << user.getEmail() << std::endl;
-            user.setContainerId((char*)sqlite3_column_text(statement, 1));
-      user.setPhone((char*)sqlite3_column_text(statement, 2));
-      user.setAddress((char*)sqlite3_column_text(statement, 3));
-      user.setKdeskAcc((char*)sqlite3_column_text(statement, 4));
-      user.setDescription((char*)sqlite3_column_text(statement, 5));
-      user.setType((BYTE)sqlite3_column_int(statement, 6));
-      //user.setKdeskPort(sqlite3_column_int(statement, 7));
-      user.setTimeUsage(sqlite3_column_double(statement, 7));
-      std::cout << "in object value: " << user.getTimeUsage() << " vs orgin value : " << sqlite3_column_double(statement, 7) << endl;
-      user.setTimeUsable(sqlite3_column_double(statement, 8));
-      user.setPublicKey((char*)sqlite3_column_text(statement, 9));
-			std::cout << "user type = " << (int)user.getType() << std::endl;
-        } else {
-			std::cout << "user " << user.getEmail() << " is not exist\n";
-            return DATA_SELECT_EMPTY;
-        }
-
+      res = sqlite3_step(statement);
+      if ( res == SQLITE_ROW )
+      {
+        user.setEmail((char*)sqlite3_column_text(statement, 0));
+        std::cout << "email = " << user.getEmail() << std::endl;
+        user.setContainerId((char*)sqlite3_column_text(statement, 1));
+        user.setPhone((char*)sqlite3_column_text(statement, 2));
+        user.setAddress((char*)sqlite3_column_text(statement, 3));
+        user.setKdeskAcc((char*)sqlite3_column_text(statement, 4));
+        user.setDescription((char*)sqlite3_column_text(statement, 5));
+        user.setType((BYTE)sqlite3_column_int(statement, 6));
+        user.setTimeUsage(sqlite3_column_double(statement, 7));
+        user.setTimeUsable(sqlite3_column_double(statement, 8));
+        user.setPublicKey((char*)sqlite3_column_text(statement, 9));
+        std::cout << "user type = " << (int)user.getType() << std::endl;
+      } else {
         sqlite3_finalize(statement);
+        std::cout << "user " << user.getEmail() << " is not exist\n";
+        return DATA_SELECT_EMPTY;
+      }
+      sqlite3_finalize(statement);
     } else {
         return DATA_ERROR_SELECT_DB;
     }
@@ -705,6 +703,8 @@ ResponseCode DataManager::deleteUser(User &user) {
 				temp.setPhone("");
 				temp.setDescription("");
 				temp.setKdeskAcc("");
+				temp.setTimeUsable(0);
+				temp.setTimeUsage(0);
 			}
             res = updateUserDb(temp);
         }
