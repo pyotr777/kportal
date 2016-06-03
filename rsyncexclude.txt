@@ -1,5 +1,7 @@
+.*
 *.o
 *.a
+*.tar
 include/websocketpp-0.2.3-dev
 include/libtar-1.2.11
 AppMarket/jquery.mobile-1.3.2
