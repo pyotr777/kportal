@@ -82,7 +82,15 @@ int main (int argc, char **argv) {
       }
     }
   } catch ( SocketException& e ) {
-    std::cout << "Exception was caught:" << e.description() << "\n";
+    std::cout << "Exception was caught:" << e.description() << "\n";;
+    Message err_msg(Header(MT_COMMAND, 0, 0, 0, CMD_ACK_ERR), NULL);
+    err_msg.AddArgv(job_id);
+    err_msg.AddArgv("Can not connect to k-computer via tunnel.");
+    if(SendMsgToKpServer(err_msg)){
+      std::cout << " send error ack success\n";
+    } else {
+      std::cout << " send error ack fail\n";
+    }
     std::cout << "Exiting\n";
     return -1;
   }
