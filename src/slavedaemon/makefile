@@ -6,12 +6,15 @@ OBJDIR=./obj
 CFLAGS= $(INCDIR) -c -Wall -fPIC
 LDFLAGS=-Wall
 LDLIBRARIES=-lpthread
+MKDIR_P=mkdir -p 
 
 CPPFILES=message.cpp header.cpp system_command_utils.cpp \
          message_socket.cpp slavedaemon.cpp
 OBJS=$(CPPFILES:%.cpp=$(OBJDIR)/%.o)
 TARGET=slavedaemon
-all : $(TARGET)
+all : objdir $(TARGET)
+objdir:
+	$(MKDIR_P) $(OBJDIR)
 $(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) $^ -o $@
 $(TARGET) : $(OBJS)

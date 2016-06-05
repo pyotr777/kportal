@@ -78,7 +78,7 @@ Commands Header::GetCommand() const {
 //}
 
 void Header::GetBytes(const Header& hdr, char ** bytes, unsigned int* size){
-  std::cout << "Header::GetBytes \n";
+  //std::cout << "Header::GetBytes \n";
   *size = sizeof(int) + sizeof(unsigned int) + sizeof(unsigned int) + sizeof(unsigned int) + sizeof(int);
   *bytes = new char[*size];
   unsigned int offset = 0;
@@ -87,7 +87,7 @@ void Header::GetBytes(const Header& hdr, char ** bytes, unsigned int* size){
   memcpy(*bytes + offset, &hdr.m_to_port, sizeof(unsigned int));offset += sizeof(unsigned int);
   memcpy(*bytes + offset, &hdr.m_data_size, sizeof(unsigned int));offset += sizeof(unsigned int);
   memcpy(*bytes + offset, &hdr.m_command, sizeof(int));
-  std::cout << "done: size = " << *size << ", offset = " << offset << std::endl;
+  //std::cout << "done: size = " << *size << ", offset = " << offset << std::endl;
   //size = sizeof(Header);
 //  /return bytes;
 }

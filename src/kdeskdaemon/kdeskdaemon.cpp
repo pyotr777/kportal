@@ -14,9 +14,9 @@
 #include <algorithm>
 #include <cstdlib>
 
-#include "../kpforwarder/header.hpp"
-#include "../kpforwarder/message.hpp"
-#include "../kpforwarder/system_command_utils.hpp"
+#include "../slavedaemon/header.hpp"
+#include "../slavedaemon/message.hpp"
+#include "../slavedaemon/system_command_utils.hpp"
 #include "../slavedaemon/message_socket.h"
 #include "../slavedaemon/socket_exception.h"
 #include "stream_redirect.hpp"
@@ -63,41 +63,6 @@ void Split(const std::string &str, char del,
                 std::vector<std::string> *out);
 std::string GetFileName(std::string path);
 
-//void BeginRedirectStdoutToFile(){
-//  std::cout << "BeginRedirectStdoutToFile\n";
-//  std::streambuf *psbuf;
-//  filestr.open ("kdeskdaemon.stdout");
-//  backup = std::cout.rdbuf();     // back up cout's streambuf
-//  psbuf = filestr.rdbuf();        // get file's streambuf
-//  std::cout.rdbuf(psbuf);         // assign streambuf to cout
-////  std::cout << "This is written to the file";
-//}
-
-//void EndRedirectStdoutToFile(){
-//  std::cout << "EndRedirectStdoutToFile\n";
-//  std::cout.rdbuf(backup);        // restore cout's original streambuf
-//  filestr.close();
-//}
-
-/*
-void redirect (ostream& strm)
-{
-    ofstream file("redirect.txt");
-
-    // save output buffer of the stream
-    streambuf* strm_buffer = strm.rdbuf();
-
-    // redirect ouput into the file
-    strm.rdbuf (file.rdbuf());
-
-    file << "one row for the file" << endl;
-    strm << "one row for the stream" << endl;
-
-    // restore old output buffer
-    strm.rdbuf (strm_buffer);
-
-}    // closes file AND its buffer automatically
-*/
 //
 // Main function
 //
@@ -121,7 +86,7 @@ int main (int argc, char **argv) {
 
   g_err_redirector = NULL;
   std::ofstream err_strm(err_filename.c_str());
-  g_log_redirector = new StreamRedirector(std::cerr, err_strm.rdbuf());
+  g_err_redirector = new StreamRedirector(std::cerr, err_strm.rdbuf());
 
   std::cout << "Host name: " << hostname.c_str() << std::endl;
 
@@ -131,7 +96,9 @@ int main (int argc, char **argv) {
   std::cout << "Home job: " << g_home_job_dir << std::endl;
   if (argc < 2) {
     std::cout << "kdeskdaemon <port no>\n";
-    return 0;
+    delete g_err_redirector;
+    delete g_log_redirector;
+    return 1;
   }
 
   //
@@ -187,6 +154,8 @@ int main (int argc, char **argv) {
 
   if(g_log_redirector != NULL)
     delete g_log_redirector;
+  if(g_err_redirector != NULL)
+    delete g_err_redirector;
   return 0;
 }
 
@@ -229,9 +198,7 @@ void * ConnectionHandler(void *thrd_args) {
 }
 
 bool ProcessMessage(Message& msg, Socket& socket){
-  bool isFinish = true;
-  //if(msg.GetHeader()->GetToPort() == 0){
-    //char ** argv = msg.GetCmdArgs(argc);
+    bool isFinish = true;
     std::vector<std::string> argv = msg.GetCmdArgs();
     int argc = argv.size();
 
@@ -293,9 +260,6 @@ bool ProcessMessage(Message& msg, Socket& socket){
         std::cout << "[ERR] Unknown message: " << msg.GetHeader()->GetCommand() << std::endl;
         break;
     }
-    //msg.FreeParsedArgs(argv);
-  //} else {
-  //}
     return isFinish;
 }
 
@@ -408,24 +372,6 @@ std::vector<std::string> GetNewFiles(const std::string& path_folder, const std::
     } 
   }
 
-
-
-
-
-
-
-
-/* while (pdir = readdir(dir)) {
-    std::string dname(pdir->d_name);
-    if (dname == "." || dname == ".." ||
-        dname.at(dname.length() - 1) == '~'||
-        dname.at(0) == '.') {
-      continue;
-    }
-    std::cout << "cur file: " << _path_folder + pdir->d_name << std::endl;
-    cur_files.push_back(_path_folder + pdir->d_name);
-  }
-*/
   for (unsigned int i = 0; i < cur_files.size(); i++) {
     bool foo = false;
     for (unsigned int j = 0; j < olds_files.size(); j++) {

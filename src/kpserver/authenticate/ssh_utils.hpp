@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-#include "../../kpforwarder/system_command_utils.hpp"
+#include "system_command_utils.hpp"
 
 const std::string kSshConfigFile = ".ssh/config";
 const std::string kHostTag = "Host";

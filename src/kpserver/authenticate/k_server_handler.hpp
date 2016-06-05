@@ -253,6 +253,7 @@ public:
     }
     
     boost::shared_ptr<boost::asio::ssl::context> on_tls_init() {
+        std::cout << "Bp: on_tls_init start\n";
         // create a tls context, init, and return.
         boost::shared_ptr<boost::asio::ssl::context> context(new boost::asio::ssl::context(boost::asio::ssl::context::tlsv1));
         try {
@@ -269,6 +270,7 @@ public:
           std::cout << "Exception caught: ";
           std::cout << e.what() << std::endl;
         }
+        std::cout << "Bp: on_tls_init end\n";
         return context;
     }
 

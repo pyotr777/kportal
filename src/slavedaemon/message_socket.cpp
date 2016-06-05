@@ -97,19 +97,6 @@ bool Socket::Accept ( Socket& new_socket ) const {
     return true;
 }
 
-
-//bool Socket::Send ( const std::string s ) const {
-
-//  std::cout << "Socket::Send string = " << s << ";";
-//  int status = ::send ( m_sock, s.c_str(), s.size(), MSG_NOSIGNAL );
-//  std::cout << status << std::endl;
-//  if ( status == -1 ) {
-//    return false;
-//  } else {
-//    return true;
-//  }
-//}
-
 bool Socket::Send ( const std::string s ) const {
   std::cout << "Socket::Send string = " << s << ";";
   unsigned int size = s.size();
@@ -120,24 +107,12 @@ bool Socket::Send ( const std::string s ) const {
   return status == (int)s.size();
 }
 
-
-//bool Socket::Send ( const std::string s ) const {
-//  std::cout << "Socket::Send string = " << s << ";";
-//  int status = ::send ( m_sock, s.c_str(), s.size(), MSG_NOSIGNAL );
-//  std::cout << status << std::endl;
-//  if ( status == -1 ) {
-//    return false;
-//  } else {
-//    return true;
-//  }
-//}
-
 int Socket::Send (const char* bytes, const unsigned int& size) const {
-  std::cout << "Socket::Send bytes size =  " << size << ", last byte value = " << bytes[size - 1] << std::endl;
+  std::cout << "Socket::Send bsize=" << size << ",last byte=" << bytes[size - 1] << std::endl;
   unsigned int out_bytes = 0;
 
   while (out_bytes < size) {
-    std::cout << "before write to socket: <<  " << size - out_bytes << "\n";
+   // std::cout << "before write to socket: <<  " << size - out_bytes << "\n";
    int n = ::write(m_sock, bytes + out_bytes, size - out_bytes);
    if (n < 0){
      //printf("[ERROR] Unable to send reponse.\n");
@@ -160,38 +135,38 @@ int Socket::Send (const char* bytes, const unsigned int& size) const {
 }
 
 bool Socket::Send (const Message& msg ) const {
-  std::cout << "Socket::Send\n";
+  //std::cout << "Socket::Send message\n";
   // Send header
   char* hdr; unsigned int hdr_size;
 
   const Header * header = msg.GetHeader();
   Header::GetBytes(*header, &hdr, &hdr_size);
-  std::cout << "header size = " << hdr_size << std::endl;
+  //std::cout << "header size = " << hdr_size << std::endl;
 
   if(Send(hdr, hdr_size) != (int)hdr_size){
     //printf("send header fail\n");
-    std::cout << "send header fail\n";
+    std::cout << "[ERR]Socket::Send send message header fail\n";
     delete[] hdr;
     return false;
   }
   delete[] hdr;
 
   // Send data
-  std::cout << "begin send message data\n";
+  //std::cout << "begin send message data\n";
   const char *data = msg.GetData();
   unsigned int data_size = msg.GetHeader()->GetDataSize();
   if(data != NULL && data_size > 0){
     if(Send(data, data_size) != (int)data_size){
       //printf("send message data fail.");
-      std::cout << "send message data fail.";
+      std::cout << "[ERR]Socket::Send message data fail.\n";
       return false;
     } else {
       //printf("send message data success.");
-      std::cout << "send message data success.";
+      //std::cout << "send message data success.";
     }
   } else {
     //printf("Message data is emtpy\n");
-    std::cout << "Message data is emtpy\n";
+    //std::cout << "Message data is emtpy\n";
   }
   return true;
 }
@@ -259,11 +234,6 @@ bool Socket::GetFileNameInFolder(const std::string &path_folder,
   return true;
 }
 
-
-
-
-
-
 bool Socket::SendFile(const std::string &r_path_filename) const {
   std::cout << "Socket::SendFile " << r_path_filename.c_str() << std::endl;
   std::string response; //get respponse from other side
@@ -281,7 +251,7 @@ bool Socket::SendFile(const std::string &r_path_filename) const {
   char *data = new char[filename.length() + 1];
   memcpy(data, filename.c_str(), filename.length());
   data[filename.length()] = '\0';
-  std::cout << data << std::endl;
+  //std::cout << data << std::endl;
   /* send file name and folder to save file*/
   Header w_filename_hdr = Header(MT_DATA, 8888, 8888,
                                filename.length() + 1, CMD_SENDFILE_INFO);
@@ -301,7 +271,8 @@ bool Socket::SendFile(const std::string &r_path_filename) const {
   Reader *x = new Reader(r_path_filename);
   if (!x->IsOpened()) {
     std::cout << "File is invalid\n";
-   return false;
+    delete x;
+    return false;
   }
   char* temp;
   int32_t data_size;
@@ -309,20 +280,21 @@ bool Socket::SendFile(const std::string &r_path_filename) const {
     data_size = x->Read(&temp);
     if (data_size == -1) {
       std::cout << "Error when reading file";
+      delete x; 
       return false;
     }
     Header filedata_hdr = Header(MT_DATA, 8888, 8888,
                                  data_size, CMD_SENDFILE_PACKET);
     Message filedata_msg = Message(filedata_hdr, temp);
+
     if (!Send(filedata_msg)) {
-      std::cout << "Send data failure\n";
+      std::cout << " send data failure\n";
+      delete x;
       return false;
     }
     Recv(response);
     std::cout << "recv response: " << response << std::endl;
-    //response.clear();
     response= "";
-    //delete temp;
   }
   std::string finish = "*";
   char* endfile = new char;
@@ -332,17 +304,14 @@ bool Socket::SendFile(const std::string &r_path_filename) const {
   Message finish_msg = Message(finish_hdr, endfile);
   if (!Send(finish_msg)) {
     std::cout << "Send finish signed file failure\n";
+    delete x;
     return false;
   }
   Recv(response);
   std::cout << response <<std::endl;
+  delete x;
   return true;
 }
-
-
-
-
-
 
 bool Socket::SendFolder(const std::string &r_pathfolder) const {
   std::string info;
@@ -517,11 +486,6 @@ bool Socket::RecvFolder(const std::string &w_pathfolder, std::vector<std::string
   return true;
 }
 
-
-
-
-
-
 bool Socket::RecvFile(const std::string &path_file, std::string &file_name) {
   std::cout << "Socket::RecvFile save to " << path_file.c_str()<<"\n";
   Message filename_msg;
@@ -533,7 +497,7 @@ bool Socket::RecvFile(const std::string &path_file, std::string &file_name) {
 
   Recv(filename_msg);
   if (filename_msg.GetData() == NULL) {
-    std::cout << "Cannot receive file name\n";
+    std::cout << "[ERR] Cannot receive file name\n";
     return false;
   } else {
   }
@@ -546,7 +510,7 @@ bool Socket::RecvFile(const std::string &path_file, std::string &file_name) {
   buf[filename_msg.GetHeader()->GetDataSize()] = '\0';
   memcpy(buf, filename_msg.GetData(), filename_msg.GetHeader()->GetDataSize());
   std::string w_filename(buf);
-  std::cout << "file name:" << w_filename << std::endl;
+  //std::cout << "file name:" << w_filename << std::endl;
   delete[]buf;
 
   //std::cout << filename_msg.GetData() << std::endl;
@@ -557,37 +521,41 @@ bool Socket::RecvFile(const std::string &path_file, std::string &file_name) {
 
   Writer *x = new Writer(w_filename);
   if (!x->IsOpened()) {
-    std::cout << "file is invalid\n";
-   return false;
+    std::cout << "[ERR] RecvFile  " << w_filename << " is invalid\n";
+    delete x;
+    return false;
   }
   while (1) {
     Message msg;
-    std::cout << "wait recv new file message; ";
+    //std::cout << "wait recv new file message; ";
     if (Recv(msg) == 0) {
-      std::cout << "Receive Message failure\n";
+      std::cout << "[ERR] Receive Message failure\n";
+      delete x;
       return false;
     }
-    std::cout << "after receive message; ";
-    if (*msg.GetData() == '*') {
+    //std::cout << "after receive message; ";
+    //std::string test = std::string(msg.GetData());
+    if (msg.GetHeader()->GetCommand() == CMD_SENDFILE_FINISH) {
       Send("Tranfer done");
-      std::cout << "receieve success\n";
+      //std::cout << "receieve success\n";
       break;
     }
-    std::cout << "is data;";
+    //std::cout << "is data;";
     if (x->Write(msg.GetData(), (int32_t)msg.GetHeader()->GetDataSize()) == -1) {
-      std::cout << "Write failure";
+      std::cout << "[ERR] Write file failure";
+      delete x;
       return false;
     }
-    std::cout << "send recived block notify msg;"<< std::endl;
+    //std::cout << "send recived block notify msg;"<< std::endl;
     Send("Recived block");
-    std::cout << "send success;" << std::endl;
+    //std::cout << "send success;" << std::endl;
   }
   delete x;
   return true;
 }
 
 int Socket::Recv ( std::string& s ) const {
-  std::cout << "Socket::Recv ";
+  //std::cout << "Socket::Recv ";
   char buf [ MAXRECV + 1 ];
   s = "";
   memset ( buf, 0, MAXRECV + 1 );
@@ -597,7 +565,7 @@ int Socket::Recv ( std::string& s ) const {
 
   if(sot > 0){
     status = Recv (buf, sot);
-    std::cout << status << std::endl;
+    //std::cout << status << std::endl;
     if ( status > 0 ) {
       s = buf;
     }
@@ -685,92 +653,15 @@ int Socket::Recv ( Message& msg ) const {
     }
   }
 
-  std::cout <<"create message from byte.\n";
-  std::cout << "type = " << msg_type << ", from port = " << from_port << ", to port = " << to_port << ", data size = "<< data_size << ",command = " << command << std::endl;
+  //std::cout <<"create message from byte.\n";
+  std::cout << "type=" << msg_type << ",from port=" << from_port << ",to port=" << to_port << ",data size="<< data_size << ",command = " << command << std::endl;
   Header hdr((MessageTypes)msg_type, from_port, to_port, data_size,(Commands)command);
   msg.SetHeader(hdr);
   msg.SetData(buf);
 
-  std::cout << "rev message success\n";
+  //std::cout << "rev message success\n";
   return data_size + hdr_size;
 }
-/*
-int Socket::Recv ( Message& msg ) {
-  std::cout << "Socket::Recv ";
-  char buf [ MAXRECV ];
-  memset ( buf, 0, MAXRECV );
-
-  int status = ::recv ( m_sock, buf, MAXRECV, 0 );
-  if ( status == -1 ) {
-    std::cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
-    return -1;
-  } else if ( status == 0 ) {
-    std::cout << "status = 0\n";
-    std::cout << "clear incomplete message: size = " << m_incomplete_size << std::endl;
-    if(m_incomplete_data != NULL && m_incomplete_size > 0){
-      delete m_incomplete_data;
-      m_incomplete_data = NULL;
-      m_incomplete_size = 0;
-      std::cout << "Message invalid\n";
-    }
-    return 0;
-  } else {
-    std::cout << "status = " << status << std::endl;
-    int incomplete_size = m_incomplete_size;
-    int bytes_size = 0;
-    char * bytes = NULL;
-    if(incomplete_size == 0){
-      bytes_size = status;
-      bytes = new char[status];
-      memcpy(bytes, buf, status);
-    } else {
-      bytes_size = incomplete_size + status;
-      bytes = new char[incomplete_size + status];
-      memcpy(bytes, m_incomplete_data, incomplete_size);
-      memcpy(bytes + incomplete_size, buf, status);
-    }
-    ResultCodes parse_rlt = msg.FromBytes(bytes, bytes_size);
-
-    std::cout << "after parse message. result = " << parse_rlt << std::endl;
-    if(parse_rlt == OK){
-      std::cout << "detete bytes, ";
-      delete[]bytes;
-      if(m_incomplete_data != NULL && m_incomplete_size > 0){
-        std::cout << "detete m_incomplete_data, \n ";
-        delete m_incomplete_data;
-        m_incomplete_data = NULL;
-        m_incomplete_size = 0;
-        std::cout << "clear data finish\n";
-      }
-      std::cout << "recv message success\n";
-      return status;
-    } else if(status == MAXRECV){
-      if(m_incomplete_data != NULL && m_incomplete_size > 0){
-        delete m_incomplete_data;
-        m_incomplete_data = NULL;
-      }
-      m_incomplete_data = bytes;
-      m_incomplete_size = bytes_size;
-      std::cout << "incomplete => Recv go on\n";
-      return Recv(msg);
-    } else {
-      std::cout << "recv message fail\n";
-      std::cout << "detete bytes, ";
-      delete[]bytes;
-      std::cout << "detete m_incomplete_data, \n ";
-      if(m_incomplete_data != NULL && m_incomplete_size > 0){
-        delete m_incomplete_data;
-        m_incomplete_data = NULL;
-        m_incomplete_size = 0;
-        std::cout << "clear data finish\n";
-      }
-      return status;
-    }
-  }
-  return status;
-}
-
-*/
 
 void Socket::StatusFolder(const std::string &path_folder, const std::vector<std::string> &path_file,
                           std::vector<std::string> &newfile) {
@@ -791,10 +682,7 @@ void Socket::StatusFolder(const std::string &path_folder, const std::vector<std:
     _path_folder = path_folder;
   }
 
-std::vector<std::string> filename;
-
-
-
+  std::vector<std::string> filename;
   while (pdir = readdir(dir)) {
     struct stat st;
 
@@ -813,23 +701,6 @@ std::vector<std::string> filename;
     } 
   }
 
-
-
-
-
-
-
-
-
-/*  while ((pdir = readdir(dir))) {
-    std::string dname(pdir->d_name);
-    if (dname == "." || dname == ".." ||
-        dname.at(dname.length() - 1) == '~') {
-      continue;
-    }
-    filename.push_back(_path_folder + pdir->d_name);
-  }
-*/
   for (unsigned int i = 0; i < filename.size(); i++) {
     bool foo = false;
     for (unsigned int j = 1; j < path_file.size(); j++) {
@@ -842,11 +713,6 @@ std::vector<std::string> filename;
   }
   closedir(dir);
 }
-
-
-
-
-
 
 bool Socket::SendListFile(const std::vector<std::string> &listfile) {
   for (unsigned int i = 0; i < listfile.size(); i++) {

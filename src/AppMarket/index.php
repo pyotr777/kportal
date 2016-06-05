@@ -1318,7 +1318,7 @@
 					</div>
 					<div data-role="fieldcontain">
 						<label for="provider-editapp-shpath">Template Script File Path</label>
-						<input type="text" data-clear-btn="false" name="provider-newapp-shpath" id="provider-editapp-shpath" class="provider-editapp-input" value="" pattern="[^><$]*" title="without [><$] character" data-clear-btn="true" required>
+						<input type="text" data-clear-btn="false" name="provider-newapp-shpath" id="provider-editapp-shpath" class="provider-editapp-input" value="" pattern="[^><$]*" title="without [><$] character" data-clear-btn="true">
 					</div>
 					
 					
