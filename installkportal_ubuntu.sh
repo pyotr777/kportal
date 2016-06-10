@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 
 skip_kpserver=1
 
@@ -15,7 +15,7 @@ message "Installing K-Portal"
 mkdir -p /install
 cd /install
 message "Install required packages"
-apt-get update
+# apt-get update
 apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget
 
 if [[ -z $skip_kpserver ]]; then 
@@ -38,7 +38,7 @@ fi
 message "Install Apache"
 apt-get install -y apache2 apache2-doc apache2-utils
 message "Check Apache configuration files"
-ls -o /etc/apache2/mods-enabled/ssl.conf
+ls -o /etc/apache2/mods-enabled/ssl.conf 
 ls -o /etc/apache2/apache2.conf
 ls -o /etc/kportal/www/httpd.conf
 ls -o /etc/httpd/conf.d/ssl.conf
