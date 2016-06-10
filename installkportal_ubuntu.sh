@@ -37,9 +37,12 @@ fi
 
 message "Install Apache"
 apt-get install -y apache2 apache2-doc apache2-utils
+a2enmod ssl
+sudo a2ensite default-ssl
 message "Check Apache configuration files"
-#ls -o /etc/apache2/mods-enabled/ssl.conf 
 find /etc/apache2/ -name "*.conf"
+ls -o /etc/apache2/mods-enabled/ssl.conf 
+ls -l /etc/apache2/sites-available/default-ssl.conf
 ls -o /etc/apache2/apache2.conf
 ls -o /etc/kportal/www/httpd.conf
 ls -o /etc/httpd/conf.d/ssl.conf
