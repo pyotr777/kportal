@@ -16,7 +16,7 @@ mkdir -p /install
 cd /install
 message "Install required packages"
 # apt-get update
-apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget
+apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget curl
 
 if [[ -z $skip_kpserver ]]; then 
 message "Installing K-Portal"
@@ -45,9 +45,11 @@ mv /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-available/ssl-default.
 cp ./settings/ssl.conf /etc/apache2/mods-available/ssl.conf
 mv /etc/apache2/httpd.conf /etc/apache2/httpd-default.conf
 cp ./settings/httpd.conf /etc/apache2/httpd.conf
-message "Start Apache2 and check if it works"
-systemctl restart apache2.service
-wget localhost:80
-wget localhost:9005
+message "Restart Apache2 and check if it works"
+service apache2 restart
+ps aux | grep httpd
+ps aux | grep apache
+curl localhost:80
+curl localhost:9005
 
 
