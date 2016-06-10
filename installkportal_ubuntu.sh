@@ -42,9 +42,9 @@ sudo a2ensite default-ssl
 message "Copy configuration files"
 find /etc/apache2/ -name "*.conf"
 mv /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-available/ssl-default.conf
-cp ./settings/ssl.conf /etc/apache2/mods-available/ssl.conf
+cp /home/travis/build/pyotr777/kportal/settings/ssl.conf /etc/apache2/mods-available/ssl.conf
 mv /etc/apache2/httpd.conf /etc/apache2/httpd-default.conf
-cp ./settings/httpd.conf /etc/apache2/httpd.conf
+cp /home/travis/build/pyotr777/kportal/settings/httpd.conf /etc/apache2/httpd.conf
 message "Restart Apache2 and check if it works"
 service apache2 restart
 ps aux | grep httpd
