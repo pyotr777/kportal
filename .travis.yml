@@ -4,6 +4,7 @@ env:
 before_install:
   - sudo apt-get update -qq 
   - sudo useradd -m kportal && pwd && ls -l && lsb_release -a && mkdir -p /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj && touch /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj/testfile
+  - git submodule update --init --recursive  
 install: sudo ./installkportal_ubuntu.sh
 script:
  - cd /home/travis/build/pyotr777/kportal/src && make && sudo make install
