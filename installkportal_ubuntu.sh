@@ -38,7 +38,7 @@ fi
 message "Install Apache"
 apt-get install -y apache2 apache2-doc apache2-utils
 a2enmod ssl
-sudo a2ensite default-ssl
+a2ensite default-ssl
 echo "Create DocumentRoot folder"
 mkdir -p /etc/kportal/www/
 
@@ -63,6 +63,17 @@ mv /etc/apache2/apache2.conf /etc/apache2/apache2-default.conf
 cp /home/travis/build/pyotr777/kportal/settings/apache2.conf /etc/apache2/apache2.conf
 mv /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-available/ssl-default.conf
 cp /home/travis/build/pyotr777/kportal/settings/ssl.conf /etc/apache2/mods-available/ssl.conf
+
+message "Generate SSL certificate and key"
+export country="JP"
+export state="Chiba"
+export locality="Narashino"
+export organization="stair.lab"
+export commonname="*.amazonaws.com"
+export email="kportal.aics.riken@gmail.com"
+openssl req -x509 -nodes -days 1095 -newkey rsa:2048 -out /etc/kportal/www/ssl/server.crt \
+ -keyout /etc/kportal/www/ssl/server.key \
+ -subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname/emailAddress=$email"
 
 message "Restart Apache2 and check if it works"
 service apache2 restart
