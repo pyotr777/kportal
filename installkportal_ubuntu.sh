@@ -39,8 +39,28 @@ message "Install Apache"
 apt-get install -y apache2 apache2-doc apache2-utils
 a2enmod ssl
 sudo a2ensite default-ssl
+
+message "Original configuration files"
+find /etc/apache2/ -name "*.conf" | xargs ls -o
+echo "/etc/apache2/apache2.conf"
+cat /etc/apache2/apache2.conf
+echo "------------------"
+echo ""
+echo "/etc/apache2/httpd.conf"
+cat /etc/apache2/httpd.conf
+echo "------------------"
+echo ""
+echo "/etc/apache2/mods-available/ssl.conf"
+cat /etc/apache2/mods-available/ssl.conf
+echo "------------------"
+echo ""
+echo "/etc/apache2/ports.conf"
+cat /etc/apache2/ports.conf
+echo "------------------"
+echo ""
+
+
 message "Copy configuration files"
-find /etc/apache2/ -name "*.conf"
 mv /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-available/ssl-default.conf
 cp /home/travis/build/pyotr777/kportal/settings/ssl.conf /etc/apache2/mods-available/ssl.conf
 mv /etc/apache2/httpd.conf /etc/apache2/httpd-default.conf
