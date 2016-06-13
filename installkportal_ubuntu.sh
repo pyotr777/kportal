@@ -46,10 +46,6 @@ echo "/etc/apache2/apache2.conf"
 cat /etc/apache2/apache2.conf
 echo "------------------"
 echo ""
-echo "/etc/apache2/httpd.conf"
-cat /etc/apache2/httpd.conf
-echo "------------------"
-echo ""
 echo "/etc/apache2/mods-available/ssl.conf"
 cat /etc/apache2/mods-available/ssl.conf
 echo "------------------"
@@ -59,14 +55,12 @@ cat /etc/apache2/ports.conf
 echo "------------------"
 echo ""
 
-
 message "Copy configuration files"
 mv /etc/apache2/apache2.conf /etc/apache2/apache2-default.conf
 cp /home/travis/build/pyotr777/kportal/settings/apache2.conf /etc/apache2/apache2.conf
 mv /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-available/ssl-default.conf
 cp /home/travis/build/pyotr777/kportal/settings/ssl.conf /etc/apache2/mods-available/ssl.conf
-mv /etc/apache2/httpd.conf /etc/apache2/httpd-default.conf
-cp /home/travis/build/pyotr777/kportal/settings/httpd.conf /etc/apache2/httpd.conf
+
 message "Restart Apache2 and check if it works"
 service apache2 restart
 ps aux | grep httpd
