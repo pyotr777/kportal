@@ -39,6 +39,9 @@ message "Install Apache"
 apt-get install -y apache2 apache2-doc apache2-utils
 a2enmod ssl
 sudo a2ensite default-ssl
+echo "Create DocumentRoot folder"
+mkdir -p /etc/kportal/www/
+
 
 message "Original configuration files"
 find /etc/apache2/ -name "*.conf" | xargs ls -o
