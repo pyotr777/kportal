@@ -39,8 +39,8 @@ message "Install Apache"
 apt-get install -y apache2 apache2-doc apache2-utils
 a2enmod ssl
 a2ensite default-ssl
-echo "Create DocumentRoot folder"
-mkdir -p /etc/kportal/www/
+echo "Create DocumentRoot and SSL folders"
+mkdir -p /etc/kportal/www/ssl/
 
 
 message "Original configuration files"
