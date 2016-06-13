@@ -61,6 +61,8 @@ echo ""
 
 
 message "Copy configuration files"
+mv /etc/apache2/apache2.conf /etc/apache2/apache2-default.conf
+cp /home/travis/build/pyotr777/kportal/settings/apache2.conf /etc/apache2/apache2.conf
 mv /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-available/ssl-default.conf
 cp /home/travis/build/pyotr777/kportal/settings/ssl.conf /etc/apache2/mods-available/ssl.conf
 mv /etc/apache2/httpd.conf /etc/apache2/httpd-default.conf
@@ -71,5 +73,3 @@ ps aux | grep httpd
 ps aux | grep apache
 curl localhost:80
 curl localhost:9005
-
-
