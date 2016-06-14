@@ -19,7 +19,7 @@ message "Install required packages"
 apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget curl
 
 if [[ -z $skip_kpserver ]]; then 
-message "Installing K-Portal"
+	message "Installing K-Portal"
 	export BOOSTVERSION="1.60.0"
 	export BOOSTARCHIVE="boost_1_60_0"
 	message "Installing BOOST $BOOSTVERSION"
@@ -33,6 +33,7 @@ message "Installing K-Portal"
 	cd "$BOOSTARCHIVE"
 	./bootstrap.sh --prefix=/home/kportal/usr
 	./b2 install
+	cd /home/travis/build/pyotr777/kportal/src && make && sudo make install
 fi
 
 echo "Create DocumentRoot and SSL folders"

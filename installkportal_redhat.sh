@@ -32,3 +32,4 @@ fi
 cd "$BOOSTARCHIVE"
 ./bootstrap.sh --prefix=/home/kportal/usr
 ./b2 install
+cd /home/travis/build/pyotr777/kportal/src && make && sudo make install
