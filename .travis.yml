@@ -11,4 +11,6 @@ before_install:
   - git submodule update --init --recursive  
 install: sudo ./installkportal_ubuntu.sh
 script: docker run hello-world
+notifications:
+  slack: stair:XDlg9XLEBRkqAcuhSzQhu6vj
 

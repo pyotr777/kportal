@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -e
 
-skip_kpserver=1
+# skip_kpserver=1
 
 function message {
     echo ""
