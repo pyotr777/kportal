@@ -88,7 +88,6 @@ openssl req -x509 -nodes -days 1095 -newkey rsa:2048 -out /etc/kportal/www/ssl/s
 
 message "Restart Apache2 and check if it works"
 service apache2 restart
-ps aux | grep httpd
 ps aux | grep apache
-curl localhost:80 
+# curl localhost:80 
 curl localhost:9005

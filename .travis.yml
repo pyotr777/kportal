@@ -1,5 +1,7 @@
 language: cpp
 
+services:
+  - docker
 env:
   - BOOST_INCLUDES="/home/kportal/usr/include/boost" BOOST_LIBS="/home/kportal/usr/lib" CPATH="/home/kportal/usr/include/" CPLUS_INCLUDE_PATH="/home/kportal/usr/include/"
 before_install:
@@ -8,5 +10,5 @@ before_install:
   - sudo useradd -m kportal && pwd && ls -l && lsb_release -a && mkdir -p /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj && touch /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj/testfile
   - git submodule update --init --recursive  
 install: sudo ./installkportal_ubuntu.sh
-script: echo "Finished."
+script: docker run hello-world
 
