@@ -35,29 +35,44 @@ message "Installing K-Portal"
 	./b2 install
 fi
 
-message "Install Apache"
-apt-get install -y apache2 apache2-doc apache2-utils
-a2enmod ssl
 echo "Create DocumentRoot and SSL folders"
 mkdir -p /etc/kportal/www/ssl/
 
-
-message "Original configuration files"
-find /etc/apache2/ -name "*.conf" | xargs ls -o
-echo "/etc/apache2/apache2.conf"
-cat /etc/apache2/apache2.conf
-echo "------------------"
-echo ""
-echo "/etc/apache2/ports.conf"
-cat /etc/apache2/ports.conf
-echo "------------------"
-echo ""
-
-message "Copy configuration files"
-mv /etc/apache2/apache2.conf /etc/apache2/apache2-default.conf
-cp /home/travis/build/pyotr777/kportal/settings/ubuntu/apache2.conf /etc/apache2/apache2.conf
-mv /etc/apache2/ports.conf /etc/apache2/ports-default.conf
-cp /home/travis/build/pyotr777/kportal/settings/ubuntu/ports.conf /etc/apache2/ports.conf
+message "Install Apache"
+apt-get install -y apache2 apache2-doc apache2-utils
+a2enmod ssl
+source /etc/apache2/envvars 
+apache_ver=$(apache2 -v | grep -ioP "apache/\K\d\.\d")
+echo "Apache version: $apache_ver"
+if [[ "$apache_ver" == "2.2" ]]; then
+	echo "Apache2.2 configuration scenario"
+	a2ensite default-ssl
+	message "Copy configuration files"
+	mv /etc/apache2/apache2.conf /etc/apache2/apache2-org.conf
+	cp /home/travis/build/pyotr777/kportal/settings/ubuntu12/apache2.conf /etc/apache2/apache2.conf
+	mv /etc/apache2/ports.conf /etc/apache2/ports-org.conf
+	cp /home/travis/build/pyotr777/kportal/settings/ubuntu12/ports.conf /etc/apache2/ports.conf
+	mv /etc/apache2/sites-available/default /etc/apache2/sites-available/default-org
+	cp /home/travis/build/pyotr777/kportal/settings/ubuntu12/default /etc/apache2/sites-available/default
+	mv /etc/apache2/sites-available/default-ssl /etc/apache2/sites-available/default-ssl-org
+	cp /home/travis/build/pyotr777/kportal/settings/ubuntu12/default-ssl /etc/apache2/sites-available/default-ssl
+else
+	message "Original configuration files"
+	find /etc/apache2/ -name "*.conf" | xargs ls -o
+	echo "/etc/apache2/apache2.conf"
+	cat /etc/apache2/apache2.conf
+	echo "------------------"
+	echo ""
+	echo "/etc/apache2/ports.conf"
+	cat /etc/apache2/ports.conf
+	echo "------------------"
+	echo ""
+	message "Copy configuration files"
+	mv /etc/apache2/apache2.conf /etc/apache2/apache2-default.conf
+	cp /home/travis/build/pyotr777/kportal/settings/ubuntu14/apache2.conf /etc/apache2/apache2.conf
+	mv /etc/apache2/ports.conf /etc/apache2/ports-default.conf
+	cp /home/travis/build/pyotr777/kportal/settings/ubuntu14/ports.conf /etc/apache2/ports.conf
+fi
 
 message "Generate SSL certificate and key"
 export country="JP"
