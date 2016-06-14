@@ -1,7 +1,4 @@
-language: php
-
-php:
-  - 5.4 
+language: cpp
 
 env:
   - BOOST_INCLUDES="/home/kportal/usr/include/boost" BOOST_LIBS="/home/kportal/usr/lib" CPATH="/home/kportal/usr/include/" CPLUS_INCLUDE_PATH="/home/kportal/usr/include/"
