@@ -7,7 +7,7 @@ env:
 before_install:
   - lsb_release -a
   - sudo apt-get update -qq 
-  - sudo useradd -m kportal && pwd && ls -l && lsb_release -a && mkdir -p /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj && touch /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj/testfile
+  - sudo useradd -m kportal && pwd && ls -l && mkdir -p /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj && touch /home/travis/build/pyotr777/kportal/src/kdeskdaemon/obj/testfile
   - git submodule update --init --recursive  
 install: sudo ./installkportal_ubuntu.sh
 script: docker run hello-world

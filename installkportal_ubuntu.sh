@@ -1,8 +1,10 @@
 #!/bin/bash
 #set -e
 
-# skip_kpserver=1
-# skip_apache=1
+skip_kpserver=1
+skip_apache=1
+skip_docker=1
+apache_in_container=1
 
 function message {
     echo ""
@@ -35,6 +37,22 @@ if [[ -z $skip_kpserver ]]; then
 	./bootstrap.sh --prefix=/home/kportal/usr
 	./b2 install
 	cd /home/travis/build/pyotr777/kportal/src && make && sudo make install
+fi
+
+if [[ -z $skip_docker ]]; then
+	message "Install Docker"
+	apt-get install -y apt-transport-https ca-certificates
+	apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+	echo "deb https://apt.dockerproject.org/repo ubuntu-precise main" > /etc/apt/sources.list.d/docker.list
+	apt-get update
+	apt-get purge lxc-docker
+	apt-cache policy docker-engine
+	uname -a
+	apt-get install -y docker-engine
+	service docker start
+	docker run hello-world
+	groupadd docker
+	usermod -aG docker kportal
 fi
 
 if [[ -z $skip_apache ]]; then
@@ -93,4 +111,15 @@ if [[ -z $skip_apache ]]; then
 	ps aux | grep apache
 	# curl localhost:80 
 	curl localhost:9005
+
+elif [[ -n $apache_in_container ]]; then 
+	message "Install Apache with SSL in Docker container"
+	cd /home/travis/build/pyotr777/kportal/
+	pwd
+	ls -l
+	docker images
+	docker build --rm -t apachessl .
+	docker images
+	docker run -d -p 80:80 -p 9005:443 -v /etc/kportal/www:/etc/kportal/www --name apache apachessl 
+	docker ps
 fi
