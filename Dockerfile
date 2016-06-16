@@ -2,11 +2,11 @@ FROM ubuntu:14.04
 MAINTAINER Peter Bryzgalov
 
 RUN apt-get update && apt-get install -y apache2 apache2-doc apache2-utils openssl openssh-server
-RUN mkdir -p /etc/kportal/www/ssl/
+# RUN mkdir -p /etc/kportal/www/ssl/
 RUN a2enmod ssl
 RUN a2ensite default-ssl
 ADD settings/ubuntu /settings/ubuntu
-ADD src/AppMarket /etc/kportal/www
+# ADD src/AppMarket /etc/kportal/www
 RUN echo "Copy configuration files"
 # RUN mv /etc/apache2/apache2.conf /etc/apache2/apache2-default.conf
 RUN cp /settings/ubuntu/apache2.conf /etc/apache2/apache2.conf
