@@ -32,7 +32,15 @@ table tr:nth-child(odd) {
 }
 
 table tr:hover {
+    background-color: #fff8e4;
+}
+
+table td:hover {
     background-color: #ffefc4;
+}
+
+table td:active {
+    background-color: #e6c4fc;
 }
 
 /* Automatic Serial Number Row */
@@ -41,8 +49,12 @@ table {
 }
 table td:first-child:before {
     counter-increment: serial-number; /* Increment the serial number counter */
-    content: counter(serial-number); /* Display the counter */    
+    content: counter(serial-number); /* Display the counter */        
 }
+table td:first-child {
+    text-align: right;
+}
+
 note {
     font-family: "Noteworthy", "Comic Sans MS", "Comic Sans", "Helvetica Neue", Arial, fantasy;
     color: #858e8b;
@@ -50,4 +62,15 @@ note {
     font-stretch:expanded;
     letter-spacing: 0.035em;
     padding-left: 10px;
+}
+
+/* Stiky table header */
+/* Not in Chrome */
+table thead {
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;
+    top: 0;
 }
