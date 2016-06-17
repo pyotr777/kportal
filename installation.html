@@ -4,17 +4,20 @@
     <link rel="stylesheet" type="text/css" href=style.css>
 </head>
 <body>
-    <h1>Install k-portal IN AWS EC2 instance</h1>
+    <h1>Install K-portal in AWS EC2 instance</h1>
     <table>
+        <thead>
         <tr>
             <th>#</th>
             <th width="32%">Required</th>
             <th width="32%">Local</th>
             <th width="32%">EC2</th>
         </tr>
+        </thead>
+        <tbody>
         <tr>
             <td>&nbsp;</td>
-            <td>Docker on local machine</td>
+            <td>Docker on local machine or AWS CLI installed</td>
             <td></td>
             <td></td>
         </tr>
@@ -39,13 +42,13 @@
         <tr>
             <td>&nbsp;</td>
             <td></td>
-            <td>[ Create Security Group ]</td>
+            <td>[ Create Key Pair ]</td>
             <td></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td></td>
-            <td>[ Create Key Pair ]</td>
+            <td>[ Create Security Group ] <note>Open ports 22, [80], 9004, 9005</note></td>
             <td></td>
         </tr>
         <tr>
@@ -54,6 +57,12 @@
             <td>Launch instance
             <note>Use Ubuntu in t2.small</note></td>
             <td></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Create user "kportal"</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -71,8 +80,13 @@
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Install Docker
-            <note>Use start_server.sh</note></td>
+            <td>Install Docker <note>Use start_server.sh</note></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Creat group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -228,6 +242,7 @@
             <td></td>
             <td></td>
         </tr>
+        </tbody>
     </table>
 </body>
 </html>
