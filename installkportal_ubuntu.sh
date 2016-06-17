@@ -15,6 +15,7 @@ function message {
 }
 
 message "Installing K-Portal"
+ORG_DIR=$(pwd)
 mkdir -p /install
 cd /install
 message "Install required packages"
@@ -114,10 +115,10 @@ if [[ -z $skip_apache ]]; then
 
 elif [[ -n $apache_in_container ]]; then 
 	message "Install Apache with SSL in Docker container"
-	cd /home/travis/build/pyotr777/kportal/
+	cd $ORG_DIR
 	pwd
 	ls -l
-	docker images
+	echo "Building new image"
 	docker build --rm -t apachessl .
 	docker images
 	docker run -d -p 80:80 -p 9005:443 -v /etc/kportal/www:/etc/kportal/www --name apache apachessl 
