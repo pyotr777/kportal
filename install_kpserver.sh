@@ -1,15 +1,15 @@
 #!/bin/bash
 # Install Boost library, build kp_server, install it.
 
-ORG_DIR = $(pwd)
+ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
-HOME_DIR = $(sudo -u kportal echo $HOME)
+HOME_DIR=$(sudo -u kportal echo $HOME)
 
 mkdir -p /install
 cd /install
 export BOOSTVERSION="1.60.0"
 export BOOSTARCHIVE="boost_1_60_0"
-echo "Installing BOOST $BOOSTVERSION"
+echo "Installing BOOST $BOOSTVERSION into $HOME_DIR/usr"
 if [[ ! -f $BOOSTARCHIVE.tar.bz2 ]]; then
     echo "Downloading boost"
     wget http://heanet.dl.sourceforge.net/project/boost/boost/$BOOSTVERSION/$BOOSTARCHIVE.tar.bz2
@@ -25,3 +25,4 @@ cd $ORG_DIR/src
 export CPLUS_INCLUDE_PATH=$HOME_DIR/usr/include/
 make 
 sudo make install
+cd $ORG_DIR
