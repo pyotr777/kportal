@@ -38,6 +38,11 @@ if [[ -z $skip_docker ]]; then
 	sudo ./install_docker.sh
 fi
 
+# Add user kportal to docker group
+groupadd docker
+usermod -aG docker kportal
+sudo -u kportal docker run hello-world
+
 if [[ -z $skip_apache ]]; then
 	message "Installing Apache with SSL in Docker container"
 	mkdir -p /etc/kportal/www/ssl/
@@ -47,9 +52,7 @@ if [[ -z $skip_apache ]]; then
 fi
 
 message "Start Apache2"
-echo "HOME=$HOME"
-sudo -u kportal whoami
-sudo -u kportal echo "kportal HOME=$HOME"
+
 sudo -u kportal ./src/release/start_apache.sh
 
 # Uncomment before installing Kportal
