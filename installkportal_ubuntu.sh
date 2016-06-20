@@ -39,7 +39,7 @@ if [[ -z $skip_docker ]]; then
 fi
 
 # Add user kportal to docker group
-groupadd docker
+groupadd docker || true
 usermod -aG docker kportal
 sudo -u kportal docker run hello-world
 
