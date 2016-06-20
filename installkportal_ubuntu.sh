@@ -2,7 +2,7 @@
 set -e
 
 #skip_user=1
-#skip_kpserver=1
+skip_kpserver=1
 skip_docker=1
 #skip_apache=1
 
@@ -22,7 +22,7 @@ message "Installing required packages"
 sudo apt-get update
 sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget
 
-if [[ -z $skip_kpserver ]]; then 
+if [[ -z $skip_user ]]; then 
 	message "Create user kportal"
 	sudo useradd -m kportal
 fi
@@ -42,10 +42,14 @@ if [[ -z $skip_apache ]]; then
 	message "Installing Apache with SSL in Docker container"
 	mkdir -p /etc/kportal/www/ssl/
 	echo "Building new image"
+	echo "HOME=$HOME"
 	./install_apache2_docker.sh
 fi
 
 message "Start Apache2"
+echo "HOME=$HOME"
+sudo -u kportal whoami
+sudo -u kportal echo "kportal HOME=$HOME"
 sudo -u kportal ./src/release/start_apache.sh
 
 # Uncomment before installing Kportal
