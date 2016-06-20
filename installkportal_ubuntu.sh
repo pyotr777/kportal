@@ -2,7 +2,7 @@
 set -e
 
 #skip_user=1
-skip_kpserver=1
+#skip_kpserver=1
 skip_docker=1
 #skip_apache=1
 
@@ -52,8 +52,11 @@ if [[ -z $skip_apache ]]; then
 fi
 
 message "Start Apache2"
+# Remove -travis before live install
+sudo -u kportal ./src/release/start_apache.sh -travis 
 
-sudo -u kportal ./src/release/start_apache.sh
+message "Start kp_server"
+sudo -u kportal kp_server.sh 9004 -tls
 
-# Uncomment before installing Kportal
+# Uncomment before live install
 # 	./src/release/start_server.sh
