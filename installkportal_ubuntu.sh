@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+#skip_user=1
 #skip_kpserver=1
 skip_docker=1
 #skip_apache=1
@@ -22,13 +23,20 @@ sudo apt-get update
 sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget
 
 if [[ -z $skip_kpserver ]]; then 
-	message "Installinging K-Portal"
+	message "Create user kportal"
+	sudo useradd -m kportal
+fi
+
+
+if [[ -z $skip_kpserver ]]; then 
+	message "Install K-Portal"
 	./install_kpserver.sh
 fi
 
 if [[ -z $skip_docker ]]; then	
-	message "Installing Docker"
+	message "Install Docker and give permissions to user kportal"
 	sudo ./install_docker.sh
+	./src/release/start_server.sh
 fi
 
 if [[ -z $skip_apache ]]; then
