@@ -6,7 +6,8 @@ before_install:
   - lsb_release -a
   - sudo apt-get update -qq 
   - git submodule update --init --recursive  
-install: sudo ./installkportal_ubuntu.sh
+install: 
+  - travis_wait sudo ./installkportal_ubuntu.sh 
 script: docker run hello-world
 notifications:
   slack: stair:XDlg9XLEBRkqAcuhSzQhu6vj
