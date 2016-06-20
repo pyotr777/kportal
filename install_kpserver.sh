@@ -18,7 +18,9 @@ if [[ ! -d "$BOOSTARCHIVE" ]]; then
     bzip2 -dc "$BOOSTARCHIVE.tar.bz2" | tar xf -
 fi
 cd "$BOOSTARCHIVE"
+echo "Building boost library"
 sudo ./bootstrap.sh --prefix=$HOME_DIR/usr > /install/boostinstall.log
+echo "Installing boost library. Logs are in /install/boostinstall.log."
 sudo ./b2 install >> /install/boostinstall.log
 echo "Building and installing kp_server"
 cd $ORG_DIR/src 
