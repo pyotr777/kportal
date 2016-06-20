@@ -25,3 +25,4 @@ cd $ORG_DIR/src
 export CPLUS_INCLUDE_PATH=$HOME_DIR/usr/include/
 make 
 sudo make install
+cd $ORG_DIR
