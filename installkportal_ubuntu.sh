@@ -36,7 +36,6 @@ fi
 if [[ -z $skip_docker ]]; then	
 	message "Install Docker and give permissions to user kportal"
 	sudo ./install_docker.sh
-	./src/release/start_server.sh
 fi
 
 if [[ -z $skip_apache ]]; then
@@ -48,3 +47,6 @@ fi
 
 message "Start Apache2"
 sudo -u kportal ./src/release/start_apache.sh
+
+# Uncomment before installing Kportal
+# 	./src/release/start_server.sh
