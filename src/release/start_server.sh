@@ -1,6 +1,7 @@
 #!/bin/bash
-# Start apache
-sudo service httpd start
+#
+# Start Docker on port 9555 of localhost on bridge0 if,
+# create bridge0 if not exists.
 
 # Stop docker
 sudo service docker stop
@@ -14,5 +15,5 @@ if [ ! "$(brctl show | grep bridge0)" ]; then
 fi
 docker -H 127.0.0.1:9555 images &>/dev/null
 if [[ "$?"=="1" ]]; then
-    sudo docker daemon -D -H 127.0.0.1:9555 -b=bridge0 --storage-driver=devicemapper --storage-opt dm.datadev=/dev/vg-docker/data --storage-opt dm.metadatadev=/dev/vg-docker/metadata &
+    sudo docker daemon -D -H 127.0.0.1:9555 -b=bridge0 &
 fi

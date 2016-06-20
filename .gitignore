@@ -5,6 +5,7 @@
 *.zip
 *.log
 *.o
+*.pem
 /doc/*
 **/*-back
 /sample_application/C_MPI/src/.*
