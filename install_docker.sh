@@ -10,6 +10,3 @@ apt-cache policy docker-engine
 uname -a
 apt-get install -y docker-engine
 service docker start
-docker run hello-world
-groupadd docker
-usermod -aG docker kportal
