@@ -16,8 +16,8 @@ if [ ! -d "$LOGDIR" ]; then
 	mkdir -p "$LOGDIR"
 fi
 /bin/kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log
-PID=$!
-echo "Is kp_server running?"
+PID="$!"
+echo "Is kp_server running? PID=$PID"
 ps aux | grep "$PID"
 echo "Check kp_server logs"
 echo "STDOUT"
