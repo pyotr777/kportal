@@ -48,7 +48,7 @@ fi
 # Add user kportal to docker group
 groupadd docker || true
 usermod -aG docker kportal
-sudo su kportal -c docker run hello-world
+sudo su kportal -c "docker run hello-world"
 
 if [[ -z $skip_apache ]]; then
 	message "Installing Apache with SSL in Docker container"
