@@ -46,8 +46,8 @@ if [[ -z $skip_docker ]]; then
 fi
 
 # Add user kportal to docker group
-groupadd docker || true
-usermod -aG docker kportal
+sudo groupadd docker || true
+sudo usermod -aG docker kportal
 sudo su kportal -c "docker run hello-world"
 
 if [[ -z $skip_apache ]]; then
@@ -63,9 +63,9 @@ fi
 # sudo su kportal -c ./src/release/start_apache.sh
 
 # Uncomment before live install
-# message "Start kp_server"
-# sudo -E su kportal -c kp_server.sh 9004 -tls
-
-# Uncomment before live install
 # Restarts Docker daemon on port 9555
 # sudo ./src/release/start_server.sh
+
+# Uncomment before live install
+# message "Start kp_server"
+# sudo -E su kportal -c kp_server.sh 9004 -tls
