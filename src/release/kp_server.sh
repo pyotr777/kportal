@@ -1,5 +1,5 @@
 #!/bin/bash
-HOME_DIR=$(sudo -u kportal echo $HOME)
+HOME_DIR=$HOME
 LOGDIR="$HOME_DIR/log"
 echo "Starting kp_server. HOME_DIR=$HOME_DIR, LOGDIR=$LOGDIR."
 if [ -z  "$LD_LIBRARY_PATH" ]; then 
