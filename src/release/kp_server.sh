@@ -16,3 +16,8 @@ if [ ! -d "$LOGDIR" ]; then
 	mkdir -p "$LOGDIR"
 fi
 /bin/kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log
+echo "Check kp_server logs"
+echo "STDOUT"
+cat $LOGDIR/stdout.log
+echo "STDERR"
+$LOGDIR/stderr.log
