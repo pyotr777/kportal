@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 HOME_DIR=$(sudo -u kportal echo $HOME)
 LOGDIR="$HOME_DIR/log"
 echo "Starting kp_server. HOME_DIR=$HOME_DIR, LOGDIR=$LOGDIR."
