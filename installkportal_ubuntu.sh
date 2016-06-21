@@ -2,7 +2,7 @@
 set -e
 
 #skip_user=1
-skip_kpserver=1
+#skip_kpserver=1
 skip_docker=1
 #skip_apache=1
 
@@ -41,7 +41,7 @@ fi
 # Add user kportal to docker group
 groupadd docker || true
 usermod -aG docker kportal
-sudo -u kportal docker run hello-world
+sudo su kportal -c docker run hello-world
 
 if [[ -z $skip_apache ]]; then
 	message "Installing Apache with SSL in Docker container"
@@ -53,11 +53,12 @@ fi
 
 # Uncomment before live install
 # message "Start Apache2"
-# sudo -u kportal ./src/release/start_apache.sh
+# sudo su kportal -c ./src/release/start_apache.sh
 
 # Uncomment before live install
 # message "Start kp_server"
-# sudo -u kportal kp_server.sh 9004 -tls
+# sudo -E su kportal -c kp_server.sh 9004 -tls
 
 # Uncomment before live install
-# 	./src/release/start_server.sh
+# Restarts Docker daemon on port 9555
+# sudo ./src/release/start_server.sh
