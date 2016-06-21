@@ -9,7 +9,9 @@ install:
 script: 
   - travis_wait sudo ./installkportal_ubuntu.sh 
   - echo "Test user kportal HOME"
-  - sudo -u kportal echo $HOME
+  - sudo -E su kportal -c 'whoami; echo $HOME'
+  - sudo su kportal -c 'whoami; echo $HOME'
+  - sudo -u kportal -c 'whoami; echo $HOME'
   - sudo -u kportal ./src/release/start_apache.sh -travis 
   - sudo -u kportal kp_server.sh 9004 -tls
   - sudo -u kportal docker ps | grep apache
