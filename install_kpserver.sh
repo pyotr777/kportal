@@ -3,8 +3,8 @@
 
 ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
-HOME_DIR=$(sudo -u kportal echo $HOME)
-
+HOME_DIR=$(sudo su kportal -c "echo $HOME")
+echo "HOME_DIR=$HOME_DIR"
 mkdir -p /install
 cd /install
 export BOOSTVERSION="1.60.0"
@@ -22,10 +22,14 @@ echo "Building boost library"
 sudo ./bootstrap.sh --prefix=$HOME_DIR/usr > /install/boostinstall.log
 echo "Installing boost library. Logs are in /install/boostinstall.log."
 sudo ./b2 install >> /install/boostinstall.log
+echo "Boost installed into $HOME_DIR/usr?"
+ls -l $HOME_DIR/usr/include/
+ls -l $HOME_DIR/usr/lib/
 echo "Building and installing kp_server"
 cd $ORG_DIR/src 
 export CPLUS_INCLUDE_PATH=$HOME_DIR/usr/include/
-make 
+echo $CPLUS_INCLUDE_PATH
+sudo su kportal -c "make"
 sudo make install
 echo "Check kp_server installation"
 echo "PATH=$PATH"

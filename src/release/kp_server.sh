@@ -18,7 +18,9 @@ fi
 kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log
 PID="$!"
 echo "Is kp_server running? PID=$PID"
-ps aux | grep "$PID"
+if [[ "$PID" ]]; then
+	ps aux | grep "$PID"
+fi
 echo "Check kp_server logs"
 echo "STDOUT"
 cat $LOGDIR/stdout.log

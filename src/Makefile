@@ -25,14 +25,14 @@ install:
 	$(CP) -rf ssl/ $(PREFIX)
 	$(CP) -rf $(APPMARKET_DIR) $(DOCUMENT_ROOT)
 	$(CP) $(RELEASE_DIR)/kdeskdaemon $(BIN_DIR)/
-	chmod 666  /bin/kdeskdaemon
+	chmod 666  $(BIN_DIR)/kdeskdaemon
 	$(CP) $(RELEASE_DIR)/start_server.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_server.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_server $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_tool $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/$(DEFAULT_JOBSH_FILE) $(PREFIX)
 	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)
-
+	$(info Installed kp_server to $(BIN_DIR).)
 	chmod 777 -R $(PREFIX)	
 uninstall:
 	rm -rf $(PREFIX)
