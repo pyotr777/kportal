@@ -10,7 +10,7 @@ APPMARKET_DIR = ./AppMarket
 DOCUMENT_ROOT = $(PREFIX)/www
 KPTOOL_DIR = ./kptool
 INCLUDE = ./include
-
+BIN_DIR = /usr/local/bin
 
 all: 
 	$(CD) $(INCLUDE)/libtar-1.2.11; make; cp lib/libtar.a  ../../lib
@@ -24,12 +24,12 @@ install:
 	mkdir -p $(PREFIX)/log
 	$(CP) -rf ssl/ $(PREFIX)
 	$(CP) -rf $(APPMARKET_DIR) $(DOCUMENT_ROOT)
-	$(CP) $(RELEASE_DIR)/kdeskdaemon /bin/
+	$(CP) $(RELEASE_DIR)/kdeskdaemon $(BIN_DIR)/
 	chmod 666  /bin/kdeskdaemon
-	$(CP) $(RELEASE_DIR)/start_server.sh /bin/
-	$(CP) $(RELEASE_DIR)/kp_server.sh /bin/
-	$(CP) $(RELEASE_DIR)/kp_server /bin/
-	$(CP) $(RELEASE_DIR)/kp_tool /bin/
+	$(CP) $(RELEASE_DIR)/start_server.sh $(BIN_DIR)/
+	$(CP) $(RELEASE_DIR)/kp_server.sh $(BIN_DIR)/
+	$(CP) $(RELEASE_DIR)/kp_server $(BIN_DIR)/
+	$(CP) $(RELEASE_DIR)/kp_tool $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/$(DEFAULT_JOBSH_FILE) $(PREFIX)
 	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)
 

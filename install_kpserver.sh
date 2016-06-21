@@ -27,4 +27,8 @@ cd $ORG_DIR/src
 export CPLUS_INCLUDE_PATH=$HOME_DIR/usr/include/
 make 
 sudo make install
+echo "Check kp_server installation"
+echo "PATH=$PATH"
+which kp_server
+ls -l $(which kp_server)
 cd $ORG_DIR
