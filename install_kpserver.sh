@@ -5,8 +5,9 @@ ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
 HOME_DIR=$(sudo su kportal -c "echo $HOME")
 echo "HOME_DIR=$HOME_DIR"
-mkdir -p /install
-cd /install
+INSTALL_DIR="$HOME_DIR/install"
+mkdir -p $INSTALL_DIR
+cd $INSTALL_DIR
 export BOOSTVERSION="1.60.0"
 export BOOSTARCHIVE="boost_1_60_0"
 echo "Installing BOOST $BOOSTVERSION into $HOME_DIR/usr"
@@ -19,9 +20,9 @@ if [[ ! -d "$BOOSTARCHIVE" ]]; then
 fi
 cd "$BOOSTARCHIVE"
 echo "Building boost library"
-sudo ./bootstrap.sh --prefix=$HOME_DIR/usr > /install/boostinstall.log
-echo "Installing boost library. Logs are in /install/boostinstall.log."
-sudo ./b2 install >> /install/boostinstall.log
+sudo ./bootstrap.sh --prefix=$HOME_DIR/usr > $INSTALL_DIR/boostinstall.log
+echo "Installing boost library. Logs are in $INSTALL_DIR/boostinstall.log."
+sudo ./b2 install >> $INSTALL_DIR/boostinstall.log
 echo "Boost installed into $HOME_DIR/usr?"
 ls -l $HOME_DIR/usr/include/
 ls -l $HOME_DIR/usr/lib/
