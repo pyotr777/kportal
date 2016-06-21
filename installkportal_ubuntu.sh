@@ -24,7 +24,7 @@ sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python
 
 if [[ -z $skip_user ]]; then 
 	message "Create user kportal"
-	sudo useradd -m kportal
+	sudo useradd -m kportal || true
 	echo "Create directory for kp_server logs"
 	KP_HOME=$(sudo su kportal -c 'echo $HOME')
 	echo "KP_HOME=$KP_HOME"
