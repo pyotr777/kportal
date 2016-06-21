@@ -8,6 +8,10 @@ install:
   - git submodule update --init --recursive  
 script: 
   - travis_wait sudo ./installkportal_ubuntu.sh 
+  - echo "Test user kportal HOME"
+  - sudo -u kportal echo $HOME
+  - sudo -u kportal ./src/release/start_apache.sh -travis 
+  - sudo -u kportal kp_server.sh 9004 -tls
   - sudo -u kportal docker ps | grep apache
   - sudo lsof -i -n -P | grep 80
   - sudo lsof -i -n -P | grep 9004

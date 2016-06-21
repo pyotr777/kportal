@@ -51,12 +51,13 @@ if [[ -z $skip_apache ]]; then
 	./install_apache2_docker.sh
 fi
 
-message "Start Apache2"
-# Remove -travis before live install
-sudo -u kportal ./src/release/start_apache.sh -travis 
+# Uncomment before live install
+# message "Start Apache2"
+# sudo -u kportal ./src/release/start_apache.sh
 
-message "Start kp_server"
-sudo -u kportal kp_server.sh 9004 -tls
+# Uncomment before live install
+# message "Start kp_server"
+# sudo -u kportal kp_server.sh 9004 -tls
 
 # Uncomment before live install
 # 	./src/release/start_server.sh
