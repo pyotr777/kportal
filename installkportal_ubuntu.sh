@@ -30,6 +30,7 @@ if [[ -z $skip_user ]]; then
 	echo "KP_HOME=$KP_HOME"
 	sudo mkdir -p "$KP_HOME/log"
 	sudo chown kportal:kportal "$KP_HOME/log"
+	sudo chmod 777 "$KP_HOME/log"
 	ls -la "$KP_HOME"
 fi
 
