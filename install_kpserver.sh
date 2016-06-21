@@ -3,7 +3,7 @@
 
 ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
-HOME_DIR=$(sudo su kportal -c "echo $HOME")
+HOME_DIR=$(sudo su kportal -c 'echo $HOME')
 echo "HOME_DIR=$HOME_DIR"
 INSTALL_DIR="$HOME_DIR/install"
 mkdir -p $INSTALL_DIR

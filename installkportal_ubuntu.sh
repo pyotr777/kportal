@@ -64,8 +64,8 @@ fi
 
 # Uncomment before live install
 # Restarts Docker daemon on port 9555
-# sudo ./src/release/start_server.sh
+# sudo ./src/release/start_server.sh &
 
 # Uncomment before live install
 # message "Start kp_server"
-# sudo -E su kportal -c kp_server.sh 9004 -tls
+# sudo -E su kportal -c kp_server.sh 9004 -tls &
