@@ -10,7 +10,7 @@ script:
   - travis_wait sudo ./installkportal_ubuntu.sh 
   - sudo su kportal -c 'whoami; echo $HOME'
   - sudo su kportal -c './src/release/start_apache.sh -travis'
-  - sudo su kportal -c 'kp_server.sh 9004 -tls'
+  - sudo su kportal -c 'kp_server.sh 9004 -tls &'
   - sudo su kportal -c 'docker ps | grep apache'
   - sudo lsof -i -n -P | grep 80
   - sudo lsof -i -n -P | grep 9004
