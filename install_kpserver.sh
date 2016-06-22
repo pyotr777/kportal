@@ -5,18 +5,18 @@ ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
 HOME_DIR=$(sudo su kportal -c 'echo $HOME')
 echo "HOME_DIR=$HOME_DIR"
-INSTALL_DIR="$HOME/install"
-mkdir -p $INSTALL_DIR
+INSTALL_DIR="$HOME_DIR/install"
+sudo mkdir -p $INSTALL_DIR
 cd $INSTALL_DIR
 export BOOSTVERSION="1.60.0"
 export BOOSTARCHIVE="boost_1_60_0"
 echo "Installing BOOST $BOOSTVERSION into $HOME_DIR/usr"
 if [[ ! -f $BOOSTARCHIVE.tar.bz2 ]]; then
     echo "Downloading boost"
-    wget -nv http://heanet.dl.sourceforge.net/project/boost/boost/$BOOSTVERSION/$BOOSTARCHIVE.tar.bz2
+    sudo -E su kportal -c 'wget -nv http://heanet.dl.sourceforge.net/project/boost/boost/$BOOSTVERSION/$BOOSTARCHIVE.tar.bz2'
 fi
 if [[ ! -d "$BOOSTARCHIVE" ]]; then
-    bzip2 -dc "$BOOSTARCHIVE.tar.bz2" | tar xf -
+    sudo -E su kportal -c 'bzip2 -dc "$BOOSTARCHIVE.tar.bz2" | tar xf -'
 fi
 cd "$BOOSTARCHIVE"
 echo "Building boost library"

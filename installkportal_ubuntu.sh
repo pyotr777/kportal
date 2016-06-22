@@ -29,9 +29,14 @@ if [[ -z $skip_user ]]; then
 	KP_HOME=$(sudo su kportal -c 'echo $HOME')
 	echo "KP_HOME=$KP_HOME"
 	sudo mkdir -p "$KP_HOME/log"
-	sudo chown kportal:kportal "$KP_HOME/log"
+	sudo chown -R kportal:kportal "$KP_HOME/log"
 	sudo chmod 777 "$KP_HOME/log"
-	ls -la "$KP_HOME"
+	# Move source code  to /home/kportal/src
+	if [[ ! -d "$KP_HOME/src" ]]; then
+		sudo mv ./src "$KP_HOME/"
+		sudo chown -R kportal:kportal "$KP_HOME/src"
+	fi
+	ls -la "$KP_HOME/src"
 fi
 
 
