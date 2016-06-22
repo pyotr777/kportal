@@ -68,10 +68,16 @@ fi
 # Uncomment before live install
 message "Restarting Docker daemon on port 9555"
 sudo $KP_HOME/src/release/start_server.sh &
+ip a s
+echo "Check docker"
+echo "Docker on UNIX soket?"
+docker ps
+echo "Docker on 9555?"
+docker -H localhost:9555 ps
 
 # Uncomment before live install
 message "Starting Apache2"
-sudo su kportal -c '$KP_HOME/src/release/start_apache.sh'
+sudo su kportal -c "$KP_HOME/src/release/start_apache.sh"
 
 # Uncomment before live install
 message "Starting kp_server"
