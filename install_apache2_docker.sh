@@ -2,5 +2,5 @@
 # Build Docker image with Apache2 with ssl support
 
 echo "Building apachessl Docker image"
-docker build --rm -t apachessl .
-docker images
+sudo docker build --rm -t apachessl .
+sudo docker images

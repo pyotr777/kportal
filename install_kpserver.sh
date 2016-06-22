@@ -5,7 +5,7 @@ ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
 HOME_DIR=$(sudo su kportal -c 'echo $HOME')
 echo "HOME_DIR=$HOME_DIR"
-INSTALL_DIR="$HOME_DIR/install"
+INSTALL_DIR="$HOME/install"
 mkdir -p $INSTALL_DIR
 cd $INSTALL_DIR
 export BOOSTVERSION="1.60.0"
@@ -13,7 +13,7 @@ export BOOSTARCHIVE="boost_1_60_0"
 echo "Installing BOOST $BOOSTVERSION into $HOME_DIR/usr"
 if [[ ! -f $BOOSTARCHIVE.tar.bz2 ]]; then
     echo "Downloading boost"
-    wget http://heanet.dl.sourceforge.net/project/boost/boost/$BOOSTVERSION/$BOOSTARCHIVE.tar.bz2
+    wget -nv http://heanet.dl.sourceforge.net/project/boost/boost/$BOOSTVERSION/$BOOSTARCHIVE.tar.bz2
 fi
 if [[ ! -d "$BOOSTARCHIVE" ]]; then
     bzip2 -dc "$BOOSTARCHIVE.tar.bz2" | tar xf -
@@ -30,7 +30,9 @@ echo "Building and installing kp_server"
 cd $ORG_DIR/src 
 export CPLUS_INCLUDE_PATH=$HOME_DIR/usr/include/
 echo $CPLUS_INCLUDE_PATH
-make
+# Test environment in sudo su
+sudo -E su kportal -c 'env | grep -i "include"'
+sudo -E su kportal -c 'make'
 sudo make install
 echo "Check kp_server installation"
 echo "PATH=$PATH"
