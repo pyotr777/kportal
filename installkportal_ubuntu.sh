@@ -18,12 +18,12 @@ message "Installing K-Portal"
 ORG_DIR=$(pwd)
 echo "ORG_DIR=$ORG_DIR"
 echo "HOME   =$HOME"
-message "Installing required packages"
+message "0. Installing required packages"
 sudo apt-get update
 sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make
 
 if [[ -z $skip_user ]]; then 
-	message "Create user kportal"
+	message "1. Create user kportal"
 	sudo useradd -m kportal || true
 	echo "Create directory for kp_server logs"
 	KP_HOME=$(sudo su kportal -c 'echo $HOME')
@@ -42,12 +42,12 @@ fi
 
 
 if [[ -z $skip_kpserver ]]; then 
-	message "Install kp_server"
+	message "2. Install kp_server"
 	./install_kpserver.sh
 fi
 
 if [[ -z $skip_docker ]]; then	
-	message "Install Docker and give permissions to user kportal"
+	message "3. Install Docker and give permissions to user kportal"
 	sudo ./install_docker.sh
 fi
 
@@ -57,7 +57,7 @@ sudo usermod -aG docker kportal || true
 sudo su kportal -c "docker run hello-world" || true
 
 if [[ -z $skip_apache ]]; then
-	message "Installing Apache with SSL in Docker container"
+	message "4. Installing Apache with SSL in Docker container"
 	sudo mkdir -p /etc/kportal/www/ssl/
 	sudo chown -R kportal:kportal /etc/kportal
 	echo "Building new image"
@@ -67,21 +67,21 @@ fi
 
 # Uncomment before live install
 cd "$KP_HOME"
-message "Restarting Docker daemon on port 9555"
+message "5. Restarting Docker daemon on port 9555"
 src/release/start_server.sh
 ip a s
 echo "Check docker"
 echo "Docker on UNIX soket?"
-docker ps || true
+sudo -E su kportal -c 'docker ps' || true
 echo "Docker on 9555?"
-docker -H localhost:9555 ps || true
+sudo -E su kportal -c 'docker -H localhost:9555 ps' || true
 
 # Uncomment before live install
-message "Starting Apache2"
-sudo su kportal -c "src/release/start_apache.sh"
+message "6. Starting Apache2"
+sudo -E su kportal -c "src/release/start_apache.sh"
 
 # Uncomment before live install
-message "Starting kp_server"
+message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls &'
 
 cd "$ORG_DIR"
