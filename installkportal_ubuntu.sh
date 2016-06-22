@@ -67,11 +67,11 @@ fi
 
 # Uncomment before live install
 #message "Restarting Docker daemon on port 9555"
-#sudo './src/release/start_server.sh &'
+#sudo '$KP_HOME/src/release/start_server.sh &'
 
 # Uncomment before live install
 #message "Starting Apache2"
-#sudo su kportal -c './src/release/start_apache.sh'
+#sudo su kportal -c '$KP_HOME/src/release/start_apache.sh'
 
 # Uncomment before live install
 #message "Starting kp_server"
