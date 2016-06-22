@@ -8,7 +8,7 @@ install:
   - sudo apt-get install socat
   - git submodule update --init --recursive  
 script: 
-  - travis_wait sudo ./installkportal_ubuntu.sh 
+  - travis_wait 25 sudo ./installkportal_ubuntu.sh 
   - sudo su kportal -c 'whoami; echo $HOME'
   - sudo su kportal -c './src/release/start_apache.sh -travis'
   - sudo su kportal -c 'docker ps | grep apache'

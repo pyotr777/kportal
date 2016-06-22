@@ -23,6 +23,8 @@ fi
 sudo chmod -R 777 "$BOOSTARCHIVE"
 cd "$BOOSTARCHIVE"
 echo "Building boost library"
+sudo touch $INSTALL_DIR/boostinstall.log
+sudo chmod 666 $INSTALL_DIR/boostinstall.log
 sudo ./bootstrap.sh --prefix=$KP_HOME/usr > $INSTALL_DIR/boostinstall.log
 echo "Installing boost library. Logs are in $INSTALL_DIR/boostinstall.log."
 sudo ./b2 install >> $INSTALL_DIR/boostinstall.log
