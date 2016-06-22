@@ -6,8 +6,10 @@ echo "Came from $ORG_DIR"
 HOME_DIR=$(sudo su kportal -c 'echo $HOME')
 echo "HOME_DIR=$HOME_DIR"
 INSTALL_DIR="$HOME_DIR/install"
-sudo mkdir -p $INSTALL_DIR
-cd $INSTALL_DIR
+sudo mkdir -p "$INSTALL_DIR"
+sudo chown -R kportal:kportal "$INSTALL_DIR"
+cd "$INSTALL_DIR"
+echo "Saving boost in $(pwd)."
 export BOOSTVERSION="1.60.0"
 export BOOSTARCHIVE="boost_1_60_0"
 echo "Installing BOOST $BOOSTVERSION into $HOME_DIR/usr"

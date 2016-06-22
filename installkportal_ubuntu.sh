@@ -36,7 +36,8 @@ if [[ -z $skip_user ]]; then
 		sudo mv ./src "$KP_HOME/"
 		sudo chown -R kportal:kportal "$KP_HOME/src"
 	fi
-	ls -la "$KP_HOME/src"
+	echo "Source code in $KP_HOME (src dir)?"
+	ls -la "$KP_HOME"
 fi
 
 
