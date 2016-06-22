@@ -20,7 +20,7 @@ echo "ORG_DIR=$ORG_DIR"
 echo "HOME   =$HOME"
 message "Installing required packages"
 sudo apt-get update
-sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget
+sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make
 
 if [[ -z $skip_user ]]; then 
 	message "Create user kportal"
@@ -36,7 +36,7 @@ fi
 
 
 if [[ -z $skip_kpserver ]]; then 
-	message "Install K-Portal"
+	message "Install kp_server"
 	./install_kpserver.sh
 fi
 
@@ -52,7 +52,8 @@ sudo su kportal -c "docker run hello-world"
 
 if [[ -z $skip_apache ]]; then
 	message "Installing Apache with SSL in Docker container"
-	mkdir -p /etc/kportal/www/ssl/
+	sudo mkdir -p /etc/kportal/www/ssl/
+	sudo chown -R kportal:kportal /etc/kportal
 	echo "Building new image"
 	echo "HOME=$HOME"
 	./install_apache2_docker.sh
