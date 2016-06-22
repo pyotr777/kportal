@@ -16,4 +16,4 @@ else
 	echo "Cannot access Docker daemon."
 fi
 echo "Running containers"
-docker ps
+docker $DOCKER_HOST ps

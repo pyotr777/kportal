@@ -66,13 +66,13 @@ if [[ -z $skip_apache ]]; then
 fi
 
 # Uncomment before live install
-# message "Start Apache2"
-# sudo su kportal -c ./src/release/start_apache.sh
+#message "Restarting Docker daemon on port 9555"
+#sudo './src/release/start_server.sh &'
 
 # Uncomment before live install
-# Restarts Docker daemon on port 9555
-# sudo ./src/release/start_server.sh &
+#message "Starting Apache2"
+#sudo su kportal -c './src/release/start_apache.sh'
 
 # Uncomment before live install
-# message "Start kp_server"
-# sudo -E su kportal -c kp_server.sh 9004 -tls &
+#message "Starting kp_server"
+#sudo -E su kportal -c 'kp_server.sh 9004 -tls &'
