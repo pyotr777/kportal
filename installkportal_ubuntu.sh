@@ -53,8 +53,8 @@ fi
 
 # Add user kportal to docker group
 sudo groupadd docker || true
-sudo usermod -aG docker kportal
-sudo su kportal -c "docker run hello-world"
+sudo usermod -aG docker kportal || true
+sudo su kportal -c "docker run hello-world" || true
 
 if [[ -z $skip_apache ]]; then
 	message "Installing Apache with SSL in Docker container"
@@ -66,19 +66,22 @@ if [[ -z $skip_apache ]]; then
 fi
 
 # Uncomment before live install
+cd "$KP_HOME"
 message "Restarting Docker daemon on port 9555"
-sudo $KP_HOME/src/release/start_server.sh &
+src/release/start_server.sh
 ip a s
 echo "Check docker"
 echo "Docker on UNIX soket?"
-docker ps
+docker ps || true
 echo "Docker on 9555?"
-docker -H localhost:9555 ps
+docker -H localhost:9555 ps || true
 
 # Uncomment before live install
 message "Starting Apache2"
-sudo su kportal -c "$KP_HOME/src/release/start_apache.sh"
+sudo su kportal -c "src/release/start_apache.sh"
 
 # Uncomment before live install
 message "Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls &'
+
+cd "$ORG_DIR"

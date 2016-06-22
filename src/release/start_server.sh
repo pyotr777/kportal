@@ -17,3 +17,8 @@ docker -H 127.0.0.1:9555 images &>/dev/null
 if [[ "$?"=="1" ]]; then
     sudo docker daemon -D -H 127.0.0.1:9555 -b=bridge0 &
 fi
+# If Docker couldnt start on 9555, run socat 
+docker -H 127.0.0.1:9555 images &>/dev/null
+if [[ "$?"=="1" ]]; then
+	sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
+fi
