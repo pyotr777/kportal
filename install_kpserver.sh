@@ -20,6 +20,7 @@ fi
 if [[ ! -d "$BOOSTARCHIVE" ]]; then
     sudo -E su kportal -c 'bzip2 -dc "$BOOSTARCHIVE.tar.bz2" | tar xf -'
 fi
+sudo chmod -R 777 "$BOOSTARCHIVE"
 cd "$BOOSTARCHIVE"
 echo "Building boost library"
 sudo ./bootstrap.sh --prefix=$HOME_DIR/usr > $INSTALL_DIR/boostinstall.log
