@@ -6,8 +6,10 @@ echo "Came from $ORG_DIR"
 KP_HOME=$(sudo su kportal -c 'echo $HOME')
 echo "KP_HOME=$KP_HOME"
 INSTALL_DIR="$KP_HOME/install"
-sudo mkdir -p "$INSTALL_DIR"
+sudo -E su kportal -c 'mkdir -p "$INSTALL_DIR"'
 sudo chown -R kportal:kportal "$INSTALL_DIR"
+echo "Created $INSTALL_DIR:"
+ls -l $INSTALL_DIR
 cd "$INSTALL_DIR"
 echo "Saving boost in $(pwd)."
 export BOOSTVERSION="1.60.0"
@@ -29,7 +31,7 @@ sudo ./bootstrap.sh --prefix=$KP_HOME/usr > $INSTALL_DIR/boostinstall.log
 echo "Installing boost library. Logs are in $INSTALL_DIR/boostinstall.log."
 sudo ./b2 install >> $INSTALL_DIR/boostinstall.log
 echo "Boost installed into $KP_HOME/usr?"
-ls -l $KP_HOME/usr/include/
+# ls -l $KP_HOME/usr/include/
 ls -l $KP_HOME/usr/lib/
 echo "Building and installing kp_server"
 cd $KP_HOME/src 
@@ -37,7 +39,7 @@ export CPLUS_INCLUDE_PATH=$KP_HOME/usr/include/
 echo $CPLUS_INCLUDE_PATH
 # Test environment in sudo su
 sudo -E su kportal -c 'env | grep -i "include"'
-sudo -E su kportal -c 'make' > $INSTALL_DIR/make.log
+sudo -E su kportal -c 'make > $INSTALL_DIR/make.log'
 sudo make install
 echo "Check kp_server installation"
 which kp_server

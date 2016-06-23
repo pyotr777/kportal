@@ -32,7 +32,7 @@ install:
 	$(CP) $(RELEASE_DIR)/kp_tool $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/$(DEFAULT_JOBSH_FILE) $(PREFIX)
 	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)
-	$(info Installed kp_server to $(BIN_DIR).)
+	$(info Finished installing kp_server to $(BIN_DIR).)
 	chmod 777 -R $(PREFIX)	
 uninstall:
 	rm -rf $(PREFIX)
