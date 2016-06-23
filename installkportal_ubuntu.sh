@@ -19,11 +19,15 @@ function message {
 
 message "Installing K-Portal"
 ORG_DIR=$(pwd)
+LOGDIR="$ORG_DIR/logs"
 echo "ORG_DIR=$ORG_DIR"
 echo "HOME   =$HOME"
+echo "LOGDIR =$LOGDIR"
+mkdir -p "$LOGDIR"
+
 message "0. Installing required packages"
-sudo apt-get update
-sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make
+sudo apt-get update > "$LOGDIR/update.log"
+sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make > "$LOGDIR/install.log"
 
 if [[ -z $skip_user ]]; then 
 	message "1. Create user kportal"
