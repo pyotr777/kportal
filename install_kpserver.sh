@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # Install Boost library, build kp_server, install it.
 
 ORG_DIR=$(pwd)
@@ -32,15 +32,15 @@ sudo ./bootstrap.sh --prefix=$KP_HOME/usr > $INSTALL_DIR/boostinstall.log
 echo "Installing boost library. Logs are in $INSTALL_DIR/boostinstall.log."
 sudo ./b2 install >> $INSTALL_DIR/boostinstall.log
 echo "Boost installed into $KP_HOME/usr?"
-# ls -l $KP_HOME/usr/include/
-ls -l $KP_HOME/usr/lib/
+ls -l $KP_HOME/usr/
 echo "Building and installing kp_server"
 cd $KP_HOME/src 
 export CPLUS_INCLUDE_PATH=$KP_HOME/usr/include/
-echo $CPLUS_INCLUDE_PATH
 # Test environment in sudo su
+sudo touch $INSTALL_DIR/make.log
+sudo chmod 666 $INSTALL_DIR/make.log
 sudo -E su -p kportal -c 'env | grep -i "include"'
-sudo -E su -p kportal -c 'make > $INSTALL_DIR/make.log'
+sudo -E su -p kportal -c 'make' > $INSTALL_DIR/make.log
 sudo make install
 echo "Check kp_server installation"
 which kp_server
