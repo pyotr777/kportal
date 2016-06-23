@@ -12,6 +12,6 @@ script:
   - sudo lsof -i -n -P | grep 80
   - sudo lsof -i -n -P | grep 9004
   - sudo lsof -i -n -P | grep 9005
-#notifications:
-#  slack: stair:XDlg9XLEBRkqAcuhSzQhu6vj
+notifications:
+  slack: stair:XDlg9XLEBRkqAcuhSzQhu6vj
 

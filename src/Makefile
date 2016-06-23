@@ -20,6 +20,7 @@ all:
 	$(CD) $(KPSERVER_DIR); make
 	
 install:
+	$(info Installing kp_server to $(BIN_DIR).)
 	mkdir -p $(PREFIX)
 	mkdir -p $(PREFIX)/log
 	$(CP) -rf ssl/ $(PREFIX)
@@ -31,9 +32,9 @@ install:
 	$(CP) $(RELEASE_DIR)/kp_server $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_tool $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/$(DEFAULT_JOBSH_FILE) $(PREFIX)
-	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)
-	$(info Finished installing kp_server to $(BIN_DIR).)
+	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)	
 	chmod 777 -R $(PREFIX)	
+	
 uninstall:
 	rm -rf $(PREFIX)
 clean:
