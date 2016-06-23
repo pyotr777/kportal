@@ -65,7 +65,6 @@ if [[ -z $skip_apache ]]; then
 	./install_apache2_docker.sh
 fi
 
-# Uncomment before live install
 cd "$KP_HOME"
 message "5. Restarting Docker daemon on port 9555"
 src/release/start_server.sh
@@ -76,14 +75,12 @@ sudo -E su kportal -c 'docker ps' || true
 echo "Docker on 9555?"
 sudo -E su kportal -c 'docker -H localhost:9555 ps' || true
 
-# Uncomment before live install
 message "6. Starting Apache2"
 sudo -E su kportal -c "src/release/start_apache.sh"
 
-# Uncomment before live install
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 # Check that kp_server is still running 
 echo "Is kp_server still running?"
-sudo lsof -i -n -P | grep kp_server
+ps aufx
 cd "$ORG_DIR"

@@ -26,3 +26,4 @@ echo "STDOUT"
 cat $LOGDIR/stdout.log
 echo "STDERR"
 cat $LOGDIR/stderr.log
+ps aufx
