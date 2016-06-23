@@ -84,5 +84,6 @@ sudo -E su kportal -c "src/release/start_apache.sh"
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 # Check that kp_server is still running 
+echo "Is kp_server still running?"
 sudo lsof -i -n -P | grep kp_server
 cd "$ORG_DIR"
