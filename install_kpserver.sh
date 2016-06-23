@@ -5,7 +5,8 @@ ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
 KP_HOME=$(sudo su kportal -c 'echo $HOME')
 echo "KP_HOME=$KP_HOME"
-INSTALL_DIR="$KP_HOME/install"
+export INSTALL_DIR="$KP_HOME/install"
+sudo -E su -p kportal -c 'echo "INSTALL_DIR=$INSTALL_DIR"'
 sudo -E su -p kportal -c 'mkdir -p "$INSTALL_DIR"'
 sudo chown -R kportal:kportal "$INSTALL_DIR"
 echo "Created $INSTALL_DIR:"
