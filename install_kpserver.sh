@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Install Boost library, build kp_server, install it.
 
 ORG_DIR=$(pwd)
@@ -10,7 +10,7 @@ sudo -E su -p kportal -c 'echo "INSTALL_DIR=$INSTALL_DIR"'
 sudo -E su -p kportal -c 'mkdir -p "$INSTALL_DIR"'
 sudo chown -R kportal:kportal "$INSTALL_DIR"
 echo "Created $INSTALL_DIR:"
-ls -l $INSTALL_DIR
+ls -la $INSTALL_DIR
 cd "$INSTALL_DIR"
 echo "Saving boost in $(pwd)."
 export BOOSTVERSION="1.60.0"
@@ -23,7 +23,7 @@ fi
 if [[ ! -d "$BOOSTARCHIVE" ]]; then
     sudo -E su -p kportal -c 'bzip2 -dc "$BOOSTARCHIVE.tar.bz2" | tar xf -'
 fi
-sudo chmod -R 777 "$BOOSTARCHIVE"
+sudo -E chmod -R 777 "$BOOSTARCHIVE"
 cd "$BOOSTARCHIVE"
 echo "Building boost library"
 sudo touch $INSTALL_DIR/boostinstall.log
