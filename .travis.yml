@@ -8,7 +8,7 @@ install:
   - sudo apt-get install socat
   - git submodule update --init --recursive  
 script: 
-  - travis_wait 30 sudo ./installkportal_ubuntu.sh 
+  - travis_wait 30 ./installkportal_ubuntu.sh 
   - sudo lsof -i -n -P | grep 80
   - sudo lsof -i -n -P | grep 9004
   - sudo lsof -i -n -P | grep 9005
