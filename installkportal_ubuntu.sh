@@ -3,8 +3,11 @@ set -e
 
 #skip_user=1
 #skip_kpserver=1
-skip_docker=1
+#skip_docker=1
 #skip_apache=1
+if [[ "$HOME" = *travis* ]]; then
+	export skip_docker=1;
+fi
 
 function message {
     echo ""
