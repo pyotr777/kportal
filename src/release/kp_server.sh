@@ -15,7 +15,7 @@ echo $LD_LIBRARY_PATH
 if [ ! -d "$LOGDIR" ]; then
 	mkdir -p "$LOGDIR"
 fi
-kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log
+kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log & 
 PID="$!"
 echo "Is kp_server running? PID=$PID"
 if [[ "$PID" ]]; then

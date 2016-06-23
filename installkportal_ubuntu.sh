@@ -82,6 +82,6 @@ sudo -E su kportal -c "src/release/start_apache.sh"
 
 # Uncomment before live install
 message "7. Starting kp_server"
-sudo -E su kportal -c 'kp_server.sh 9004 -tls &'
+sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 
 cd "$ORG_DIR"
