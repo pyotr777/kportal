@@ -31,7 +31,12 @@ if [ "" ]; then
 		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
 	fi
 else 
-	sudo ps ax | grep "socat" | grep 9555 > /dev/null
+	socat &> /dev/null
+	if [[ $? -ne 0 ]]; then
+		echo "Installing socat"
+		sudo apt-get install -y socat 
+	fi
+	sudo ps ax | grep "socat" | grep 9555 &> /dev/null
 	if [[ $? -eq 1 ]]; then
 		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
 		export PID=$!
