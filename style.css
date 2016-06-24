@@ -55,6 +55,9 @@ table td:first-child {
     text-align: right;
 }
 
+tr.old {
+    text-decoration: line-through;
+}
 note {
     font-family: "Noteworthy", "Comic Sans MS", "Comic Sans", "Helvetica Neue", Arial, fantasy;
     color: #858e8b;
@@ -62,6 +65,12 @@ note {
     font-stretch:expanded;
     letter-spacing: 0.035em;
     padding-left: 10px;
+}
+
+note code {
+    letter-spacing: 0em;
+    font-style: normal;
+    font-stretch:ultra-condensed;
 }
 
 /* Stiky table header */
