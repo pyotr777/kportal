@@ -30,7 +30,7 @@
         <tr>
             <td>&nbsp;</td>
             <td></td>
-            <td>Run AWS CLI in Docker container</td>
+            <td>Run AWS CLI in Docker container<note><br /><code>$ docker run -ti --rm --name aws -v $(pwd):/aws aws</code></note></td>
             <td></td>
         </tr>
         <tr>
@@ -62,27 +62,41 @@
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Create user "kportal"</td>
+            <td>Clone git repository
+            <note>Install git. Run: <code>$&nbsp;git clone https://github.com/pyotr777/kportal.git</code></note></td>            
         </tr>
         <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Run installation script for Ubuntu
+            <note><code>$&nbsp;./installkportal_ubuntu.sh</code></note></td>            
+        </tr>
+        <tr class="old">
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Create user "kportal"</td>
+        </tr>
+        <tr class="old">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Copy installation files into VM</td>
         </tr>
-        <tr>
+        <tr class="old">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Build kp_server</td>
         </tr>
-        <tr>
+        <tr class="old">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Install Docker. Start Docker.<note>Use start_server.sh</note></td>
         </tr>
-        <tr>
+        <tr class="old">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
