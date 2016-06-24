@@ -8,10 +8,10 @@ RUN a2enmod ssl
 RUN a2ensite default-ssl
 ADD settings/ubuntu /settings/ubuntu
 RUN echo "Copy configuration files"
-RUN cp /settings/ubuntu/apache2.conf /etc/apache2/apache2.conf
-RUN cp /settings/ubuntu/ports.conf /etc/apache2/ports.conf
-RUN cp /settings/ubuntu/sites-enabled/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
-RUN cp /settings/ubuntu/sites-enabled/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN cp settings/ubuntu/apache2.conf /etc/apache2/apache2.conf
+RUN cp settings/ubuntu/ports.conf /etc/apache2/ports.conf
+RUN cp settings/ubuntu/sites-enabled/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+RUN cp settings/ubuntu/sites-enabled/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 RUN mkdir /var/run/sshd
 
