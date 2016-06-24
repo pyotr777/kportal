@@ -1,3 +1,6 @@
 [submodule "settings"]
 	path = settings
 	url = https://github.com/pyotr777/kportal_settings.git 
+[submodule "gitcompare"]
+	path = gitcompare
+	url = https://github.com/pyotr777/gitcompare.git
