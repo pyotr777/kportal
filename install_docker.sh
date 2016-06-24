@@ -9,4 +9,4 @@ apt-get purge lxc-docker
 apt-cache policy docker-engine
 uname -a
 apt-get install -y docker-engine
-# service docker start
+service docker start

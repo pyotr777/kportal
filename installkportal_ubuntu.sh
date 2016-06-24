@@ -62,6 +62,7 @@ fi
 sudo groupadd docker || true
 sudo usermod -aG docker kportal || true
 sudo su kportal -c "docker run hello-world" || true
+sudo su kportal -c "docker images" || true
 
 if [[ -z $skip_apache ]]; then
 	message "4. Installing Apache with SSL in Docker container"
@@ -89,5 +90,5 @@ message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 # Check that kp_server is still running 
 echo "Is kp_server still running?"
-ps aufx
+ps ax | grep "kp_server"
 cd "$ORG_DIR"

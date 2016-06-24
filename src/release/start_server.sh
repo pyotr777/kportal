@@ -9,7 +9,8 @@ if [[ "$HOME" = *travis* ]]; then
 	export TRAVIS=yes;
 fi
 
-if [[ -z $TRAVIS ]]; then
+#if [[ -z $TRAVIS ]]; then
+if [ "" ]; then
 	# Stop docker
 	sudo service docker stop
 
@@ -30,7 +31,12 @@ if [[ -z $TRAVIS ]]; then
 		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
 	fi
 else 
-	sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
-	export PID=$!
-	echo "Socat PID is $PID"
+	sudo ps ax | grep "socat" | grep 9555 > /dev/null
+	if [[ $? -eq 1 ]]; then
+		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
+		export PID=$!
+		echo "Socat PID is $PID"
+	else
+		sudo ps ax | grep "socat" | grep 9555
+	fi
 fi
