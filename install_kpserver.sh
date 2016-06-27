@@ -45,4 +45,7 @@ sudo make install
 echo "Check kp_server installation"
 which kp_server
 ls -l $(which kp_server)
+echo "Remove boost archive $INSTALL_DIR/$BOOSTARCHIVE"
+sudo rm -rf "$INSTALL_DIR/$BOOSTARCHIVE"
+sudo rm -f "$INSTALL_DIR/$BOOSTARCHIVE.tar.bz2"
 cd $ORG_DIR
