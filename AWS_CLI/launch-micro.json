@@ -1,0 +1,20 @@
+{
+    "DryRun": false, 
+    "ImageId": "ami-a21529cc", 
+    "MinCount": 1, 
+    "MaxCount": 1, 
+    "KeyName": "kportal-key", 
+    "SecurityGroups": [
+        "kportal"
+    ], 
+    "SecurityGroupIds": [
+        "sg-4d5f2829"
+    ], 
+    "InstanceType": "t2.micro", 
+    "Placement": {
+        "AvailabilityZone": "ap-northeast-1a"
+    }, 
+    "Monitoring": {
+        "Enabled": true
+    }
+}

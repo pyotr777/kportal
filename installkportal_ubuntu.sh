@@ -28,6 +28,8 @@ mkdir -p "$LOGDIR"
 message "0. Installing required packages"
 sudo apt-get update > "$LOGDIR/update.log"
 sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make > "$LOGDIR/install.log"
+# Test if AUFS is installed
+./install_aufs.sh
 
 if [[ -z $skip_user ]]; then 
 	message "1. Create user kportal"
