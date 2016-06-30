@@ -1,10 +1,9 @@
 
 body {
-    font-family: "Arial", "Helvetica Neue", sans-serif;
+    font-family: "Helvetica Neue", "Arial", sans-serif;
     font-size: 9pt;
     line-height: 20px;
-    font-stretch: condensed;
-    font-weight: 100%;
+    font-weight: 300;
 }
 table {
     width:100%;
@@ -55,8 +54,8 @@ table td:first-child {
     text-align: right;
 }
 
-tr.old {
-    text-decoration: line-through;
+tr.inscript {
+    color:#83b2cb;
 }
 note {
     font-family: "Noteworthy", "Comic Sans MS", "Comic Sans", "Helvetica Neue", Arial, fantasy;
@@ -68,6 +67,7 @@ note {
 }
 
 note code {
+    font-family: Inconsolata,  Consolas, monospace;
     letter-spacing: 0em;
     font-style: normal;
     font-stretch:ultra-condensed;

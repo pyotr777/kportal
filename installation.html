@@ -1,6 +1,7 @@
 <!DOCTYPE HTML SYSTEM "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Inconsolata" />
     <link rel="stylesheet" type="text/css" href=style.css>
 </head>
 <body>
@@ -72,41 +73,53 @@
             <td>Run installation script for Ubuntu
             <note><code>$&nbsp;./installkportal_ubuntu.sh</code></note></td>            
         </tr>
-        <tr class="old">
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Create user "kportal"</td>
         </tr>
-        <tr class="old">
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Copy installation files into VM</td>
         </tr>
-        <tr class="old">
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Build kp_server</td>
         </tr>
-        <tr class="old">
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Install Docker. Start Docker.<note>Use start_server.sh</note></td>
         </tr>
-        <tr class="old">
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Creat group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</td>
+            <td>Create group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</td>
         </tr>
-        <tr>
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Run Apache in container <note>Mount VM (host) /etc/kportal/www into container.</note></td>
+            <td>Install Apache in container <note>Mount VM (host) /etc/kportal/www into container.</note></td>
+        </tr>
+        <tr class="inscript">
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Build Apps base image</td>
+        </tr>
+        <tr class="inscript">
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Edit kp_server config file /etc/kportal/kportal_conf.xml <note>Use name and ID of Apps base image.</note></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -129,18 +142,6 @@
             <td></td>
             <td></td>
             <td>Start kp_server</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td>Build Apps base image</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td>Edit kp_server config file /etc/kportal/kportal_conf.xml <note>Use name and ID of Apps base image.</note></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
