@@ -3,7 +3,7 @@ MAINTAINER Peter Bryzgalov
 #
 # Build image with Apache2 and SSL.
 #
-RUN apt-get update && apt-get install -y apache2 apache2-doc apache2-utils openssl openssh-server
+RUN apt-get update && apt-get install -y apache2 apache2-doc apache2-utils openssl openssh-server php5 libapache2-mod-php5
 RUN a2enmod ssl
 RUN a2ensite default-ssl
 ADD settings/ubuntu /settings/ubuntu
