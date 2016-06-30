@@ -87,7 +87,7 @@ echo "Docker on 9555?"
 sudo -E su kportal -c 'docker -H localhost:9555 ps' || true
 
 message "6. Starting Apache2"
-sudo -E su kportal -c "$HOME/src/release/start_apache.sh"
+sudo -E su kportal -c "$KP_HOME/src/release/start_apache.sh"
 
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
