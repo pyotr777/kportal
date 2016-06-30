@@ -63,13 +63,14 @@ fi
 # Add user kportal to docker group
 sudo groupadd docker || true
 sudo usermod -aG docker kportal || true
-sudo su kportal -c "docker run hello-world" || true
 sudo su kportal -c "docker images" || true
 
 if [[ -z $skip_apache ]]; then
 	message "4. Installing Apache with SSL in Docker container"
 	sudo mkdir -p /etc/kportal/www/ssl/
 	sudo chown -R kportal:kportal /etc/kportal
+	touch /etc/kportal/www/log_kp.txt
+	sudo chmod 666 /etc/kportal/www/log_kp.txt
 	echo "Building new image"
 	echo "HOME=$HOME"
 	./install_apache2_docker.sh
@@ -86,11 +87,30 @@ echo "Docker on 9555?"
 sudo -E su kportal -c 'docker -H localhost:9555 ps' || true
 
 message "6. Starting Apache2"
-sudo -E su kportal -c "src/release/start_apache.sh"
+sudo -E su kportal -c "$HOME/src/release/start_apache.sh"
 
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 # Check that kp_server is still running 
 echo "Is kp_server still running?"
 ps ax | grep "kp_server"
+
+
+message "8. Loading Master Image"
+cd "$KP_HOME/src/docker_images"
+sudo -E su kportal -c "docker load -i master_base_image.tar"
+
+message "9. Building Base Image"
+cd "$KP_HOME/src/docker_images"
+sudo -E su kportal -c "docker build --rm -t ubuntu_base ."
+echo "Saving Base Image to tar"
+sudo -E su kportal -c "docker save -o ubuntu_base.tar ubuntu_base"
+export IM_ID=$(sudo -E su kportal -c "docker images | grep ubuntu_base | awk '{ print $3 }'") || true
+echo "Base Image ID is $IM_ID"
+# Set image ID in configuration file
+sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
+cat "/etc/kportal/kportal_conf.xml"
+
+
 cd "$ORG_DIR"
+
