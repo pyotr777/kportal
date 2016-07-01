@@ -101,18 +101,18 @@ if [[ -z $skip_tars ]]; then
 	message "8. Loading Master Image"
 	cd "$KP_HOME/src/docker_images"
 	sudo -E su kportal -c "docker load -i master_base_image.tar"
-fi
 
-message "9. Building Base Image"
-cd "$KP_HOME/src/docker_images"
-sudo -E su kportal -c "docker build --rm -t ubuntu_base ."
-echo "Saving Base Image to tar"
-sudo -E su kportal -c "docker save -o ubuntu_base.tar ubuntu_base"
-export IM_ID=$(sudo -E su kportal -c "docker images | grep ubuntu_base | awk '{ print $3 }'") || true
-echo "Base Image ID is $IM_ID"
-# Set image ID in configuration file
-sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
-cat "/etc/kportal/kportal_conf.xml"
+	message "9. Building Base Image"
+	cd "$KP_HOME/src/docker_images"
+	sudo -E su kportal -c "docker build --rm -t ubuntu_base ."
+	echo "Saving Base Image to tar"
+	sudo -E su kportal -c "docker save -o ubuntu_base.tar ubuntu_base"
+	export IM_ID=$(sudo -E su kportal -c "docker images | grep ubuntu_base | awk '{ print $3 }'") || true
+	echo "Base Image ID is $IM_ID"
+	# Set image ID in configuration file
+	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
+	cat "/etc/kportal/kportal_conf.xml"
+fi
 
 cd "$ORG_DIR"
 
