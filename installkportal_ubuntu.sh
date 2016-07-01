@@ -7,6 +7,7 @@ set -e
 #skip_apache=1
 if [[ "$HOME" = *travis* ]]; then
 	export skip_docker=1;
+	export skip_tars=1;
 fi
 
 function message {
@@ -96,9 +97,11 @@ echo "Is kp_server still running?"
 ps ax | grep "kp_server"
 
 
-message "8. Loading Master Image"
-cd "$KP_HOME/src/docker_images"
-sudo -E su kportal -c "docker load -i master_base_image.tar"
+if [[ -z $skip_tars ]]; then
+	message "8. Loading Master Image"
+	cd "$KP_HOME/src/docker_images"
+	sudo -E su kportal -c "docker load -i master_base_image.tar"
+fi
 
 message "9. Building Base Image"
 cd "$KP_HOME/src/docker_images"
@@ -110,7 +113,6 @@ echo "Base Image ID is $IM_ID"
 # Set image ID in configuration file
 sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
 cat "/etc/kportal/kportal_conf.xml"
-
 
 cd "$ORG_DIR"
 
