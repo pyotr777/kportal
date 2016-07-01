@@ -70,6 +70,14 @@
             <td>&nbsp;</td>
             <td></td>
             <td></td>
+            <td>Copy installation files into VM (tars and other files not in git repo).
+            <br />
+            <note>Use sync_up.sh script.</note></td>
+        </tr>            
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
             <td>Run installation script for Ubuntu
             <note><code>$&nbsp;./installkportal_ubuntu.sh</code></note></td>            
         </tr>
@@ -83,19 +91,13 @@
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Copy installation files into VM</td>
-        </tr>
-        <tr class="inscript">
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
             <td>Build kp_server</td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Install Docker. Start Docker.<note>Use start_server.sh</note></td>
+            <td>Install Docker. Start Docker daemon.<br />Use socat for connecting port 9555 to Docker socket.<br/><note>Use start_server.sh</note></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
@@ -103,17 +105,31 @@
             <td></td>
             <td>Create group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</td>
         </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>[ Create SSL certificate ]</td>
+        </tr>    
+        <tr class="inscript">
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Install Apache in container using Dockerfile<br />
+                <code>docker build --rm -t apachessl .</code></td>
+        </tr>
+        <tr class="inscript">
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Start Apache<br />
+                <code>docker run -d -p 80:80 -p 9005:443 -v /etc/kportal/www:/etc/kportal/www --name apache apachessl</code></td>
+        </tr>            
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Import Master Base Image</td>
-        <tr class="inscript">
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td>Install Apache in container <note>Mount VM (host) /etc/kportal/www into container.</note></td>
-        </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
@@ -126,17 +142,20 @@
             <td></td>
             <td>Edit kp_server config file /etc/kportal/kportal_conf.xml <note>Use name and ID of Apps base image.</note></td>
         </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td>[ Create SSL certificate ]</td>
-        </tr>
+
         <tr>
             <td>&nbsp;</td>
             <td><note>Created client ID will be used in configuration file /etc/kportal/www/config.xml.</note></td>
             <td></td>
-            <td>Register with Google API<note>Or use kportal.aics.riken@ account.</note><br></td>
+            <td>Create new credentials for Google API. <br />
+                <a href="https://console.developers.google.com/apis/credentials">Google API</a><br />
+                <note>Need hostname.</note></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Use client ID in configuration file /etc/kportal/www/config.xml.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -150,21 +169,34 @@
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td>Application binary and Job script template</td>
             <td></td>
-            <td>Build App image</td>
+            <td></td>
+            <td>Register provider at K-portal.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td></td>
+            <td>Prepare files for K-portal application (App).<br />
+            <note>Application files and job script template. Optionally: App image (png).</note></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td></td>
             <td></td>
+            <td>Build App Docker image based on Apps base image (ubuntu_base).</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
             <td></td>
+            <td></td>
+            <td>Save App image to tar.</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Upload tar to K-portal.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
