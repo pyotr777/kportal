@@ -71,6 +71,8 @@ note code {
     letter-spacing: 0em;
     font-style: normal;
     font-stretch:ultra-condensed;
+    color:#aaaaaa;
+    background-color: #ebebeb;
 }
 
 /* Stiky table header */
