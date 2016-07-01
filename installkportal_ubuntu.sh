@@ -41,7 +41,7 @@ if [[ -z $skip_user ]]; then
 	sudo mkdir -p "$KP_HOME/log"
 	sudo chown -R kportal:kportal "$KP_HOME/log"
 	sudo chmod 777 "$KP_HOME/log"
-	sudo -E su kportal -c "mkdir $KP_HOME/.ssh/kportal"
+	sudo -E su kportal -c "mkdir -p $KP_HOME/.ssh/kportal"
 	# Move source code  to /home/kportal/src
 	if [[ ! -d "$KP_HOME/src" ]]; then
 		sudo mv ./src "$KP_HOME/"
@@ -101,17 +101,17 @@ ps ax | grep "kp_server"
 if [[ -z $skip_tars ]]; then
 	message "8. Loading Master Image"
 	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker load -i master_base_image.tar"
+	sudo -E su kportal -c "docker -H localhost:9555 load -i master_base_image.tar"
 
 	message "9. Building Base Image"
 	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker build --rm -t ubuntu_base ."
+	sudo -E su kportal -c "docker -H localhost:9555 build --rm -t ubuntu_base ."
 	echo "Saving Base Image to tar"
-	sudo -E su kportal -c "docker save -o ubuntu_base.tar ubuntu_base"
+	sudo -E su kportal -c "docker -H localhost:9555 save -o ubuntu_base.tar ubuntu_base"
 	echo "Copying image tar to web site folder"
 	sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
 	sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
-	export IM_ID=$(sudo -E su kportal -c "docker images | grep ubuntu_base | awk '{ print $3 }'") || true
+	export IM_ID=$(sudo -E su kportal -c "docker -H localhost:9555 images | grep ubuntu_base | awk '{ print $3 }'") || true
 	echo "Base Image ID is $IM_ID"
 	# Set image ID in configuration file
 	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
