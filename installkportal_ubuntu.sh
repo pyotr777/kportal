@@ -108,6 +108,9 @@ if [[ -z $skip_tars ]]; then
 	sudo -E su kportal -c "docker build --rm -t ubuntu_base ."
 	echo "Saving Base Image to tar"
 	sudo -E su kportal -c "docker save -o ubuntu_base.tar ubuntu_base"
+	echo "Copying image tar to web site folder"
+	sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
+	sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
 	export IM_ID=$(sudo -E su kportal -c "docker images | grep ubuntu_base | awk '{ print $3 }'") || true
 	echo "Base Image ID is $IM_ID"
 	# Set image ID in configuration file
