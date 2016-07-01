@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-image="cmpi_sample"
-docker="docker -H localhost:9555"
+image="matmult"
+docker="docker"
 
 if [[ -n "$1" ]]; then
     image="$1"
