@@ -41,6 +41,7 @@ if [[ -z $skip_user ]]; then
 	sudo mkdir -p "$KP_HOME/log"
 	sudo chown -R kportal:kportal "$KP_HOME/log"
 	sudo chmod 777 "$KP_HOME/log"
+	sudo -E su kportal -c "mkdir $KP_HOME/.ssh/kportal"
 	# Move source code  to /home/kportal/src
 	if [[ ! -d "$KP_HOME/src" ]]; then
 		sudo mv ./src "$KP_HOME/"
