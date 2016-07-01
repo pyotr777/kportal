@@ -9,8 +9,7 @@ if [[ "$HOME" = *travis* ]]; then
 	export TRAVIS=yes;
 fi
 
-#if [[ -z $TRAVIS ]]; then
-if [ "" ]; then
+if [[ -z $TRAVIS ]]; then
 	# Stop docker
 	sudo service docker stop
 
@@ -23,11 +22,14 @@ if [ "" ]; then
 	fi
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
 	if [[ "$?"=="1" ]]; then
-	    sudo -E su kportal -c 'docker daemon -D -H 127.0.0.1:9555 -b=bridge0 > $HOME/log/docker.log &'
+	    echo "Starting Docker on bridge0, port 9555."
+	    sudo ./start_docker.sh 
 	fi
 	# If Docker couldnt start on 9555, run socat 
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
 	if [[ "$?"=="1" ]]; then
+		echo "Docker not accessible on port 9555. "
+		exit 1
 		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
 	fi
 else 
