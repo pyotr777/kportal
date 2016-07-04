@@ -10,8 +10,12 @@ if [[ "$1" && "$1"=="-travis" ]]; then
 fi
 
 docker images &>/dev/null
-if [[ "$?"=="0" ]]; then
+if [[ $? -eq 0 ]]; then
 	docker $DOCKER_HOST run -d -p 80:80 -p 9005:443 -v /etc/kportal/www:/etc/kportal/www --name apache apachessl
+	if [[ $? -ne 0 ]]; then
+		echo "Couldn't start Docker container with Apache2."
+		exit 1
+	fi
 else
 	echo "Cannot access Docker daemon."
 fi
