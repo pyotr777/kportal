@@ -5,6 +5,10 @@ body {
     line-height: 20px;
     font-weight: 300;
 }
+h1 {
+    font-size: 12pt;
+    margin: 0 0 0 6px;
+}
 table {
     width:100%;
     border-width: 2px;
