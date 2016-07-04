@@ -26,14 +26,14 @@ if [[ -z $TRAVIS ]]; then
 	    ip addr show bridge0
 	fi
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
-	if [[ "$?"=="1" ]]; then
+	if [[ $? -ne 0 ]]; then
 	    echo "Starting Docker on bridge0, port 9555."
 	    sudo $CUR_DIR/start_docker.sh 
 	    sleep 10
 	fi
 	# If Docker couldnt start on 9555, run socat 
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
-	if [[ "$?"=="1" ]]; then
+	if [[ $? -ne 0 ]]; then
 		echo "Docker not accessible on port 9555. "
 		exit 1
 		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
@@ -45,7 +45,7 @@ else
 		sudo apt-get install -y socat 
 	fi
 	sudo ps ax | grep "socat" | grep 9555 &> /dev/null
-	if [[ $? -eq 1 ]]; then
+	if [[ $? -ne 0 ]]; then
 		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
 		export PID=$!
 		echo "Socat PID is $PID"
