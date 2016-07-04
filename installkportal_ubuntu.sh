@@ -118,5 +118,11 @@ if [[ -z $skip_tars ]]; then
 	cat "/etc/kportal/kportal_conf.xml"
 fi
 
+export INSTALL_DIR="$KP_HOME/install"
+export BOOSTARCHIVE="boost_1_60_0"
+echo "Remove boost archive $INSTALL_DIR/$BOOSTARCHIVE"
+sudo rm -rf "$INSTALL_DIR/$BOOSTARCHIVE"
+sudo rm -f "$INSTALL_DIR/$BOOSTARCHIVE.tar.bz2"
+
 cd "$ORG_DIR"
 
