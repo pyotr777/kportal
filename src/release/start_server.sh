@@ -3,6 +3,11 @@
 # Start Docker on port 9555 of localhost on bridge0 if,
 # create bridge0 if not exists.
 
+# Save relative path to this script from working dir.
+# It will be used to call another script (start_docker.sh) in the same directory with this script.
+CUR_DIR="$(dirname $0)"
+
+
 # Detect Travis
 
 if [[ "$HOME" = *travis* ]]; then
@@ -23,7 +28,8 @@ if [[ -z $TRAVIS ]]; then
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
 	if [[ "$?"=="1" ]]; then
 	    echo "Starting Docker on bridge0, port 9555."
-	    sudo ./start_docker.sh 
+	    sudo $CUR_DIR/start_docker.sh 
+	    sleep 10
 	fi
 	# If Docker couldnt start on 9555, run socat 
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
