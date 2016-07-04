@@ -111,7 +111,7 @@ if [[ -z $skip_tars ]]; then
 	echo "Copying image tar to web site folder"
 	sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
 	sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
-	export IM_ID=$(sudo -E su kportal -c "docker -H localhost:9555 images | grep ubuntu_base | awk '{ print $3 }'") || true
+	export IM_ID=$(sudo -E su kportal -c "docker -H localhost:9555 images | grep ubuntu_base | awk '{ print \$3 }'") || true
 	echo "Base Image ID is $IM_ID"
 	# Set image ID in configuration file
 	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
