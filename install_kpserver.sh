@@ -40,7 +40,7 @@ export CPLUS_INCLUDE_PATH=$KP_HOME/usr/include/
 sudo touch $INSTALL_DIR/make.log
 sudo chmod 666 $INSTALL_DIR/make.log
 sudo -E su -p kportal -c 'env | grep -i "include"'
-sudo -E su -p kportal -c 'make' > $INSTALL_DIR/make.log
+sudo -E su -p kportal -c 'make' &> $INSTALL_DIR/make.log
 sudo make install
 echo "Check kp_server installation"
 which kp_server
