@@ -7,7 +7,6 @@
 # It will be used to call another script (start_docker.sh) in the same directory with this script.
 CUR_DIR="$(dirname $0)"
 
-
 # Detect Travis
 
 if [[ "$HOME" = *travis* ]]; then
@@ -20,16 +19,16 @@ if [[ -z $TRAVIS ]]; then
 
 	# Start bridge & start docker 
 	if [ ! "$(brctl show | grep bridge0)" ]; then
-	    sudo brctl addbr bridge0
-	    sudo ip addr add 10.0.0.1/8 dev bridge0
-	    sudo ip link set dev bridge0 up
-	    ip addr show bridge0
+		sudo brctl addbr bridge0
+		sudo ip addr add 10.0.0.1/8 dev bridge0
+		sudo ip link set dev bridge0 up
+		ip addr show bridge0
 	fi
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
 	if [[ $? -ne 0 ]]; then
-	    echo "Starting Docker on bridge0, port 9555."
-	    sudo $CUR_DIR/start_docker.sh 
-	    sleep 10
+		echo "Starting Docker on bridge0, port 9555."
+		sudo $CUR_DIR/start_docker.sh 
+		sleep 10
 	fi
 	# If Docker couldnt start on 9555, run socat 
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
@@ -37,6 +36,8 @@ if [[ -z $TRAVIS ]]; then
 		echo "Docker not accessible on port 9555. "
 		exit 1
 		sudo socat TCP4-LISTEN:9555,fork UNIX-CLIENT:/var/run/docker.sock &
+	else
+		echo "Docker is running on port 9555."
 	fi
 else 
 	socat &> /dev/null

@@ -81,7 +81,7 @@ fi
 cd "$KP_HOME"
 message "5. Restarting Docker daemon on port 9555"
 src/release/start_server.sh
-ip a s
+ip a s bridge0
 echo "Check docker"
 echo "Docker on UNIX soket?"
 sudo -E su kportal -c 'docker ps' || true
