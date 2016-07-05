@@ -1,6 +1,13 @@
 #!/bin/bash
 # Install Boost library, build kp_server, install it.
 
+echo "Check that kp_server is not installed."
+which kp_server > /dev/null
+if [[ $? -eq 0 ]]; then
+	echo "kp_server already installed."
+	exit 0
+fi
+
 ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
 KP_HOME=$(sudo su kportal -c 'echo $HOME')
@@ -12,6 +19,7 @@ sudo chown -R kportal:kportal "$INSTALL_DIR"
 echo "Created $INSTALL_DIR:"
 ls -la $INSTALL_DIR
 cd "$INSTALL_DIR"
+
 echo "Saving boost in $(pwd)."
 export BOOSTVERSION="1.60.0"
 export BOOSTARCHIVE="boost_1_60_0"
