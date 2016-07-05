@@ -92,9 +92,15 @@ message "6. Starting Apache2"
 sudo -E su kportal -c "$KP_HOME/src/release/start_apache.sh"
 
 message "7. Starting kp_server"
-sudo -E su kportal -c 'kp_server.sh 9004 -tls'
+ps ax | grep -i kp_server | grep 9004 > /dev/null
+if [[ $? -ne 0 ]]; then
+	echo "Starting..."
+	sudo -E su kportal -c 'kp_server.sh 9004 -tls'
+else
+	echo "Already running."
+fi
 # Check that kp_server is still running 
-echo "Is kp_server still running?"
+echo "Check that kp_server is running"
 ps ax | grep "kp_server"
 
 
