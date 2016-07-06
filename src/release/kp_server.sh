@@ -1,6 +1,12 @@
 #!/bin/bash
 HOME_DIR=$HOME
 LOGDIR="$HOME_DIR/log"
+ps ax | grep -i kp_server | grep 9004 > /dev/null
+if [[ $? -eq 0 ]]; then
+	echo "Already running."
+	exit 0
+fi
+
 echo "Starting kp_server. HOME_DIR=$HOME_DIR, LOGDIR=$LOGDIR."
 if [ -z  "$LD_LIBRARY_PATH" ]; then 
 	LD_LIBRARY_PATH=$HOME_DIR/usr/local/lib
