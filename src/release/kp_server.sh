@@ -1,7 +1,7 @@
 #!/bin/bash
 HOME_DIR=$HOME
 LOGDIR="$HOME_DIR/log"
-ps ax | grep -i kp_server | grep 9004 > /dev/null
+ps ax | grep "kp_server " | grep 9004
 if [[ $? -eq 0 ]]; then
 	echo "Already running."
 	exit 0

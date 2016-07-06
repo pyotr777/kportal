@@ -1,7 +1,7 @@
 <Data>
     <KPServer>
         <MailAddr>kportal.aics.riken@gmail.com</MailAddr>
-    	<MailPass>***</MailPass>
+    	<MailPass>minatojima</MailPass>
         <RootDir>/home/kportal/jobs</RootDir>
         <AppMarketDomain>https://localhost:9005</AppMarketDomain>
         <IconFolder>/etc/kportal/www/images</IconFolder>
