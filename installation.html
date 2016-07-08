@@ -19,24 +19,12 @@
         <tr>
             <td>&nbsp;</td>
             <td>Docker on local machine or AWS CLI installed</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>AWS root key</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
             <td>Run AWS CLI in Docker container<note><br /><code>$ docker run -ti --rm --name aws -v $(pwd):/aws aws</code></note></td>
             <td></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td></td>
+            <td>AWS root key</td>
             <td>Configure AWS CLI with root key</td>
             <td></td>
         </tr>
@@ -63,14 +51,7 @@
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Clone git repository
-            <note>Install git. Run: <code>$&nbsp;git clone https://github.com/pyotr777/kportal.git</code></note></td>            
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td>Copy installation files into VM (tars and other files not in git repo).
+            <td>Copy installation files into VM.
             <br />
             <note>Use sync_up.sh script.</note></td>
         </tr>            
@@ -110,12 +91,6 @@
             <td></td>
             <td></td>
             <td>Create group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td>[ Create SSL certificate ]</td>
         </tr>    
         <tr class="inscript">
             <td>&nbsp;</td>
@@ -148,10 +123,15 @@
             <td></td>
             <td>Edit kp_server config file /etc/kportal/kportal_conf.xml <note>Use name and ID of Apps base image.</note></td>
         </tr>
-
         <tr>
             <td>&nbsp;</td>
-            <td><note>Created client ID will be used in configuration file /etc/kportal/www/config.xml.</note></td>
+            <td>fixed IP and DNS address</td>
+            <td></td>
+            <td>[ Create SSL certificate ]</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Google account and DNS address</td>
             <td></td>
             <td>Create new credentials for Google API. 
                 <a href="https://console.developers.google.com/apis/credentials">Google API</a><br />
@@ -159,13 +139,13 @@
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td></td>
+            <td>clientID</td>
             <td></td>
             <td>Use client ID and hostname in configuration file /etc/kportal/www/config.xml.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td colspan="3">Install public SSH key into K account. <note>For logging in to K with SSH.</note></td>
+            <td colspan="3" align="center">Copy public SSH key to K account.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
