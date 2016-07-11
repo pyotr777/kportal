@@ -165,111 +165,6 @@ int Job::getTunnelPort(){
   return tunnel_port;
 }
 
-/*
-ResponseCode Job::
-hFile() {
-  std::cout << "generateShFile \n";
-  ResponseCode ret = DATA_ERROR;
-  Service sv;
-  sv.setServiceID(service_id);
-  DataManager data_manager(PATH_OF_DATABASE);
-  ret = data_manager.connectDB();
-  if ( ret == DATA_SUCCESS) {
-    ret = data_manager.getInfoOfService(sv);
-    if (data_manager.disConnectDB() != DATA_SUCCESS) {
-      std::cout << "Error close db when get info service\n";
-    }
-  }
-  if (ret != DATA_SUCCESS) {
-    return ret;
-  }
-
-  std::string host, sourceDir;
-  if ( data_manager.connectDB() == DATA_SUCCESS) {
-    User user(user_email, USER_GROUP);
-    ret = data_manager.getUser(user);
-    if (ret != DATA_SUCCESS) {
-      return ret;
-    }
-    std::string containerId = user.getContainerId();
-    ret = NetworkUtil::getIpAddressOfContainer(containerId, host);
-    if (ret != REQUEST_SUCCESS) {
-      return ret;
-    }
-    data_manager.disConnectDB();
-  }
-
-  sourceDir = pathJob;
-
-  //Get info list param
-  std::vector<Parameter> listParamOfService;
-  if ( data_manager.connectDB() == DATA_SUCCESS) {
-    Service sv;
-    sv.setServiceID(service_id);
-    ret = data_manager.getParamOfService(sv, listParamOfService);
-    if (ret != DATA_SUCCESS) {
-      return ret;
-    }
-    data_manager.disConnectDB();
-  }
-
-  std::stringstream ss;
-  ss << sv.getPathExcuteFile();
-  for (int j = 0; j < listParamOfService.size(); j++) {
-    Parameter* param = &listParamOfService[j];
-    for (unsigned int i = 0; i < listParam.size(); i++) {
-      param_job* pa_job = &listParam[i];
-      if (pa_job->getParamId().compare(param->getParamID()) == 0) {
-        if (param->getOptionName().size() != 0) {
-          ss << " " << param->getOptionName();
-        }
-        if (param->getType().compare("file") == 0) {
-          if (pa_job->getType() == ARG_LOCAL) {
-            ss << " \"" << sourceDir << PATH_SEPARATOR << pa_job->getValue() << "\"";
-          } else if (pa_job->getType() == ARG_REMOTE) {
-            ss << " \"" << sourceDir << PATH_SEPARATOR << pa_job->getReferJobId() << "_" << pa_job->getValue() << "\"";
-          } else {
-            ss << " \"" << sourceDir << PATH_SEPARATOR << pa_job->getValue() << "\"";
-          }
-        } else if (pa_job->getType() == VALUE_ONLY) {
-          ss << " " << pa_job->getValue();
-        }
-      }
-    }
-  }
-  ss << " 1> " << sourceDir << PATH_SEPARATOR << "stdout.txt 2> " << sourceDir << PATH_SEPARATOR << "stderr.txt";
-  ss << "\n";
-  std::string content = ss.str();
-  std::cout << "content of start script : " << content << std::endl;
-  FILE * pFile;
-  std::cout << (pathJob + PATH_SEPARATOR + job_id + ".sh") << std::endl;
-  pFile = fopen ((pathJob + PATH_SEPARATOR + job_id + ".sh").c_str(), "wb");
-  if (pFile) {
-    fwrite (content.c_str() , sizeof(char), content.length(), pFile);
-    fclose (pFile);
-    ret = DATA_SUCCESS;
-  }
-  if (ret != DATA_SUCCESS) {
-    return ret;
-  }
-
-  //generate script to stop job
-  ss.str("");
-  ss << "kill -9 $(pidof " << sv.getPathExcuteFile() << ")";
-  content = ss.str();
-  std::cout << "content of stop script : " << content << std::endl;
-  pFile = fopen ((pathJob + PATH_SEPARATOR + "stop_" + job_id + ".sh").c_str(), "wb");
-  if (pFile) {
-    fwrite (content.c_str() , sizeof(char), content.length(), pFile);
-    fclose (pFile);
-    ret = DATA_SUCCESS;
-  }
-
-  return ret;
-}
-*/
-
-
 ResponseCode Job::generateShFile(Service& sv) {
   std::cout << "generateShFile \n";
   ResponseCode ret = DATA_ERROR;
@@ -369,7 +264,6 @@ ResponseCode Job::generateShFile(Service& sv) {
 //     << "./" << FileUtils::GetFileName(sv.getPathExcuteFile()) << " " << args << "\n";
 //  std::string content = ss.str();
   std::string content = sv.getShTemplate();
-  
   
   std::string replaceWith, replaceTo;
   ss.str(""); ss << numberOfNode; replaceWith = ss.str();
@@ -520,6 +414,47 @@ ResponseCode Job::Init() {
 
     //gen sh file
     ret = generateShFile(sv);
+
+    // gen pre sh file
+    if(sv.getPathPreShFile() != "" && sv.getShPreCommand() != ""){
+      std::string content = sv.getShPreCommand();      
+      std::string filepath = pathJob + PATH_SEPARATOR + job_id + "_pre.sh";
+      std::cout << "pre sh file:" << filepath.c_str() << std::endl;
+
+      //std::cout << content << std::endl;
+      FILE * pFile;
+      pFile = fopen (filepath.c_str(), "wb");
+      if (pFile) {
+        fwrite (content.c_str() , sizeof(char), content.length(), pFile);
+        fclose (pFile);
+        ret = DATA_SUCCESS;
+      } else {
+        std::cout << "[ERR] Can not open " << filepath <<" file to write.";
+      }
+
+    } else {
+      std::cout << "Pre-processing is empty. Ignore gen file";
+    }
+
+    // gen post sh file
+    if(sv.getPathPostShFile() != "" && sv.getShPostCommand() != ""){
+      std::string content = sv.getShPostCommand();
+      std::string filepath = pathJob + PATH_SEPARATOR + job_id + "_post.sh";
+      std::cout << "post sh file:" << filepath.c_str() << std::endl;
+      //std::cout << content << std::endl;
+      FILE * pFile;
+      pFile = fopen (filepath.c_str(), "wb");
+      if (pFile) {
+        fwrite (content.c_str() , sizeof(char), content.length(), pFile);
+        fclose (pFile);
+        ret = DATA_SUCCESS;
+      } else {
+        std::cout << "[ERR] Can not open " << filepath <<" file to write."; 
+      }
+    } else {
+      std::cout << "Post-processing is empty. Ignore gen file";
+    }
+
 
     // Set slave_daemon port listen
     container_port = "9008";

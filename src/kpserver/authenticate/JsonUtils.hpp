@@ -12,19 +12,19 @@
 
 
 enum Options{
-	OPTS_PROVIDER_REGISTER,
+  OPTS_PROVIDER_REGISTER,
   OPTS_PROVIDER
 };
 
 class JsonUtils
 {
 public:
-    static JSONNode toJSONNode(const char* tag, const std::string valueStr);
-	static JSONNode toJSONNode(const User& provider, const Options& opt);
-    static JSONNode toJSONNode(ImageDocker& provider);
-    static JSONNode toJSONNode(Service& service);
-    static JSONNode toJSONNode(Parameter param);
-    static JSONNode toJSONNode(Job job);
+  static JSONNode toJSONNode(const char* tag, const std::string valueStr);
+  static JSONNode toJSONNode(const User& provider, const Options& opt);
+  static JSONNode toJSONNode(ImageDocker& provider);
+  static JSONNode toJSONNode(Service& service);
+  static JSONNode toJSONNode(Parameter param);
+  static JSONNode toJSONNode(Job job);
 };
 
 #endif // JSONUTILS_HPP

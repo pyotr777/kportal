@@ -12,13 +12,18 @@ Service::Service() {
     pathExcuteFile = "";
     pathShFile = "";
     shTemplate = "";
+    pathPostShFile = "";
+    shPostCommand = "";
+    shPreCommand = "";
+    pathPreShFile = "";
+    shTemplate = "";
     image_id = "";
     providerEmail = "";
-	iconStr = "";
-	act = 0;
+    iconStr = "";
+    act = 0;
 }
 
-Service::Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string shpath, std::string imageId, std::string provEmail) {
+Service::Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string shpath, std::string shprepath, std::string shpostpath, std::string imageId, std::string provEmail) {
     serviceID = id;
     serviceName = name;
     producer = prod;
@@ -28,6 +33,8 @@ Service::Service(std::string id, std::string name, std::string prod, bool st, in
     description = des;
     pathExcuteFile = path;
     pathShFile = shpath;
+    pathPostShFile = shpostpath,
+    pathPreShFile = shprepath,
     shTemplate = "";
     image_id = imageId;
     providerEmail = provEmail;
@@ -35,19 +42,23 @@ Service::Service(std::string id, std::string name, std::string prod, bool st, in
 
 Service::Service(const Service& copy)
 {
-	this -> serviceID = copy.serviceID;
-	this -> serviceName = copy.serviceName;
-	this -> producer = copy.producer;
-	this -> status = copy.status;
-	this -> numberOfUser = copy.numberOfUser;
-	this -> numberOfWaitUser = copy.numberOfWaitUser;
-	this -> description = copy.description;
-	this -> pathExcuteFile = copy.pathExcuteFile;
-	this -> pathShFile = copy.pathShFile;
-	this -> shTemplate = copy.shTemplate;
-	this -> providerEmail = copy.providerEmail;
-	this -> act = copy.act;
-	this -> listParam = copy.listParam;
+  this -> serviceID = copy.serviceID;
+  this -> serviceName = copy.serviceName;
+  this -> producer = copy.producer;
+  this -> status = copy.status;
+  this -> numberOfUser = copy.numberOfUser;
+  this -> numberOfWaitUser = copy.numberOfWaitUser;
+  this -> description = copy.description;
+  this -> pathExcuteFile = copy.pathExcuteFile;
+  this -> pathShFile = copy.pathShFile;
+  this -> shTemplate = copy.shTemplate;
+  this -> pathPostShFile = copy.pathPostShFile;
+  this -> shPostCommand = copy.shPostCommand;
+  this -> pathPreShFile = copy.pathPreShFile;
+  this -> shPreCommand = copy.shPreCommand;
+  this -> providerEmail = copy.providerEmail;
+  this -> act = copy.act;
+  this -> listParam = copy.listParam;
   this -> image_id = copy.image_id;
   this -> iconStr = copy.iconStr;
   this -> numberOfNode = copy.numberOfNode;
@@ -137,6 +148,38 @@ void Service::setShTemplate(std::string content) {
 
 std::string Service::getShTemplate() {
     return shTemplate;
+}
+
+void Service::setPathPostShFile(std::string path) {
+    pathPostShFile = path;
+}
+
+std::string Service::getPathPostShFile() {
+    return pathPostShFile;
+}
+
+void Service::setShPostCommand(std::string content) {
+    shPostCommand = content;
+}
+
+std::string Service::getShPostCommand() {
+    return shPostCommand;
+}
+
+void Service::setPathPreShFile(std::string path) {
+    pathPreShFile = path;
+}
+
+std::string Service::getPathPreShFile() {
+    return pathPreShFile;
+}
+
+void Service::setShPreCommand(std::string content) {
+    shPreCommand = content;
+}
+
+std::string Service::getShPreCommand() {
+    return shPreCommand;
 }
 
 void Service::setImageId(std::string imageId) {

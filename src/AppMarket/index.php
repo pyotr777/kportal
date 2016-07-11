@@ -753,24 +753,36 @@
 					</div>
 					<div data-role="fieldcontain">
 						<label for="pnaf-path">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Path *</label>
-						<input type="text" data-clear-btn="false" name="pnaf-path" id="pnaf-path" value="" pattern="[^><$]*" title="without [^><$] character" data-clear-btn="true" required>
+						<input type="text" data-clear-btn="false" name="pnaf-path" id="pnaf-path" value="" pattern="[^><$]*" title="without [^><$] character" data-clear-btn="true" placeholder="/path/to/executable" required>
 					</div>
 					<div data-role="fieldcontain">
-						<label for="pnaf-shpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Template job script file path</label>
-						<input type="text" data-clear-btn="false" name="pnaf-shpath" id="pnaf-shpath" value="" title="without [^><$] character" data-clear-btn="true">
+                                                <label for="provider-newapp-path"><h2>Script File Path</h2></label>
+                                        </div>
+
+					<div data-role="fieldcontain">
+						<label for="pnaf-shpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job script template</label>
+						<input type="text" data-clear-btn="false" name="pnaf-shpath" id="pnaf-shpath" value="" title="without [^><$] character" data-clear-btn="true" placeholder="/path/to/sh/file">
 					</div>
+                                        <div data-role="fieldcontain">
+                                                <label for="pnaf-preshpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pre-processing command</label>
+                                                <input type="text" data-clear-btn="false" name="pnaf-preshpath" id="pnaf-preshpath" value="" title="without [^><$] character" data-clear-btn="true" placeholder="/path/to/sh/file">
+                                        </div>
+                                        <div data-role="fieldcontain">
+                                                <label for="pnaf-postshpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Post-processing command</label>
+                                                <input type="text" data-clear-btn="false" name="pnaf-postshpath" id="pnaf-postshpath" value="" title="without [^><$] character" data-clear-btn="true" placeholder="/path/to/sh/file">
+                                        </div>
 					<!-- <div data-role="fieldcontain">					
 						<label for="provider-newapp-producer">Producer</label>
 						<input type="text" data-clear-btn="true" name="provider-newapp-producer" id="provider-newapp-producer" value="">
 					</div> -->
 					<div data-role="fieldcontain">
 						<label for="pnaf-stgin">Folder stage in</label>
-						<input type="text" name="pnaf-stgin" id="pnaf-stgin" placeholder="path name" data-clear-btn="true" maxlength="300" pattern="[^><=\\\!\@\#\$\%\&\?| ]*" title="without [><=\!@#$%&? ] character" >
+						<input type="text" name="pnaf-stgin" id="pnaf-stgin" placeholder="/path/to/folder" data-clear-btn="true" maxlength="300" pattern="[^><=\\\!\@\#\$\%\&\?| ]*" title="without [><=\!@#$%&? ] character" >
 					</div>
 					<!--p class="folder-stage"> specify another folder</p-->
 					<div data-role="fieldcontain">
 						<label for="pnaf-stgout">Folder stage out</label>
-						<input type="text" name="pnaf-stgout" id="pnaf-stgout" placeholder="path name" data-clear-btn="true" maxlength="300" pattern="[^><=\\\!\@\#\$\%\&\?| ]*" title="without [><=\!@#$%&?] character" >
+						<input type="text" name="pnaf-stgout" id="pnaf-stgout" placeholder="folder name" data-clear-btn="true" maxlength="300" pattern="[^><=\\\!\@\#\$\%\&\?| ]*" title="without [><=\!@#$%&?] character" >
 					</div>
 					<!--p class="folder-stage"> specify another folder</p-->
 					<div data-role="fieldcontain">
@@ -1312,16 +1324,21 @@
 						<label for="provider-editapp-path">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Path</label>
 						<input type="text" data-clear-btn="false" name="provider-newapp-path" id="provider-editapp-path" class="provider-editapp-input" value="" pattern="[^><$]*" title="without [><$] character" data-clear-btn="true" required>
 					</div>
-					
 					<div data-role="fieldcontain">
-						<label for="provider-editapp-shpath"><h2>Template Script File Path</h2></label>
-					</div>
+                                                <label for="provider-editapp-path"><h2>Script File Path</h2></label>
+                                        </div>
 					<div data-role="fieldcontain">
-						<label for="provider-editapp-shpath">Template Script File Path</label>
-						<input type="text" data-clear-btn="false" name="provider-newapp-shpath" id="provider-editapp-shpath" class="provider-editapp-input" value="" pattern="[^><$]*" title="without [><$] character" data-clear-btn="true">
-					</div>
-					
-					
+                                                <label for="provider-editapp-shpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job script template</label>
+                                                <input type="text" data-clear-btn="false" name="provider-newapp-shpath" id="provider-editapp-shpath" class="provider-editapp-input" value="" pattern="[^><$]*" title="without [><$] character" data-clear-btn="true" placeholder="/path/to/sh/file">
+                                        </div>
+                                        <div data-role="fieldcontain">
+                                                <label for="provider-editapp-preshpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pre-processing command</label>
+                                                <input type="text" data-clear-btn="false" name="provider-newapp-preshpath" id="provider-editapp-preshpath" class="provider-editapp-input"  value="" title="without [^><$] character" data-clear-btn="true" placeholder="/path/to/sh/file">
+                                        </div>
+                                        <div data-role="fieldcontain">
+                                                <label for="provider-editapp-postshpath">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Post-processing command</label>
+                                                <input type="text" data-clear-btn="false" name="provider-newapp-postshpath" id="provider-editapp-postshpath" class="provider-editapp-input" value="" title="without [^><$] character" data-clear-btn="true" placeholder="/path/to/sh/file">
+                                        </div>
 					<div data-role="fieldcontain">
 						<label for="provider-editapp-icon">Icon</label>
 						<input type="file" data-clear-btn="true" name="provider-newapp-icon" id="provider-editapp-icon" class="provider-editapp-input" value="" accept="image/*">
@@ -1331,7 +1348,6 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						<center><img id="provider-editapp-icon-view" src="images/geant4_program.png" height="100px" width="100px" /></center>
 					</div>
-					
 					<div data-role="fieldcontain">
 						<label for="provider-editapp-stgin">Folder stage in</label>
 						<input type="text" name="provider-newapp-stgin" id="provider-editapp-stgin" placeholder="path name" data-clear-btn="true" maxlength="300" class="provider-editapp-input"  pattern="[^><=\\\!\@\#\$\%\&\?| ]*" title="without [><=\!@#$%&? ] character" >

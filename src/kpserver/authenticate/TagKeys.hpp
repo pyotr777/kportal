@@ -75,6 +75,8 @@
 #define TAG_DESCRIPTION_STR         "description"
 #define TAG_PATH_EXCUTE_FILE_STR    "path"
 #define TAG_PATH_SH_FILE_STR        "shpath"
+#define TAG_PATH_POST_SH_FILE_STR   "postshpath"
+#define TAG_PATH_PRE_SH_FILE_STR    "preshpath"
 #define TAG_NUMBER_OF_NODES_STR     "numberOfNodes"
 #define TAG_NUMBER_OF_USER_STR      "numberOfUsers"
 #define TAG_NUMBER_OF_WAIT_USER_STR     "numberOfWaitUsers"

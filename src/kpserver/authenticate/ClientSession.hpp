@@ -128,8 +128,8 @@ public:
 
   ResponseCode getProviderTimeResource(const std::string& provider_email, std::string& unit, double& limit, double& usage, double& avaiable, double& limitkp, double& usagekp, double& avaiablekp, std::string& public_key);
 
-  ResponseCode browsePathInsideImage(Service&, const unsigned char);
-  ResponseCode checkValidInfo(Service &service, const unsigned char);
+  ResponseCode browsePathInsideImage(Service&, const unsigned int);
+  ResponseCode checkValidInfo(Service &service, const unsigned int);
   ResponseCode createService(Service &service);
   ResponseCode updateService(Service &service);
   ResponseCode deleteService(Service &service);

@@ -99,6 +99,10 @@ ResponseCode DataManager::createDB() {
             "PATH_EXCUTE            NVARCHAR(255)                   NOT NULL," \
             "PATH_SH                NVARCHAR(255)                   NOT NULL," \
             "SH_TEMPLATE            TEXT                            NOT NULL," \
+            "PATH_PRE_SH            NVARCHAR(255)                   NOT NULL," \
+            "SH_PRE_COMMAND         TEXT                            NOT NULL," \
+            "PATH_POST_SH           NVARCHAR(255)                   NOT NULL," \
+            "SH_POST_COMMAND        TEXT                            NOT NULL," \
             "STAGE_IN_DIRS          NVARCHAR(1255)                  NOT NULL," \
             "STAGE_OUT_DIRS         NVARCHAR(1255)                  NOT NULL," \
             "IMAGE_ID               NVARCHAR(100)                   NOT NULL," \
@@ -1072,6 +1076,10 @@ ResponseCode DataManager::insertService(Service &sv) {
     "PATH_EXCUTE            NVARCHAR(255)                   NOT NULL," \
     "PATH_SH                NVARCHAR(255)                   NOT NULL," \
     "SH_TEMPLATE            TEXT                            NOT NULL," \
+    "PATH_PRE_SH            NVARCHAR(255)                   NOT NULL," \
+    "SH_PRE_COMMAND         TEXT                            NOT NULL," \
+    "PATH_POST_SH           NVARCHAR(255)                   NOT NULL," \
+    "SH_POST_COMMAND        TEXT                            NOT NULL," \
     "STAGE_IN_DIRS          NVARCHAR(1255)                  NOT NULL," \
     "STAGE_OUT_DIRS         NVARCHAR(1255)                  NOT NULL," \
     "IMAGE_ID               NVARCHAR(100)                   NOT NULL," \
@@ -1101,6 +1109,10 @@ ResponseCode DataManager::insertService(Service &sv) {
          << "'" << sv.getPathExcuteFile() << "',"
          << "'" << sv.getPathShFile() << "',"
          << "'" << sv.getShTemplate() << "',"
+         << "'" << sv.getPathPreShFile() << "',"
+         << "'" << sv.getShPreCommand() << "',"
+         << "'" << sv.getPathPostShFile() << "',"
+         << "'" << sv.getShPostCommand() << "',"
          << "'" << stginss.str() << "',"
          << "'" << stgoutss.str() << "',"
          << "'" << sv.getImageId() << "',"
@@ -1136,6 +1148,10 @@ ResponseCode DataManager::updateService(Service &sv) {
     "PATH_EXCUTE            NVARCHAR(255)                   NOT NULL," \
     "PATH_SH                NVARCHAR(255)                   NOT NULL," \
     "SH_TEMPLATE            TEXT                            NOT NULL," \
+    "PATH_PRE_SH            NVARCHAR(255)                   NOT NULL," \
+    "SH_PRE_COMMAND         TEXT                            NOT NULL," \
+    "PATH_POST_SH           NVARCHAR(255)                   NOT NULL," \
+    "SH_POST_COMMAND        TEXT                            NOT NULL," \
     "STAGE_IN_DIRS          NVARCHAR(1255)                  NOT NULL," \
     "STAGE_OUT_DIRS         NVARCHAR(1255)                  NOT NULL," \
     "IMAGE_ID               NVARCHAR(100)                   NOT NULL," \
@@ -1161,6 +1177,10 @@ ResponseCode DataManager::updateService(Service &sv) {
          << "PATH_EXCUTE='" << sv.getPathExcuteFile() << "',"
          << "PATH_SH='" << sv.getPathShFile() << "',"
          << "SH_TEMPLATE='" << sv.getShTemplate() << "',"
+         << "PATH_PRE_SH='" << sv.getPathPreShFile() << "',"
+         << "SH_PRE_COMMAND='" << sv.getShPreCommand() << "',"
+         << "PATH_POST_SH='" << sv.getPathPostShFile() << "',"
+         << "SH_POST_COMMAND='" << sv.getShPostCommand() << "',"
          << "STAGE_IN_DIRS='" << stginss.str() << "',"
          << "STAGE_OUT_DIRS='" << stgoutss.str() << "',"
          << "IMAGE_ID='" << sv.getImageId() << "',"
@@ -1245,7 +1265,12 @@ ResponseCode DataManager::getAllService(std::vector<Service> &listService) {
                 service.setPathExcuteFile((char*)sqlite3_column_text(statement, 7));
                 service.setPathShFile((char*)sqlite3_column_text(statement, 8));
                 service.setShTemplate((char*)sqlite3_column_text(statement, 9));
-                std::string stginstr = (char*)sqlite3_column_text(statement, 10);
+                service.setPathPreShFile((char*)sqlite3_column_text(statement, 10));
+                service.setShPreCommand((char*)sqlite3_column_text(statement, 11));
+                service.setPathPostShFile((char*)sqlite3_column_text(statement, 12));
+                service.setShPostCommand((char*)sqlite3_column_text(statement, 13));
+
+                std::string stginstr = (char*)sqlite3_column_text(statement, 14);
                 std::vector<std::string> dirs;
                 if(stginstr.size() > 0){
                   std::stringstream ss(stginstr);
@@ -1256,7 +1281,7 @@ ResponseCode DataManager::getAllService(std::vector<Service> &listService) {
                 }
                 service.setStageinDirs(dirs);
 
-                std::string stgoutstr = (char*)sqlite3_column_text(statement, 11);
+                std::string stgoutstr = (char*)sqlite3_column_text(statement, 15);
                 std::vector<std::string> dirs2;
                 if(stgoutstr.size() > 0){
                   std::stringstream ss(stgoutstr);
@@ -1267,10 +1292,10 @@ ResponseCode DataManager::getAllService(std::vector<Service> &listService) {
                 }
                 service.setStageoutDirs(dirs2);
 
-                service.setImageId((char*)sqlite3_column_text(statement, 12));
-                service.setProvider((char*)sqlite3_column_text(statement, 13));
-                service.setNumberOfNode(sqlite3_column_int(statement, 14));
-                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 15));
+                service.setImageId((char*)sqlite3_column_text(statement, 16));
+                service.setProvider((char*)sqlite3_column_text(statement, 17));
+                service.setNumberOfNode(sqlite3_column_int(statement, 18));
+                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 19));
                 listService.push_back(service);
                 std::cout << "service name = " << service.getServiceName() << std::endl;
             }
@@ -1338,7 +1363,11 @@ ResponseCode DataManager::getAllServiceOfProvider(User &provider, std::vector<Se
                 service.setPathExcuteFile((char*)sqlite3_column_text(statement, 7));
                 service.setPathShFile((char*)sqlite3_column_text(statement, 8));
                 service.setShTemplate((char*)sqlite3_column_text(statement, 9));
-                std::string stginstr = (char*)sqlite3_column_text(statement, 10);
+                service.setPathPreShFile((char*)sqlite3_column_text(statement, 10));
+                service.setShPreCommand((char*)sqlite3_column_text(statement, 11));
+                service.setPathPostShFile((char*)sqlite3_column_text(statement, 12));
+                service.setShPostCommand((char*)sqlite3_column_text(statement, 13));
+                std::string stginstr = (char*)sqlite3_column_text(statement, 14);
                 std::vector<std::string> dirs;
                 if(stginstr.size() > 0){
                   std::stringstream ss(stginstr);
@@ -1349,7 +1378,7 @@ ResponseCode DataManager::getAllServiceOfProvider(User &provider, std::vector<Se
                 }
                 service.setStageinDirs(dirs);
 
-                std::string stgoutstr = (char*)sqlite3_column_text(statement, 11);
+                std::string stgoutstr = (char*)sqlite3_column_text(statement, 15);
                 std::vector<std::string> dirs2;
                 if(stgoutstr.size() > 0){
                   std::stringstream ss(stgoutstr);
@@ -1360,10 +1389,10 @@ ResponseCode DataManager::getAllServiceOfProvider(User &provider, std::vector<Se
                 }
                 service.setStageoutDirs(dirs2);
 
-                service.setImageId((char*)sqlite3_column_text(statement, 12));
-                service.setProvider((char*)sqlite3_column_text(statement, 13));
-                service.setNumberOfNode(sqlite3_column_int(statement, 14));
-                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 15));
+                service.setImageId((char*)sqlite3_column_text(statement, 16));
+                service.setProvider((char*)sqlite3_column_text(statement, 17));
+                service.setNumberOfNode(sqlite3_column_int(statement, 18));
+                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 19));
                 listService.push_back(service);
             }
 
@@ -1419,8 +1448,12 @@ ResponseCode DataManager::getAllServiceOfProviderHaveCandidate(User &provider, s
                 service.setPathExcuteFile((char*)sqlite3_column_text(statement, 7));
                 service.setPathShFile((char*)sqlite3_column_text(statement, 8));
                 service.setShTemplate((char*)sqlite3_column_text(statement, 9));
+                service.setPathPreShFile((char*)sqlite3_column_text(statement, 10));
+                service.setShPreCommand((char*)sqlite3_column_text(statement, 11));
+                service.setPathPostShFile((char*)sqlite3_column_text(statement, 12));
+                service.setShPostCommand((char*)sqlite3_column_text(statement, 13));
 
-                std::string stginstr = (char*)sqlite3_column_text(statement, 10);
+                std::string stginstr = (char*)sqlite3_column_text(statement, 14);
                 std::vector<std::string> dirs;
                 if(stginstr.size() > 0){
                   std::stringstream ss(stginstr);
@@ -1431,7 +1464,7 @@ ResponseCode DataManager::getAllServiceOfProviderHaveCandidate(User &provider, s
                 }
                 service.setStageinDirs(dirs);
 
-                std::string stgoutstr = (char*)sqlite3_column_text(statement, 11);
+                std::string stgoutstr = (char*)sqlite3_column_text(statement, 15);
                 std::vector<std::string> dirs2;
                 if(stgoutstr.size() > 0){
                   std::stringstream ss(stgoutstr);
@@ -1442,10 +1475,10 @@ ResponseCode DataManager::getAllServiceOfProviderHaveCandidate(User &provider, s
                 }
                 service.setStageoutDirs(dirs2);
 
-                service.setImageId((char*)sqlite3_column_text(statement, 12));
-                service.setProvider((char*)sqlite3_column_text(statement, 13));
-                service.setNumberOfNode(sqlite3_column_int(statement, 14));
-                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 15));
+                service.setImageId((char*)sqlite3_column_text(statement, 16));
+                service.setProvider((char*)sqlite3_column_text(statement, 17));
+                service.setNumberOfNode(sqlite3_column_int(statement, 18));
+                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 19));
                 listService.push_back(service);
             }
 
@@ -1492,8 +1525,12 @@ ResponseCode DataManager::getInfoOfService(Service &sv) {
             sv.setPathExcuteFile((char*)sqlite3_column_text(statement, 7));
             sv.setPathShFile((char*)sqlite3_column_text(statement, 8));
             sv.setShTemplate((char*)sqlite3_column_text(statement, 9));
+            sv.setPathPreShFile((char*)sqlite3_column_text(statement, 10));
+            sv.setShPreCommand((char*)sqlite3_column_text(statement, 11));
+            sv.setPathPostShFile((char*)sqlite3_column_text(statement, 12));
+            sv.setShPostCommand((char*)sqlite3_column_text(statement, 13));
 
-            std::string stginstr = (char*)sqlite3_column_text(statement, 10);
+            std::string stginstr = (char*)sqlite3_column_text(statement, 14);
             std::vector<std::string> dirs;
             if(stginstr.size() > 0){
               std::stringstream ss(stginstr);
@@ -1504,7 +1541,7 @@ ResponseCode DataManager::getInfoOfService(Service &sv) {
             }
             sv.setStageinDirs(dirs);
 
-            std::string stgoutstr = (char*)sqlite3_column_text(statement, 11);
+            std::string stgoutstr = (char*)sqlite3_column_text(statement, 15);
             std::vector<std::string> dirs2;
             if(stgoutstr.size() > 0){
               std::stringstream ss(stgoutstr);
@@ -1515,10 +1552,10 @@ ResponseCode DataManager::getInfoOfService(Service &sv) {
             }
             sv.setStageoutDirs(dirs2);
 
-            sv.setImageId((char*)sqlite3_column_text(statement, 12));
-            sv.setProvider((char*)sqlite3_column_text(statement, 13));
-            sv.setNumberOfNode(sqlite3_column_int(statement, 14));
-            sv.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 15));
+            sv.setImageId((char*)sqlite3_column_text(statement, 16));
+            sv.setProvider((char*)sqlite3_column_text(statement, 17));
+            sv.setNumberOfNode(sqlite3_column_int(statement, 18));
+            sv.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 19));
             ret = DATA_SUCCESS;
         } else {
             ret = DATA_SELECT_EMPTY;
@@ -1929,8 +1966,12 @@ ResponseCode DataManager::getAllReadyServiceOfUser(std::string userEmail, std::v
                 service.setPathExcuteFile((char*)sqlite3_column_text(statement, 7));
                 service.setPathShFile((char*)sqlite3_column_text(statement, 8));
                 service.setShTemplate((char*)sqlite3_column_text(statement, 9));
+                service.setPathPreShFile((char*)sqlite3_column_text(statement, 10));
+                service.setShPreCommand((char*)sqlite3_column_text(statement, 11));
+                service.setPathPostShFile((char*)sqlite3_column_text(statement, 12));
+                service.setShPostCommand((char*)sqlite3_column_text(statement, 13));
 
-                std::string stginstr = (char*)sqlite3_column_text(statement, 10);
+                std::string stginstr = (char*)sqlite3_column_text(statement, 14);
                 std::vector<std::string> dirs;
                 if(stginstr.size() > 0){
                   std::stringstream ss(stginstr);
@@ -1941,7 +1982,7 @@ ResponseCode DataManager::getAllReadyServiceOfUser(std::string userEmail, std::v
                 }
                 service.setStageinDirs(dirs);
 
-                std::string stgoutstr = (char*)sqlite3_column_text(statement, 11);
+                std::string stgoutstr = (char*)sqlite3_column_text(statement, 15);
                 std::vector<std::string> dirs2;
                 if(stgoutstr.size() > 0){
                   std::stringstream ss(stgoutstr);
@@ -1952,10 +1993,10 @@ ResponseCode DataManager::getAllReadyServiceOfUser(std::string userEmail, std::v
                 }
                 service.setStageoutDirs(dirs2);
 
-                service.setImageId((char*)sqlite3_column_text(statement, 12));
-                service.setProvider((char*)sqlite3_column_text(statement, 13));
-                service.setNumberOfNode(sqlite3_column_int(statement, 14));
-                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 15));
+                service.setImageId((char*)sqlite3_column_text(statement, 16));
+                service.setProvider((char*)sqlite3_column_text(statement, 17));
+                service.setNumberOfNode(sqlite3_column_int(statement, 18));
+                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 19));
 
                 listReadyService.push_back(service);
             }
@@ -2011,8 +2052,12 @@ ResponseCode DataManager::getAllWaitServiceOfUser(std::string userEmail, std::ve
                 service.setPathExcuteFile((char*)sqlite3_column_text(statement, 7));
                 service.setPathShFile((char*)sqlite3_column_text(statement, 8));
                 service.setShTemplate((char*)sqlite3_column_text(statement, 9));
+                service.setPathPreShFile((char*)sqlite3_column_text(statement, 10));
+                service.setShPreCommand((char*)sqlite3_column_text(statement, 11));
+                service.setPathPostShFile((char*)sqlite3_column_text(statement, 12));
+                service.setShPostCommand((char*)sqlite3_column_text(statement, 13));
 
-                std::string stginstr = (char*)sqlite3_column_text(statement, 10);
+                std::string stginstr = (char*)sqlite3_column_text(statement, 14);
                 std::vector<std::string> dirs;
                 if(stginstr.size() > 0){
                   std::stringstream ss(stginstr);
@@ -2023,7 +2068,7 @@ ResponseCode DataManager::getAllWaitServiceOfUser(std::string userEmail, std::ve
                 }
                 service.setStageinDirs(dirs);
 
-                std::string stgoutstr = (char*)sqlite3_column_text(statement, 11);
+                std::string stgoutstr = (char*)sqlite3_column_text(statement, 15);
                 std::vector<std::string> dirs2;
                 if(stgoutstr.size() > 0){
                   std::stringstream ss(stgoutstr);
@@ -2034,10 +2079,10 @@ ResponseCode DataManager::getAllWaitServiceOfUser(std::string userEmail, std::ve
                 }
                 service.setStageoutDirs(dirs2);
 
-                service.setImageId((char*)sqlite3_column_text(statement, 12));
-                service.setProvider((char*)sqlite3_column_text(statement, 13));
-                service.setNumberOfNode(sqlite3_column_int(statement, 14));
-                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 15));
+                service.setImageId((char*)sqlite3_column_text(statement, 16));
+                service.setProvider((char*)sqlite3_column_text(statement, 17));
+                service.setNumberOfNode(sqlite3_column_int(statement, 18));
+                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 19));
                 listWaitService.push_back(service);
             }
 
@@ -2119,8 +2164,12 @@ ResponseCode DataManager::getAllServiceByImage(std::string imageId, std::vector<
                 service.setPathExcuteFile((char*)sqlite3_column_text(statement, 7));
                 service.setPathShFile((char*)sqlite3_column_text(statement, 8));
                 service.setShTemplate((char*)sqlite3_column_text(statement, 9));
+                service.setPathPreShFile((char*)sqlite3_column_text(statement, 10));
+                service.setShPreCommand((char*)sqlite3_column_text(statement, 11));
+                service.setPathPostShFile((char*)sqlite3_column_text(statement, 12));
+                service.setShPostCommand((char*)sqlite3_column_text(statement, 13));
 
-                std::string stginstr = (char*)sqlite3_column_text(statement, 10);
+                std::string stginstr = (char*)sqlite3_column_text(statement, 14);
                 std::vector<std::string> dirs;
                 if(stginstr.size() > 0){
                   std::stringstream ss(stginstr);
@@ -2131,7 +2180,7 @@ ResponseCode DataManager::getAllServiceByImage(std::string imageId, std::vector<
                 }
                 service.setStageinDirs(dirs);
 
-                std::string stgoutstr = (char*)sqlite3_column_text(statement, 11);
+                std::string stgoutstr = (char*)sqlite3_column_text(statement, 15);
                 std::vector<std::string> dirs2;
                 if(stgoutstr.size() > 0){
                   std::stringstream ss(stgoutstr);
@@ -2142,10 +2191,10 @@ ResponseCode DataManager::getAllServiceByImage(std::string imageId, std::vector<
                 }
                 service.setStageoutDirs(dirs2);
 
-                service.setImageId((char*)sqlite3_column_text(statement, 12));
-                service.setProvider((char*)sqlite3_column_text(statement, 13));
-                service.setNumberOfNode(sqlite3_column_int(statement, 14));
-                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 15));
+                service.setImageId((char*)sqlite3_column_text(statement, 16));
+                service.setProvider((char*)sqlite3_column_text(statement, 17));
+                service.setNumberOfNode(sqlite3_column_int(statement, 18));
+                service.setMaxElapseTime((unsigned int)sqlite3_column_int(statement, 19));
                 listService.push_back(service);
             }
 
