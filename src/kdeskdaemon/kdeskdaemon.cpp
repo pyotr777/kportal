@@ -263,10 +263,31 @@ bool ProcessMessage(Message& msg, Socket& socket){
     return isFinish;
 }
 
+void RunExtendSh(std::string job_id, std::string shfile){
+  std::cout << "RunExtendSh: " << shfile << std::endl;
+  std::stringstream ss;
+  ss << "cd " << g_home_job_dir << job_id << ";";
+  ss << "chmod 755 " << shfile << ";";
+  ss << "[ -f " << shfile.c_str() << " ] && sh " << shfile.c_str() << ";";
+  std::string cmd = ss.str();
+  std::cout << "cmd: " << cmd << std::endl;
+  std::string stdout = SystemCommandUtils::Exec(cmd.c_str());
+  std::cout << "stdout log: ====== \n";
+  std::cout << stdout << std::endl << "================"<< std::endl;
+}
+
 void ProcessSubmitJob(Socket& socket, const std::string job_id, const std::string& exe_path, const std::vector<std::string>& recv_files){
   std::cout << "ProcessSubmitJob: " << job_id << std::endl;
   Message res_msg(Header(MT_COMMAND, g_kdesk_port, 0, 0, CMD_JOB_STATE), NULL);
   Header err_hdr(MT_COMMAND, g_kdesk_port, 0, 0, CMD_ACK_ERR);
+
+  // Pre-processing command
+  std::string pre_file = job_id + "_pre.sh";
+  std::cout << "Pre-processing commands: " << pre_file <<std::endl;
+  RunExtendSh(job_id, pre_file);
+  
+
+  // Run submit job command
   std::cout << "run pjsub.\n";
   std::string pjm_jid = RunPjsub(job_id, exe_path);
   if(pjm_jid.size() <= 0){
@@ -280,12 +301,17 @@ void ProcessSubmitJob(Socket& socket, const std::string job_id, const std::strin
     return;
   }
 
-  // RunPjwait
+  // RunPjwait command
   if(RunPjwait(socket, job_id, pjm_jid)){
     std::cout << "run pjwait success.\n";
   } else {
     std::cout << "run pjwait fail.\n";
   }
+  
+  // Post-processing command
+  std::string post_file = job_id + "_post.sh";
+  std::cout << "Post-processing commands:" << post_file << std::endl; 
+  RunExtendSh(job_id, post_file);
 
   // Send file to slavedaemon
   std::string job_path = g_home_job_dir + job_id;
@@ -564,7 +590,7 @@ bool RunKAccountJ(Socket& socket, const std::string& kdeskacc){//, std::string& 
   std::cout << "RunKAccountJ( " << kdeskacc << " )\n";
   Message res(Header(MT_COMMAND, g_kdesk_port, 0, 0, CMD_ACK_OK), NULL);
   Header err_hdr(MT_COMMAND, g_kdesk_port, 0, 0, CMD_ACK_ERR);
-  std::string stdout = SystemCommandUtils::Exec("k_accountj");
+  std::string stdout = SystemCommandUtils::Exec("k_accountj -h Ms");
   std::cout << "Log: " << stdout << std::endl;
   std::string unittag = "unit[";
   std::string unit, total, usage, remain;

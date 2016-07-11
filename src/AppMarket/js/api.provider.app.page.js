@@ -255,10 +255,10 @@ $(document).on('submit', '#provider-editapp-form', function( e ){
 	for ( var i in serArr ){
 		var value = serArr[ i ].value;
 		msg = "", tagId = "";
-		if( ! value ) {
-			continue;
-		}
-		//console.log("name = " + serArr[ i ].name + ", value = " + value);
+		//if( ! value ) {
+		//continue;
+		//}
+		console.log("Bp: name = " + serArr[ i ].name + ", value = " + value);
 		
 		switch ( serArr[ i ].name ){
 		
@@ -269,35 +269,56 @@ $(document).on('submit', '#provider-editapp-form', function( e ){
 			if( pappObj.service.name !== value ){
 				pappObj.service.name = value;
 				updates.push("name");
-			}
+			} 
 			break;
 		case "provider-newapp-image":
 			//alert("value" + value);
-			if( pappObj.service.image !== value ){
+			if( pappObj.service.image !== value && (!value)){
 				pappObj.service.image = value;
 				updates.push("image");
 			}
 			break;
 		case "provider-newapp-path":
-			if( pappObj.service.path !== value ){
+			if( pappObj.service.path !== value && (!value)){
 				pappObj.service.path = value;
 				updates.push("path");
 			}
 			break;
 
 		case "provider-newapp-shpath":
-			if( pappObj.service.shpath !== value ){
+			if( pappObj.service.shpath !== value){
 				pappObj.service.shpath = value;
 				updates.push("shpath");
 			}
 			break;
 
+                case "provider-newapp-preshpath":
+                        if( pappObj.service.preshpath !== value ){
+                                pappObj.service.preshpath = value;
+                                updates.push("preshpath");
+                        }
+                        break;
+
+                case "provider-newapp-postshpath":
+                        alert("Bp: "  + pappObj.service.postshpath + " vs " + value);
+
+                        if( pappObj.service.postshpath !== value ){
+                                pappObj.service.postshpath = value;
+                                updates.push("postshpath");
+                        }
+                        break;
+
 		case "provider-newapp-stgin":
-			if(pappObj.service.stageinDirs && pappObj.service.stageinDirs [0] && pappObj.service.stageinDirs [0] !== value) {
+			if(pappObj.service.stageinDirs && pappObj.service.stageinDirs [0]) {
+                           if(pappObj.service.stageinDirs [0].path !== value) {
 				pappObj.service.stageinDirs = [];
 				pappObj.service.stageinDirs.push({"path":value});
 				updates.push("stageinDirs");
-			} else {
+                           } else {
+                           	console.log("Stage-in: No update");  
+                           }
+			} 
+                        else {
 				pappObj.service.stageinDirs = [];
 				pappObj.service.stageinDirs.push({"path":value});
 				updates.push("stageinDirs");
@@ -305,11 +326,16 @@ $(document).on('submit', '#provider-editapp-form', function( e ){
 			break;
 			
 		case "provider-newapp-stgout":
-                        if(pappObj.service.stageoutDirs && pappObj.service.stageoutDirs [0] && pappObj.service.stageoutDirs [0] !== value) {
+                        if(pappObj.service.stageoutDirs && pappObj.service.stageoutDirs [0] ) {
+                            if(pappObj.service.stageoutDirs [0].path !== value) {
                                 pappObj.service.stageoutDirs = [];
                                 pappObj.service.stageoutDirs.push({"path":value});
                                 updates.push("stageoutDirs");
-                        } else {
+                            } else {
+                                console.log("Stage-out: No update");
+                            }
+                        } 
+                        else {
                                 pappObj.service.stageoutDirs = [];
                                 pappObj.service.stageoutDirs.push({"path":value});
                                 updates.push("stageoutDirs");
@@ -800,7 +826,13 @@ function papp_loadDataDetails(){
 	
 	/// Job script file path
 	$("#provider-editapp-shpath").val( pappObj.service.shpath );
-	
+
+        /// Post-processing sh file path
+        $("#provider-editapp-postshpath").val( pappObj.service.postshpath );
+
+        /// Pre-processing sh file path
+        $("#provider-editapp-preshpath").val( pappObj.service.preshpath );
+
 	/// Stage-in
 	console.log( pappObj.service.stageinDirs);
 	if(pappObj.service.stageinDirs != undefined && pappObj.service.stageinDirs.length > 0){

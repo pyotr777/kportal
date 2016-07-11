@@ -37,6 +37,8 @@ install:
 	
 uninstall:
 	rm -rf $(PREFIX)
+	rm -f $(BIN_DIR)/kp_server
+	rm -f $(BIN_DIR)/kdeskdaemon
 clean:
 	$(CD) $(INCLUDE)/libtar-1.2.11; make clean
 	$(CD) $(INCLUDE)/websocketpp-0.2.3-dev; make clean

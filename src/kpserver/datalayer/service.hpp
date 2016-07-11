@@ -14,6 +14,10 @@ private:
     std::string pathExcuteFile;
     std::string pathShFile;
     std::string shTemplate;
+    std::string pathPostShFile;
+    std::string pathPreShFile;
+    std::string shPostCommand;
+    std::string shPreCommand;
     std::string image_id;
     std::string providerEmail;
     std::string iconStr;
@@ -27,7 +31,7 @@ private:
 public:
     Service();
     //Service(std::string id, std::string name, std::string prod, bool st, int nON, int nOU, int nOWU, std::string des, std::string path, std::string provId, unsigned int timeElapse);
-    Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string shpath, std::string imageId, std::string provId);
+    Service(std::string id, std::string name, std::string prod, bool st, int nOU, int nOWU, std::string des, std::string path, std::string shpath, std::string shprepath, std::string shpostpath, std::string imageId, std::string provEmail);
     Service(const Service &copy);
     ~Service();
 
@@ -60,6 +64,19 @@ public:
 
     void setShTemplate(std::string path);
     std::string getShTemplate();
+
+    void setPathPostShFile(std::string path);
+    std::string getPathPostShFile();
+
+    void setShPostCommand(std::string path);
+    std::string getShPostCommand();
+
+    void setPathPreShFile(std::string path);
+    std::string getPathPreShFile();
+
+    void setShPreCommand(std::string path);
+    std::string getShPreCommand();
+
 
     void setImageId(std::string imageId);
     std::string getImageId();

@@ -213,6 +213,13 @@ function padetail_submitApp( publish ){
         case ResponseCodes.ERROR_SERVICE_STAGEINDIR_NOTFOUND:
           msg = "The stage-in directory not found in docker image.";
           break;
+        case ResponseCodes.ERROR_SERVICE_PRESHPATH_NOTFOUND:
+          msg = "The pre-processing script file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_POSTSHPATH_NOTFOUND:
+          msg = "The pre-processing script file not found in docker image.";
+          break;
+
         default:
           break;
         }
@@ -267,7 +274,7 @@ function padetail_submitApp( publish ){
       }
       else //if( res.result === ResponseCodes.DATA_SUCCESS)// ||  res.result == ResponseCodes.ACTION_WAIT_ICON)// && res.service )
       {
-        var msg = "Create service fail.";
+        var msg = "Update service fail.";
         switch( res.result ){
         case ResponseCodes.DATA_SUCCESS:
           loading_hide();
@@ -292,6 +299,12 @@ function padetail_submitApp( publish ){
         case ResponseCodes.ERROR_SERVICE_STAGEINDIR_NOTFOUND:
           msg = "The stage-in directory path not found in docker image.";
           break;
+        case ResponseCodes.ERROR_SERVICE_PRESHPATH_NOTFOUND:
+          msg = "The pre-processing script file not found in docker image.";
+          break;
+        case ResponseCodes.ERROR_SERVICE_POSTSHPATH_NOTFOUND:
+          msg = "The pre-processing script file not found in docker image.";
+
         default:
           break;
         }

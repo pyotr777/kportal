@@ -29,13 +29,15 @@
 #define TAG_STAGE_OUT_DIR           "[STAGE_OUT_DIR]"
 #define TAG_STAGE_EXE_ARGS          "[EXE_ARGS]"
 
-const unsigned char USF_NAME      = 0x01; // hex for 0000 0001
-const unsigned char USF_EXEPATH   = 0x02; // hex for 0000 0010
-const unsigned char USF_SHPATH    = 0x04; // hex for 0000 0100
-const unsigned char USF_IMAGE     = 0x08; // hex for 0000 1000
-const unsigned char USF_STGINDIR  = 0x10; // hex for 0001 0000
-const unsigned char USF_STGOUTDIR = 0x20; // hex for 0010 0000
-const unsigned char USF_NONODE    = 0x40; // hex for 0100 0000
-const unsigned char USF_ETIME     = 0x80; // hex for 1000 0000
-const unsigned char USF_ISNEW     = 0xFF; // hex for 1111 1111
+const unsigned int USF_NAME      = 0x01; // hex for 0000 0001
+const unsigned int USF_EXEPATH   = 0x02; // hex for 0000 0010
+const unsigned int USF_SHPATH    = 0x04; // hex for 0000 0100
+const unsigned int USF_IMAGE     = 0x08; // hex for 0000 1000
+const unsigned int USF_STGINDIR  = 0x10; // hex for 0001 0000
+const unsigned int USF_STGOUTDIR = 0x20; // hex for 0010 0000
+const unsigned int USF_NONODE    = 0x40; // hex for 0100 0000
+const unsigned int USF_ETIME     = 0x80; // hex for 1000 0000
+const unsigned int USF_PRESHPATH = 0x100;    // hex for 0000 0001 0000 0000
+const unsigned int USF_POSTSHPATH= 0x200;    // hex for 0000 0010 0000 0000
+const unsigned int USF_ISNEW     = 0xFFFF;   // hex for 1111 1111 1111 1111
 #endif // KP_SERVER_CONSTANTS_HPP

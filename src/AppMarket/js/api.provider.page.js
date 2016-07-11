@@ -188,6 +188,8 @@ function provider_loadServicesList( resServices ){
 				service.name = ( ( this.name && this.name !== "") ? this.name : "(No name)" );
 				service.path = this.path;
 				service.shpath = this.shpath;
+                                service.preshpath = this.preshpath;
+                                service.postshpath = this.postshpath;
 				service.image = this.image;
 				//service.producer = ( this.producer ? this.producer : '' );
 				service.noUsers = ( this.numberOfUsers ? this.numberOfUsers : 0 );
@@ -329,11 +331,19 @@ $(document).on('submit', '#provider-newapp-form', function( e ){
 			if( value == "" ){
 				msg = "Path without only space.";
 			}
+                        break;
 		case "pnaf-shpath":
 			providerObj.service.shpath = value;
 			/*if( value == "" ){
 				msg = "Path without only space.";
 			}*/
+                        break;
+                case "pnaf-preshpath":
+                        providerObj.service.preshpath = value;
+                        break;
+                case "pnaf-postshpath":
+                        providerObj.service.postshpath = value;
+                        break;
 		case "pnaf-stgin":
 			providerObj.service.stageinDirs = [];
 			providerObj.service.stageinDirs.push({"path":value});

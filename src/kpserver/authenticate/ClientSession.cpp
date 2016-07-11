@@ -7,6 +7,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include "../stdafx.h"
+#include <math.h>
 
 #define MAX_NUM_OF_RETRY 10
 using namespace std;
@@ -1646,7 +1647,7 @@ ResponseCode ClientSession::createService(Service &service) {
   return ret;
 }
 
-ResponseCode ClientSession::checkValidInfo(Service &service, const unsigned char usf_flags)
+ResponseCode ClientSession::checkValidInfo(Service &service, const unsigned int usf_flags)
 {
   std::cout << "checkValidInfo\n";
   ResponseCode ret = DATA_SUCCESS;
@@ -1668,12 +1669,12 @@ ResponseCode ClientSession::checkValidInfo(Service &service, const unsigned char
     }
   }
   // Check path exists
-  if(usf_flags & USF_IMAGE || usf_flags & USF_EXEPATH || usf_flags & USF_SHPATH || usf_flags & USF_STGINDIR)
+  if(usf_flags & USF_IMAGE || usf_flags & USF_EXEPATH || usf_flags & USF_SHPATH || usf_flags & USF_PRESHPATH || usf_flags & USF_POSTSHPATH || usf_flags & USF_STGINDIR)
     ret = browsePathInsideImage(service, usf_flags);
   return ret;
 }
 
-ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsigned char usf_flags)
+ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsigned int usf_flags)
 {
   std::cout << "browsePathInsideImage: usf_flags = " << usf_flags << ", image = " << service.getImageId() << std::endl;
   
@@ -1713,7 +1714,7 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
   if(ret == DATA_SUCCESS) {
     /// docker -H 127.0.0.1:9555 exec 82ba5e4a2aa9b81fcd61965c3a9684089e288b3660cbdf458f32b3c4b9ba4e9c test -f bin/startslavedaemon.sh && echo 1
     std::string slavedaemon_path = "/bin/startslavedaemon.sh";
-    //std::string slavedaemon_path = "bin/startslavedaemon.sh";
+    //std::string slavedaemon_path = "bin/startslavedaemon.sh"; // for docker 1.7.1
     ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f " << slavedaemon_path << " && echo " << flag_str << " ";
     cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
     stdout = Exec(cmd.c_str());
@@ -1723,6 +1724,7 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
       ret = ERROR_SERVICE_SLAVEDAEMON_NOTFOUND;
     }
   }
+  
   //check the execute file exists
   if(ret == DATA_SUCCESS && usf_flags & USF_EXEPATH) {
     std::string exe_path = service.getPathExcuteFile();
@@ -1730,8 +1732,8 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
       std::cout << "[ERR] The exe file \"" << exe_path << "\" not found. Path is invalid\n";
       ret = ERROR_SERVICE_EXEPATH_NOTFOUND;
     }
-    //exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path.substr(1) : exe_path;
-    exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path : std::string(PATH_SEPARATOR + exe_path);
+    //exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path.substr(1) : exe_path; // for docker 1.7.1
+    exe_path = exe_path.find_first_of(PATH_SEPARATOR) == 0 ? exe_path : std::string(PATH_SEPARATOR + exe_path); 
     ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f \"" << exe_path << "\" && echo " << flag_str << " ";
     cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
     stdout = Exec(cmd.c_str());
@@ -1739,26 +1741,6 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
     if(stdout.find(flag_str) == std::string::npos){
       std::cout << "[ERR] The exe file \"" << exe_path << "\" not found. Path is invalid\n";
       ret = ERROR_SERVICE_EXEPATH_NOTFOUND;
-    }
-  }
-  
-  //check the stgin_dir_path file exists
-  if(ret == DATA_SUCCESS && usf_flags & USF_STGINDIR) {
-    std::string stgin_dir_path = service.getStageinDirs() -> size() > 0 ? service.getStageinDirs() -> at(0) : "";
-    if(stgin_dir_path != ""){
-      //stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path.substr(1) : stgin_dir_path;
-      stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path : std::string(PATH_SEPARATOR + stgin_dir_path);
-      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -d \"" << stgin_dir_path << "\" && echo " << flag_str << " ";
-      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
-      stdout = Exec(cmd.c_str());
-      std::cout << "stdout: " << stdout.c_str() << std::endl;
-      if(stdout.find(flag_str) == std::string::npos){
-        std::cout << "[ERR] The stage-in directory \"" << stgin_dir_path << "\" not found.\n";
-        ret = ERROR_SERVICE_STAGEINDIR_NOTFOUND;
-        return ret;
-      }    
-    } else {
-      std::cout << "Have not stage-in dir\n";
     }
   }
 
@@ -1777,8 +1759,8 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
         ret = ERROR_SERVICE_SHPATH_NOTFOUND;
       }
     } else{
-      //std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile().substr(1) : service.getPathShFile();
-      std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile() : std::string(PATH_SEPARATOR + service.getPathShFile());
+      //std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile().substr(1) : service.getPathShFile();  // for docker 1.7.1
+      std::string sh_file = service.getPathShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathShFile() : std::string(PATH_SEPARATOR + service.getPathShFile()); 
       ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec " << container_id << " cat \"" << sh_file << "\" ";
       cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
       stdout = Exec(cmd.c_str());
@@ -1789,10 +1771,85 @@ ResponseCode ClientSession::browsePathInsideImage(Service &service, const unsign
       }
       sh_content = stdout;
     }
-    std::cout << "Ssh content: \n" << sh_content << std::endl;
+    std::cout << "Sh content: \n" << sh_content << std::endl;
     service.setShTemplate(sh_content);
   }
-  
+ 
+  std::cout << "USF_PRESHPATH: " <<  (int)(usf_flags & USF_PRESHPATH) << ", " << service.getPathPreShFile() << std::endl;
+  // get the pre-processing command sh file
+  if(ret == DATA_SUCCESS && usf_flags & USF_PRESHPATH) {
+    std::string sh_content;
+    if(service.getPathPreShFile() != ""){
+      //std::string sh_file = service.getPathPreShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathPreShFile().substr(1) : service.getPathPreShFile();// for docker 1.7.1
+      std::string sh_file = service.getPathPreShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathPreShFile() : std::string(PATH_SEPARATOR + service.getPathPreShFile());
+
+      // check file exist in image
+      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f \"" << sh_file << "\" && echo " << flag_str << " ";
+      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+      stdout = Exec(cmd.c_str());
+      std::cout << "stdout: " << stdout.c_str() << std::endl;
+      if(stdout.find(flag_str) == std::string::npos){
+        std::cout << "[ERR] The pre-processing script \"" << sh_file << "\" not found.\n";
+        ret = ERROR_SERVICE_PRESHPATH_NOTFOUND;
+      }
+      // get file content
+      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec " << container_id << " cat \"" << sh_file << "\" ";
+      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+      stdout = Exec(cmd.c_str());
+      std::cout << "stdout: " << stdout.c_str() << std::endl;
+      sh_content = stdout;
+    }
+    std::cout << "sh content: \n" << sh_content << std::endl;
+    service.setShPreCommand(sh_content);
+  }
+
+ std::cout << "USF_POSTSHPATH: " <<  (int) (usf_flags & USF_POSTSHPATH) << ", " << service.getPathPostShFile() << std::endl;
+  // get the post-processing command sh file
+  if(ret == DATA_SUCCESS && usf_flags & USF_POSTSHPATH) {
+    std::string sh_content;
+    if(service.getPathPostShFile() != ""){
+      //std::string sh_file = service.getPathPostShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathPostShFile().substr(1) : service.getPathPostShFile(); // for 1.7.1 docker version
+      std::string sh_file = service.getPathPostShFile().find_first_of(PATH_SEPARATOR) == 0 ? service.getPathPostShFile() : std::string(PATH_SEPARATOR + service.getPathPostShFile());
+
+      // check file exist in image
+      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -f \"" << sh_file << "\" && echo " << flag_str << " ";
+      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+      stdout = Exec(cmd.c_str());
+      std::cout << "stdout: " << stdout.c_str() << std::endl;
+      if(stdout.find(flag_str) == std::string::npos){
+        std::cout << "[ERR] The post-processing script \"" << sh_file << "\" not found.\n";
+        ret = ERROR_SERVICE_POSTSHPATH_NOTFOUND;
+      }
+      // get file content
+      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec " << container_id << " cat \"" << sh_file << "\" ";
+      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+      stdout = Exec(cmd.c_str());
+      std::cout << "stdout: " << stdout.c_str() << std::endl;
+      sh_content = stdout;
+    }
+    std::cout << "Sh content: \n" << sh_content << std::endl;
+    service.setShPostCommand(sh_content);
+  }
+
+  //check the stgin_dir_path file exists
+  if(ret == DATA_SUCCESS && usf_flags & USF_STGINDIR) {
+    std::string stgin_dir_path = service.getStageinDirs() -> size() > 0 ? service.getStageinDirs() -> at(0) : "";
+    if(stgin_dir_path != ""){
+      //stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path.substr(1) : stgin_dir_path;  // for 1.7.1 docker version
+      stgin_dir_path = stgin_dir_path.find_first_of(PATH_SEPARATOR) == 0 ? stgin_dir_path : std::string(PATH_SEPARATOR + stgin_dir_path);
+      ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " exec  " << container_id << " test -d \"" << stgin_dir_path << "\" && echo " << flag_str << " ";
+      cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
+      stdout = Exec(cmd.c_str());
+      std::cout << "stdout: " << stdout.c_str() << std::endl;
+      if(stdout.find(flag_str) == std::string::npos){
+        std::cout << "[ERR] The stage-in directory \"" << stgin_dir_path << "\" not found.\n";
+        ret = ERROR_SERVICE_STAGEINDIR_NOTFOUND;
+      }
+    } else {
+      std::cout << "Have not stage-in dir\n";
+    }
+  }
+
   // remove temp container
   ss.str(""); ss << "docker -H " << DockerTcp_IP << ":" << DockerTcp_Port << " rm -f " << container_id;
   cmd = ss.str(); std::cout << "cmd: " << cmd.c_str() << std::endl;
@@ -2180,7 +2237,7 @@ ResponseCode ClientSession::getProviderTimeResource(const std::string& provider_
             usage = atoi(argv[2].c_str());
             avaiable = atoi(argv[3].c_str());
             if(isNeedSetTimeUseable){
-              double usableTime = avaiable / 10;
+              double usableTime = floor(avaiable / 10);
               std::cout << "usable time = " << usableTime << std::endl;
               res_code = updateProviderTimeUsable(provider_email, usableTime);
               if(res_code == DATA_SUCCESS){

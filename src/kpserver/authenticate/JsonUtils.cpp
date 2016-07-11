@@ -220,6 +220,12 @@ JSONNode JsonUtils::toJSONNode(Service& service)
     /// ShPath
     item.push_back(*(toJSONNode(TAG_PATH_SH_FILE_STR, service.getPathShFile()).begin()));
 
+    /// ShPath
+    item.push_back(*(toJSONNode(TAG_PATH_POST_SH_FILE_STR, service.getPathPostShFile()).begin()));
+
+    /// ShPath
+    item.push_back(*(toJSONNode(TAG_PATH_PRE_SH_FILE_STR, service.getPathPreShFile()).begin()));
+
     // Stage-in dirs
     JSONNode stginArr(JSON_ARRAY);
     stginArr.set_name(TAG_STAGEINDIRS_STR);

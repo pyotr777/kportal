@@ -19,7 +19,9 @@ public:
                int         numberOfWaitUser,
                std::string description,
                std::string pathExcuteFile,
-			   std::string pathShFile,
+               std::string pathShFile,
+               std::string pathPreShFile,
+               std::string pathPostShFile,
                std::string providerId,
                unsigned int timeElapse)
 	{
@@ -32,6 +34,8 @@ public:
         this -> numberOfWaitUser = numberOfWaitUser;
         this -> description = description;
         this -> pathExcuteFile = pathExcuteFile;
+        this -> pathPostShFile = pathPostShFile;
+        this -> pathPreShFile = pathPreShFile;
         this -> pathShFile = pathShFile;
         this -> providerId = providerId;
         this -> maxElapseTime = timeElapse;
@@ -48,14 +52,16 @@ public:
         this -> numberOfWaitUser = copy.numberOfWaitUser;
         this -> description = copy.description;
         this -> pathExcuteFile = copy.pathExcuteFile;
-		this -> pathShFile = copy.pathShFile;
+        this -> pathShFile = copy.pathShFile;
+        this -> pathPostShFile = copy.pathPostShFile;
+        this -> pathPreShFile = copy.pathPreShFile;
         this -> providerId = copy.providerId;
         this -> maxElapseTime = copy.maxElapseTime;
         this -> act = copy.act;
         this -> listParam = copy.listParam;
     }
 public:
-	std::string serviceId;
+    std::string serviceId;
     std::string serviceName;
     std::string producer;
     bool        status;
@@ -64,8 +70,10 @@ public:
     int         numberOfWaitUser;
     std::string description;
     std::string pathExcuteFile;
-	std::string pathShFile;
-	std::string providerId;
+    std::string pathShFile;
+    std::string pathPostShFile;
+    std::string pathPreShFile;
+    std::string providerId;
     std::string iconStr;
     unsigned int maxElapseTime;
     std::vector<Parameter> listParam;

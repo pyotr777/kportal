@@ -2324,6 +2324,21 @@ void request<request_endpoint_type>::processCreateService(MessageHeader& header,
         service -> setPathShFile(i->as_string());
     }
 
+    /// Path of post-processing sh file
+    i = n.find(TAG_PATH_POST_SH_FILE_STR);
+    if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
+        service -> setPathPostShFile(i->as_string());
+        std::cout << i->as_string().c_str() << service -> getPathPostShFile() << std::endl;;
+    }
+
+    /// Path of pre-processing sh file
+    i = n.find(TAG_PATH_PRE_SH_FILE_STR);
+    if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
+        service -> setPathPreShFile(i->as_string());
+
+        std::cout << i->as_string().c_str() << service -> getPathPreShFile() << std::endl;;
+    }
+
     // Stage-in folders
     std::vector<std::string> dirs;
     i = n.find(TAG_STAGEINDIRS_STR);
@@ -2517,7 +2532,7 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
     }
 
     ResponseCode ret = cs->getService(*service);
-    unsigned char usf_flags = 0; // all flags/options turned off to start
+    unsigned int usf_flags = 0; // all flags/options turned off to start
     if (ret == DATA_SUCCESS) {
         /// Service name
         i = n.find(TAG_SERVICE_NAME_STR);
@@ -2552,6 +2567,20 @@ void request<request_endpoint_type>::processUpdateService(MessageHeader& header,
         if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
             service -> setPathShFile(i->as_string());
             usf_flags |= USF_SHPATH;
+        }
+
+        /// Path of post-proccessing sh file
+        i = n.find(TAG_PATH_POST_SH_FILE_STR);
+        if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
+            service -> setPathPostShFile(i->as_string());
+            usf_flags |= USF_POSTSHPATH;
+        }
+
+        /// Path of post-proccessing sh file
+        i = n.find(TAG_PATH_PRE_SH_FILE_STR);
+        if (i != n.end() && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE) {
+            service -> setPathPreShFile(i->as_string());
+            usf_flags |= USF_PRESHPATH;
         }
 
 
