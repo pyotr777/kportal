@@ -300,8 +300,6 @@ $(document).on('submit', '#provider-editapp-form', function( e ){
                         break;
 
                 case "provider-newapp-postshpath":
-                        alert("Bp: "  + pappObj.service.postshpath + " vs " + value);
-
                         if( pappObj.service.postshpath !== value ){
                                 pappObj.service.postshpath = value;
                                 updates.push("postshpath");
