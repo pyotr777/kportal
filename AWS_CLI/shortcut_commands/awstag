@@ -1,0 +1,2 @@
+#!/bin/bash
+aws ec2 create-tags --resources $1 --tags Value=$2,Key=Name
