@@ -1,8 +1,8 @@
 #!/bin/bash
 HOME_DIR=$HOME
 LOGDIR="$HOME_DIR/log"
-ps ax | grep "kp_server " | grep 9004
-if [[ $? -eq 0 ]]; then
+PID=$(ps ax | grep "kp_server" | grep "9004" | awk '{ print $1 }')
+if [[ -n $PID ]]; then
 	echo "Already running."
 	exit 0
 fi
