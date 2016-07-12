@@ -26,6 +26,8 @@ echo "HOME   =$HOME"
 echo "LOGDIR =$LOGDIR"
 mkdir -p "$LOGDIR"
 
+export D_HOST_OPT="-H localhost:9555"
+
 message "0. Installing required packages"
 sudo apt-get update > "$LOGDIR/update.log"
 sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make > "$LOGDIR/install.log"
@@ -91,10 +93,11 @@ echo "Check docker"
 echo "Docker on UNIX soket?"
 sudo -E su kportal -c 'docker ps' || true
 echo "Docker on 9555?"
-sudo -E su kportal -c 'docker -H localhost:9555 ps' || true
+sudo -E su kportal -c 'docker $D_HOST_OPT ps' || true
 
 message "6. Starting Apache2"
 sudo -E su kportal -c "$KP_HOME/src/release/start_apache.sh"
+
 
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
@@ -107,21 +110,27 @@ ps ax | grep "kp_server" | grep 9004
 if [[ -z $skip_tars ]]; then
 	message "8. Loading Master Image"
 	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker -H localhost:9555 load -i master_base_image.tar"
+	sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
 
 	message "9. Building Base Image"
 	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker -H localhost:9555 build --rm -t ubuntu_base ."
+	sudo -E su kportal -c "docker $D_HOST_OPT build --rm -t ubuntu_base ."
 	echo "Saving Base Image to tar"
-	sudo -E su kportal -c "docker -H localhost:9555 save -o ubuntu_base.tar ubuntu_base"
+	sudo -E su kportal -c "docker $D_HOST_OPT save -o ubuntu_base.tar ubuntu_base"
 	echo "Copying image tar to web site folder"
 	sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
 	sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
-	export IM_ID=$(sudo -E su kportal -c "docker -H localhost:9555 images | grep ubuntu_base | awk '{ print \$3 }'") || true
+	export IM_ID=$(sudo -E su kportal -c "docker $D_HOST_OPT images | grep ubuntu_base | awk '{ print \$3 }'") || true
 	echo "Base Image ID is $IM_ID"
 	# Set image ID in configuration file
 	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
 	cat "/etc/kportal/kportal_conf.xml"
+fi
+
+if [[ -z $skip_ssl_cert ]]; then
+	message "10. Obtaining SSL certificates from LetsEncrypt."
+	echo "Stand by, you'll be ask for your e-mail address."
+	sudo docker $D_HOST_OPT exec apache "/certbot/install_certbot.sh"
 fi
 
 export INSTALL_DIR="$KP_HOME/install"

@@ -14,6 +14,9 @@ RUN cp settings/ubuntu/sites-enabled/default-ssl.conf /etc/apache2/sites-availab
 RUN cp settings/ubuntu/sites-enabled/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 RUN mkdir /var/run/sshd
+RUN mkdir /certbot
+ADD install_certbot.sh /certbot/
+
 
 EXPOSE 80
 EXPOSE 443
