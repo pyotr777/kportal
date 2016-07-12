@@ -49,6 +49,9 @@ if [[ -z $skip_user ]]; then
 	fi
 	echo "Source code in $KP_HOME (src dir)?"
 	ls -la "$KP_HOME"
+else 
+	KP_HOME=$(sudo su kportal -c 'echo $HOME')
+	echo "KP_HOME=$KP_HOME"
 fi
 
 
