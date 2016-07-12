@@ -1,8 +1,13 @@
 #!/bin/bash
 # Start Apache server in Docker container.
-# apachessl image is used. It is built in installkportal_ubuntu.sh script.
 
 DOCKER_HOST="-H 127.0.0.1:9555"
+SSL_DIR="/etc/kportal/ssl/letsencrypt"
+
+if [[ ! -d "$SSL_DIR" ]]; then
+	mkdir -p "$SSL_DIR"
+	echo "Directory $SSL_DIR created."
+fi
 
 docker $DOCKER_HOST images &>/dev/null
 if [[ $? -eq 0 ]]; then
@@ -13,6 +18,7 @@ if [[ $? -eq 0 ]]; then
 	fi
 else
 	echo "Cannot access Docker daemon."
+	exit 1
 fi
 echo "Running containers"
 docker $DOCKER_HOST ps
