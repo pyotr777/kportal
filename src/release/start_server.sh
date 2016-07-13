@@ -3,10 +3,6 @@
 # Start Docker on port 9555 of localhost on bridge0 if,
 # create bridge0 if not exists.
 
-# Save relative path to this script from working dir.
-# It will be used to call another script (start_docker.sh) in the same directory with this script.
-CUR_DIR="$(dirname $0)"
-
 # Detect Travis
 
 if [[ "$HOME" = *travis* ]]; then
