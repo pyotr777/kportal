@@ -77,8 +77,9 @@ code {
     line-height: 1pt;
     letter-spacing: 0em;
     font-style: normal;
-    color:#aaaaaa;
-    background-color: #ebebeb;
+    color:#8b8b8b;
+    background-color: #e2e2e2;
+    padding:1px;
 }
 
 /* Stiky table header */

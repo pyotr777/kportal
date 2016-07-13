@@ -10,9 +10,9 @@
         <thead>
         <tr>
             <th>#</th>
-            <th width="32%">Required</th>
-            <th width="32%">Local</th>
-            <th width="32%">EC2</th>
+            <th width="25%">Required</th>
+            <th width="30%">Local</th>
+            <th width="42%">EC2</th>
         </tr>
         </thead>
         <tbody>
@@ -127,7 +127,23 @@
             <td>&nbsp;</td>
             <td>fixed IP and DNS address</td>
             <td></td>
-            <td>[ Create SSL certificate ]</td>
+            <td>[ Obtain SSL certificate (or use self-signed) ]</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Edit Apache configuration file <br />
+                <note>/etc/apache2/sites-available/default-ssl.conf or /etc/httpd/conf.d/ssl.conf</note></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Link kp_server certificates to obtained certificates<br />
+                <note>/etc/kportal/ssl/server.crt -> letsencrypt/archive/kportal.ml/cert1.pem
+                    /etc/kportal/ssl/server.key -> letsencrypt/archive/kportal.ml/privkey1.pem</note>
+            </td>
         </tr>
         <tr>
             <td>&nbsp;</td>
