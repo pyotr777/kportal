@@ -170,6 +170,9 @@ if [[ -z $skip_ssl_cert ]]; then
 		ls -l
 		cd $ORG_DIR
 	fi
+elif [[ "$HOME" = *travis* ]]; then
+	echo "Restart apache continer on port 9005"
+	$ORG_DIR/start_apache.sh 9005
 fi
 
 export INSTALL_DIR="$KP_HOME/install"
