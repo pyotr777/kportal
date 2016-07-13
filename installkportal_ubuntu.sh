@@ -5,9 +5,12 @@ set -e
 #skip_kpserver=1
 #skip_docker=1
 #skip_apache=1
+#skip_ssl_cert=1
+
 if [[ "$HOME" = *travis* ]]; then
-	export skip_docker=1;
-	export skip_tars=1;
+	export skip_docker=1
+	export skip_tars=1
+	export skip_ssl_cert=1
 fi
 
 function message {
@@ -32,7 +35,7 @@ message "0. Installing required packages"
 sudo apt-get update > "$LOGDIR/update.log"
 sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make > "$LOGDIR/install.log"
 # Test if AUFS is installed
-./install_aufs.sh
+$ORG_DIR/install_aufs.sh
 
 if [[ -z $skip_user ]]; then 
 	message "1. Create user kportal"
@@ -46,7 +49,7 @@ if [[ -z $skip_user ]]; then
 	sudo -E su kportal -c "mkdir -p $KP_HOME/.ssh/kportal"
 	# Move source code  to /home/kportal/src
 	if [[ ! -d "$KP_HOME/src" ]]; then
-		sudo mv ./src "$KP_HOME/"
+		sudo mv -f ./src "$KP_HOME/"
 		sudo chown -R kportal:kportal "$KP_HOME/src"
 	fi
 	echo "Source code in $KP_HOME (src dir)?"
@@ -59,12 +62,12 @@ fi
 
 if [[ -z $skip_kpserver ]]; then 
 	message "2. Install kp_server"
-	./install_kpserver.sh
+	$ORG_DIR/install_kpserver.sh
 fi
 
 if [[ -z $skip_docker ]]; then	
 	message "3. Install Docker and give permissions to user kportal"
-	sudo ./install_docker.sh
+	sudo $ORG_DIR/install_docker.sh
 fi
 
 # Add user kportal to docker group
@@ -80,12 +83,12 @@ if [[ -z $skip_apache ]]; then
 	sudo chmod 666 /etc/kportal/www/log_kp.txt
 	echo "Building new image"
 	echo "HOME=$HOME"
-	./install_apache2_docker.sh
+	$ORG_DIR/install_apache2_docker.sh
 fi
 
 cd "$KP_HOME"
 message "5. Restarting Docker daemon on port 9555"
-./start_server.sh
+$ORG_DIR/start_server.sh
 if [[ -z $skip_docker ]]; then
 	ip a s bridge0 || true
 fi
@@ -96,7 +99,7 @@ echo "Docker on 9555?"
 sudo -E su kportal -c 'docker $D_HOST_OPT ps' || true
 
 message "6. Starting Apache2"
-sudo -E su kportal -c "./start_apache.sh"
+sudo -E su kportal -c "$ORG_DIR/start_apache.sh"
 
 
 message "7. Starting kp_server"
