@@ -27,7 +27,7 @@ if [[ -z $TRAVIS ]]; then
 	sudo -E su kportal -c 'docker -H 127.0.0.1:9555 images &>/dev/null'
 	if [[ $? -ne 0 ]]; then
 		echo "Starting Docker on bridge0, port 9555."
-		sudo $CUR_DIR/start_docker.sh 
+		sudo start_docker.sh 
 		sleep 10
 	fi
 	# If Docker couldnt start on 9555, run socat 

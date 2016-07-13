@@ -88,7 +88,8 @@ fi
 
 cd "$KP_HOME"
 message "5. Restarting Docker daemon on port 9555"
-$ORG_DIR/start_server.sh
+# start_server.sh should be installed on step 2 to /usr/local/bin.
+start_server.sh
 if [[ -z $skip_docker ]]; then
 	ip a s bridge0 || true
 fi
