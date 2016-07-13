@@ -16,10 +16,11 @@ RUN cp settings/ubuntu/sites-enabled/000-default.conf /etc/apache2/sites-availab
 RUN mkdir /var/run/sshd
 RUN mkdir /certbot
 ADD install_certbot.sh /certbot/
+ADD apache.sh /
 
 
 EXPOSE 80
 EXPOSE 443
 EXPOSE 22
 
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+CMD ["/apache.sh"]
