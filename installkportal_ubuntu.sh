@@ -140,7 +140,9 @@ if [[ -z $skip_ssl_cert ]]; then
 	read MAIL
 	echo -n "Enter domain name and press [ENTER]: "
 	read DNS
+	# Obtain cerificates from LetsEncrypt and update Apache config file
 	sudo docker $D_HOST_OPT exec apache "/certbot/install_certbot.sh $MAIL $DNS"
+	sudo -E su kportal -c "$ORG_DIR/start_apache.sh 9005"
 fi
 
 export INSTALL_DIR="$KP_HOME/install"
