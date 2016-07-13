@@ -99,7 +99,7 @@ echo "Check docker"
 echo "Docker on UNIX soket?"
 sudo -E su kportal -c 'docker ps' || true
 echo "Docker on 9555?"
-sudo -E su kportal -c 'docker $D_HOST_OPT ps' || true
+sudo -E su kportal -c 'docker $D_HOST_OPT ps -a' || true
 
 message "6. Starting Apache2"
 sudo -E su kportal -c "$ORG_DIR/start_apache.sh"
@@ -135,8 +135,12 @@ fi
 
 if [[ -z $skip_ssl_cert ]]; then
 	message "10. Obtaining SSL certificates from LetsEncrypt."
-	echo "Stand by, you'll be ask for your e-mail address."
-	sudo docker $D_HOST_OPT exec apache "/certbot/install_certbot.sh"
+	echo "Need administrator's e-mail address and your site domain name for obtaining SSL certificates."
+	echo -n "Enter e-mail address and press [ENTER]: "
+	read MAIL
+	echo -n "Enter domain name and press [ENTER]: "
+	read DNS
+	sudo docker $D_HOST_OPT exec apache "/certbot/install_certbot.sh $MAIL $DNS"
 fi
 
 export INSTALL_DIR="$KP_HOME/install"
