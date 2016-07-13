@@ -148,6 +148,13 @@ if [[ -z $skip_ssl_cert ]]; then
 	else
 		echo "Creating links to LetsEncrypt certificates for kp_server."
 		cd "/etc/kportal/ssl"
+		if [[ ! -d "letsencrypt" ]]; then
+			echo "Directory with Letsencrypt certificates not found."
+			exit 1
+		fi
+		sudo chmod -R +r letsencrypt
+		sudo chmod -R +x letsencrypt/archive
+		sudo chmod -R +x letsencrypt/live
 		CERT=letsencrypt/archive/kportal.ml/cert1.pem
 		KEY=letsencrypt/archive/kportal.ml/privkey1.pem
 		if [[ ! -a "$CERT" ]]; then
