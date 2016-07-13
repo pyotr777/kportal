@@ -79,7 +79,7 @@ if [[ -z $skip_apache ]]; then
 	message "4. Installing Apache with SSL in Docker container"
 	sudo mkdir -p /etc/kportal/www/ssl/
 	sudo chown -R kportal:kportal /etc/kportal
-	touch /etc/kportal/www/log_kp.txt
+	sudo touch /etc/kportal/www/log_kp.txt
 	sudo chmod 666 /etc/kportal/www/log_kp.txt
 	echo "Building new image"
 	echo "HOME=$HOME"
