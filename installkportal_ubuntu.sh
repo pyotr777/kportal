@@ -28,6 +28,8 @@ echo "ORG_DIR=$ORG_DIR"
 echo "HOME   =$HOME"
 echo "LOGDIR =$LOGDIR"
 mkdir -p "$LOGDIR"
+chmod 777 "$LOGDIR"
+ls -la "$ORG_DIR"
 
 export D_HOST_OPT="-H localhost:9555"
 

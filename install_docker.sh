@@ -24,7 +24,6 @@ apt-get purge lxc-docker
 apt-cache policy docker-engine
 uname -a
 apt-get install -y docker-engine 
-touch /etc/docker/daemon.json
 chown -R root:kportal /etc/docker
 chmod -R g+w /etc/docker
 
