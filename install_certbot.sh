@@ -11,14 +11,14 @@ else
 	echo -n "Enter e-mail address and press [ENTER]: "
 	read MAIL
 fi
-
+echo $MAIL
 if [[ "$2" ]]; then 
 	DNS=$2
 else
 	echo -n "Enter domain name and press [ENTER]: "
 	read DNS
 fi
-
+echo $DNS
 wget https://dl.eff.org/certbot-auto
 chmod +x certbot-auto
 ./certbot-auto -n --os-packages-only
