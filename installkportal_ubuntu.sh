@@ -85,7 +85,7 @@ fi
 
 cd "$KP_HOME"
 message "5. Restarting Docker daemon on port 9555"
-src/release/start_server.sh
+./start_server.sh
 if [[ -z $skip_docker ]]; then
 	ip a s bridge0 || true
 fi
@@ -96,7 +96,7 @@ echo "Docker on 9555?"
 sudo -E su kportal -c 'docker $D_HOST_OPT ps' || true
 
 message "6. Starting Apache2"
-sudo -E su kportal -c "$KP_HOME/src/release/start_apache.sh"
+sudo -E su kportal -c "./start_apache.sh"
 
 
 message "7. Starting kp_server"
