@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <websocket>
-        <uri>wss://ec2-52-196-224-123.ap-northeast-1.compute.amazonaws.com:9004/kportal</uri>
+        <uri>wss://DNS:9004</uri>
     </websocket>
     <oauth20>
         <clientid>995434600520-1v845bj1mqma9l5me5k5a01e73araehr.apps.googleusercontent.com</clientid>
-        <redirect>https://ec2-52-196-224-123.ap-northeast-1.compute.amazonaws.com:9005</redirect>
+        <redirect>https://DNS:9005</redirect>
     </oauth20>
 </configuration>
