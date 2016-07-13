@@ -143,6 +143,33 @@ if [[ -z $skip_ssl_cert ]]; then
 	# Obtain cerificates from LetsEncrypt and update Apache config file
 	docker $D_HOST_OPT exec apache "/certbot/install_certbot.sh $MAIL $DNS"
 	$ORG_DIR/start_apache.sh 9005
+	if [[ -h "/etc/kportal/ssl/server.crt" && -h "/etc/kportal/ssl/server.key" ]]; then
+		echo "kp_server certificates alresdy linked to certificates from LetsEncrypt"
+	else
+		echo "Creating links to LetsEncrypt certificates for kp_server."
+		cd "/etc/kportal/ssl"
+		CERT=letsencrypt/archive/kportal.ml/cert1.pem
+		KEY=letsencrypt/archive/kportal.ml/privkey1.pem
+		if [[ ! -a "$CERT" ]]; then
+			echo "Certificate file not found: $CERT"
+			exit 1
+		fi
+		if [[ ! -a "$KEY" ]]; then
+			echo "Key file not found: $KEY"
+			exit 1
+		fi		
+		if [[ -f server.crt ]]; then
+			sudo rm -f server.crt
+		fi
+		if [[ -f server.key ]]; then
+			sudo rm -f server.key
+		fi
+		sudo -E su kportal -c "ln -s $CERT server.crt"
+		sudo -E su kportal -c "ln -s $KEY server.key"
+		echo "Links to certificates created"
+		ls -l
+		cd $ORG_DIR
+	fi
 fi
 
 export INSTALL_DIR="$KP_HOME/install"
