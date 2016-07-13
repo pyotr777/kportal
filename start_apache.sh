@@ -26,9 +26,9 @@ function create_image {
 	if [[ $img ]]; then
 		echo "Image $SSL_IMG already created."
 	else
-		docker commit apache $SSL_IMG
+		docker $DOCKER_HOST commit apache $SSL_IMG
 	fi
-	docker rm apache
+	docker $DOCKER_HOST rm apache
 }
 
 # Start container from image SSL_IMG
@@ -36,7 +36,7 @@ function restart_container {
 	docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v /etc/kportal/www:/etc/kportal/www -v $SSL_DIR:/etc/letsencrypt --name apache $SSL_IMG
 	if [[ $? -ne 0 ]]; then
 		echo "Couldn't start Docker container with Apache2 from image $SSL_IMG."
-		docker images
+		docker $DOCKER_HOST images
 		exit 1
 	fi
 }
@@ -44,7 +44,7 @@ function restart_container {
 docker $DOCKER_HOST images &>/dev/null
 if [[ $? -eq 0 ]]; then
 	echo "Starting Apache2 container with SSL on port $SSL"
-	contid=$(docker ps -qf name=apache)
+	contid=$(docker $DOCKER_HOST ps -qf name=apache)
 	if [[ "$contid" ]]; then
 		# Container apache is running
 		ssl_port=$(docker $DOCKER_HOST inspect --format='{{(index (index .NetworkSettings.Ports "443/tcp") 0).HostPort}}' apache)
@@ -56,20 +56,20 @@ if [[ $? -eq 0 ]]; then
 			else
 				# SSL port os not what we need
 				echo "Restarting container with SSL on port $SSL"
-				docker stop apache
+				docker $DOCKER_HOST stop apache
 				create_image
 				restart_container
 			fi
 		else
 			# SSL port is not open?
 			echo "SSL port is not opened"
-			docker stop apache
+			docker $DOCKER_HOST stop apache
 			create_image
 			restart_container
 		fi
 	else
 		# Container is not running
-		contid=$(docker ps -aqf name=apache)
+		contid=$(docker $DOCKER_HOST ps -aqf name=apache)
 		if [[ "$contid" ]]; then
 			# Container is stopped
 			create_image
