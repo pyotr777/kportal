@@ -26,7 +26,7 @@ nohup kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log &
 PID="$!"
 echo "Is kp_server running? PID=$PID"
 if [[ "$PID" ]]; then
-	ps aux | grep "$PID" | grep -v "grep" |
+	ps aux | grep "$PID" | grep -v "grep"
 fi
 echo "Check kp_server logs"
 echo "STDOUT"
