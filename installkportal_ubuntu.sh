@@ -141,7 +141,7 @@ if [[ -z $skip_ssl_cert ]]; then
 	echo -n "Enter domain name and press [ENTER]: "
 	read DNS
 	# Obtain cerificates from LetsEncrypt and update Apache config file
-	docker $D_HOST_OPT exec apache "/certbot/install_certbot.sh $MAIL $DNS"
+	docker $D_HOST_OPT exec apache /certbot/install_certbot.sh $MAIL $DNS
 	$ORG_DIR/start_apache.sh 9005
 	if [[ -h "/etc/kportal/ssl/server.crt" && -h "/etc/kportal/ssl/server.key" ]]; then
 		echo "kp_server certificates alresdy linked to certificates from LetsEncrypt"
