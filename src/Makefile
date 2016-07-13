@@ -28,6 +28,7 @@ install:
 	$(CP) $(RELEASE_DIR)/kdeskdaemon $(BIN_DIR)/
 	chmod 666  $(BIN_DIR)/kdeskdaemon
 	$(CP) $(RELEASE_DIR)/start_server.sh $(BIN_DIR)/
+	$(CP) $(RELEASE_DIR)/start_docker.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_server.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_server $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_tool $(BIN_DIR)/
