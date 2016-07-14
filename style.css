@@ -59,9 +59,26 @@ table td:first-child {
     text-align: right;
 }
 
-tr.inscript {
-    color:#83b2cb;
+td p {
+    padding: 0;
+    margin: 0;
 }
+
+tr.inscript {
+    color:#99b1be;
+}
+tr.inscript td p:before {
+    content: "This step is executed by installation script";
+    font-size: 8pt;
+    font-style: italic;
+    display:block;
+    position: relative;
+    top: -4px;
+    height: 1px;
+    text-align: right;
+    color:rgba(150,200,200, 0.3);
+}
+
 note {
     font-family: "Noteworthy", "Comic Sans MS", "Comic Sans", "Helvetica Neue", Arial, fantasy;
     color: #858e8b;
@@ -91,6 +108,37 @@ table thead {
     position: -o-sticky;
     position: sticky;
     top: 0;
+}
+
+help {
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 8px;
+  color: #585858;
+  background: #d1fdff;
+  padding: 2px 5px 3px 5px;
+  text-decoration: none;
+  font-style: italic;
+  box-shadow: inset 0px 0px 2px rgba(0,0,0,0.3);
+  font-size: smaller;
+}
+
+help:hover {
+  background: #fadd65;
+  text-decoration: none;
+}
+
+help a {
+    text-decoration: none;
+    color:#3461a8;
+}
+
+help a:after {
+    content: "\2197";
+    font-family: "Arial Unicode MS", sans-serif;
+    font-weight: 900;
+    font-size: 10pt;
+    color: #3461a8;
 }
 
 

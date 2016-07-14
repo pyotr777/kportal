@@ -19,13 +19,16 @@
         <tr>
             <td>&nbsp;</td>
             <td>Docker on local machine or AWS CLI installed</td>
-            <td>Run AWS CLI in Docker container<br /><code>$ docker run -ti --rm --name aws -v $(pwd):/aws aws</code></td>
+            <td>Run AWS CLI in Docker container from AWS_CLI directory<br /><code>$ docker run -ti --name aws -v $(pwd):/aws pyotr777/aws</code><br />
+            <note>In container <code>awshelp</code> shows available shortcut commands.</note></td>
             <td></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td>AWS root key</td>
-            <td>Configure AWS CLI with root key</td>
+            <td>AWS root key <help><a href="http://docs.aws.amazon.com/cli/latest/userguide/tutorial-ec2-ubuntu.html#configure-cli-launch-ec2" target="_blank">Configure AWS CLI</a></help></td>
+            <td>[ Configure AWS CLI (root key, zone) ]<br/>
+            <note>For convinience I stored configurations in AWS_CLI/.aws folder and parameters for launching new instances in launch.json. Configuration
+            should be copied to /root/.aws in container.</note></td>
             <td></td>
         </tr>
         <tr>
@@ -44,16 +47,19 @@
             <td>&nbsp;</td>
             <td></td>
             <td>Launch instance
-            <note>Use Ubuntu ImageID: ami-a21529cc, InstanceType: t2.small</note></td>
+            <note>Use Ubuntu ImageID: ami-a21529cc,<br/>
+                or use Image with K-portal installation files ami-d12fd0b0.<br/>
+                InstanceType: t2.small</note>
+            </td>
             <td></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td></td>
-            <td></td>
-            <td>Copy installation files into VM.
+            <td>[ Copy installation files into VM ]
             <br />
             <note>Use sync_up.sh script.</note></td>
+            <td></td>
         </tr>            
         <tr>
             <td>&nbsp;</td>
@@ -66,81 +72,97 @@
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Create user "kportal"</td>
+            <td><p>Create user "kportal"</p></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Create directories /home/kportal/log and /home/kportal/.ssh/kportal</td>
+            <td><p>Create directories /home/kportal/log and /home/kportal/.ssh/kportal</p></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Build kp_server</td>
+            <td><p>Build kp_server</p></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Install Docker. Start Docker daemon.<br />Use socat for connecting port 9555 to Docker socket.<br/><note>Use start_server.sh</note></td>
+            <td><p>Install Docker. Start Docker daemon</p></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Create group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</td>
+            <td><p>Create group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</p></td>
         </tr>    
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Install Apache in container using Dockerfile<br />
+            <td><p>Install Apache in container using Dockerfile</p>
                 <code>docker build --rm -t apachessl .</code></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Start Apache<br />
-                <code>docker run -d -p 80:80 -p 9005:443 -v /etc/kportal/www:/etc/kportal/www --name apache apachessl</code></td>
+            <td><p>Restart docker daemon on port 9555 and network bridge "bridge0" with IP 10.0.0.1/8.</p>
+                <note>Use start_server.sh<br/>
+                In Travis using socat for connecting port 9555 to Docker socket.<br/></note></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Import Master Base Image</td>
+            <td><p>Start Apache with SSL port 443</p>
+                <note>Use start_apache.sh script</note></td>
+        </tr>
+        <!--tr>
+        REMOVE THIS STEP FROM INSTALLATION SCRIPT. KP_SERVER CAN BE STARTED LATER.
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td>Start kp_server</td>
+        </tr-->
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Build Apps base image</td>
+            <td><p>Import Master Base Image</p>
+            <code>docker -H localhost:9555 load -i master_base_image.tar</code></td>
+        <tr class="inscript">
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td><p>Build Apps base image</p></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Edit kp_server config file /etc/kportal/kportal_conf.xml <note>Use name and ID of Apps base image.</note></td>
+            <td><p>Edit kp_server config file /etc/kportal/kportal_conf.xml</p><note>Use name and ID of Apps base image.</note></td>
         </tr>
-        <tr>
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td>fixed IP and DNS address</td>
             <td></td>
-            <td>[ Obtain SSL certificate (or use self-signed) ]</td>
+            <td><p>[ Obtain SSL certificate (or use self-signed) ]</p></td>
         </tr>
-        <tr>
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Edit Apache configuration file <br />
+            <td><p>Edit Apache configuration file</p>
                 <note>/etc/apache2/sites-available/default-ssl.conf or /etc/httpd/conf.d/ssl.conf</note></td>
         </tr>
-        <tr>
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Link kp_server certificates to obtained certificates<br />
+            <td><p>Link kp_server certificates to obtained certificates</p>
                 <note>/etc/kportal/ssl/server.crt -> letsencrypt/archive/kportal.ml/cert1.pem
                     /etc/kportal/ssl/server.key -> letsencrypt/archive/kportal.ml/privkey1.pem</note>
             </td>

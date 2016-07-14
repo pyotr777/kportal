@@ -141,10 +141,13 @@ if [[ -z $skip_ssl_cert ]]; then
 	SSL_DIR="/etc/kportal/ssl"
 	if [[ -f "$CRT_TAR" ]]; then
 		echo "Found certificates in tar file."
-		if [[ ! -d $SSL_DIR/letsencrypt ]]; then
+		if [[ ! -d letsencrypt || $(ls -1 letsencrypt | wc -l) > 1 ]]; then
+			# If directory doesn't exist or empty
 			echo "Extracting to $SSL_DIR/letsencrypt"
 			tar -xzf "$CRT_TAR" -C "$SSL_DIR"
 		fi
+		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
+		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
 	else	
 		echo "Need administrator's e-mail address and your site domain name for obtaining SSL certificates."
 		echo -n "Enter e-mail address and press [ENTER]: "
@@ -152,7 +155,10 @@ if [[ -z $skip_ssl_cert ]]; then
 		echo -n "Enter domain name and press [ENTER]: "
 		read DNS
 		# Obtain cerificates from LetsEncrypt and update Apache config file
+		docker $D_HOST_OPT cp install_certbot.sh apache:/certbot/
+		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
 		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh $MAIL $DNS
+		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
 	fi
 	echo "Resstarting Apache container with SSL port mapped to 9005."
 	$ORG_DIR/start_apache.sh 9005

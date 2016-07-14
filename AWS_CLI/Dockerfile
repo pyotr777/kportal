@@ -3,7 +3,7 @@ MAINTAINER Peter Bryzgalov
 
 # Amazon AWS CLI installer in container
 
-RUN apt-get update && apt-get install -y python-setuptools python-dev build-essential python-pip groff ssh jq
+RUN apt-get update && apt-get install -y python-setuptools python-dev build-essential python-pip groff ssh jq curl
 RUN pip install awscli
 
 # Shortcut commands
