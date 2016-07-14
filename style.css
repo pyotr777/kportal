@@ -99,7 +99,7 @@ code {
     padding:1px;
 }
 
-/* Stiky table header */
+/* Sticky table header */
 /* Not in Chrome */
 table thead {
     position: -webkit-sticky;
