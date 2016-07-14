@@ -146,6 +146,7 @@ if [[ -z $skip_ssl_cert ]]; then
 			echo "Extracting to $SSL_DIR/letsencrypt"
 			tar -xzf "$CRT_TAR" -C "$SSL_DIR"
 		fi
+		# Reconfigure apahce to use LetsEncrypt certificates
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
 	else	
