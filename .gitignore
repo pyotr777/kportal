@@ -3,6 +3,7 @@
 !/.travis.yml
 *.tar
 *.zip
+*.tar.gz
 *.log
 *.o
 *.pem
