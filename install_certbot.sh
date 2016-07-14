@@ -32,15 +32,5 @@ if [[ ! -f "$CERT" || ! -f "$KEY" ]]; then
 	./certbot-auto certonly -v -n -m $MAIL -d $DNS --apache --renew-by-default --agree-tos
 fi
 
-if [[ -f "$CERT" ]]; then
-	echo "Certificate file $CERT obtained."
-	# Replace Apache configs
-	sed -r -i "s|SSLCertificateFile\s*.*|SSLCertificateFile $CERT|g" /etc/apache2/sites-available/default-ssl.conf
-fi
-if [[ -f "$KEY" ]]; then
-	echo "Certificate key file $KEY obtained."
-	# Replace Apache configs
-	sed -r -i "s|SSLCertificateKeyFile\s*.*|SSLCertificateKeyFile $KEY|g" /etc/apache2/sites-available/default-ssl.conf
-fi
 
 

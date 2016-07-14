@@ -15,7 +15,6 @@ RUN cp settings/ubuntu/sites-enabled/000-default.conf /etc/apache2/sites-availab
 
 RUN mkdir /var/run/sshd
 RUN mkdir /certbot
-ADD install_certbot.sh /certbot/
 ADD apache.sh /
 
 
