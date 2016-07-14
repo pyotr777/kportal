@@ -134,20 +134,33 @@ if [[ -z $skip_tars ]]; then
 fi
 
 if [[ -z $skip_ssl_cert ]]; then
-	message "10. Obtaining SSL certificates from LetsEncrypt."
-	echo "Need administrator's e-mail address and your site domain name for obtaining SSL certificates."
-	echo -n "Enter e-mail address and press [ENTER]: "
-	read MAIL
-	echo -n "Enter domain name and press [ENTER]: "
-	read DNS
-	# Obtain cerificates from LetsEncrypt and update Apache config file
-	docker $D_HOST_OPT exec apache /certbot/install_certbot.sh $MAIL $DNS
+	message "10. Obtaining SSL certificates from LetsEncrypt."	
+	# Use saved certificates in tar if present
+	# Must be in src/ssl/letsencrypt.tar.gz file
+	CRT_TAR="$KP_HOME/src/ssl/letsencrypt.tar.gz"
+	SSL_DIR="/etc/kportal/ssl"
+	if [[ -f "$CRT_TAR" ]]; then
+		echo "Found certificates in tar file."
+		if [[ ! -d $SSL_DIR/letsencrypt ]]; then
+			echo "Extracting to $SSL_DIR/letsencrypt"
+			tar -xzf "$CRT_TAR" -C "$SSL_DIR"
+		fi
+	else	
+		echo "Need administrator's e-mail address and your site domain name for obtaining SSL certificates."
+		echo -n "Enter e-mail address and press [ENTER]: "
+		read MAIL
+		echo -n "Enter domain name and press [ENTER]: "
+		read DNS
+		# Obtain cerificates from LetsEncrypt and update Apache config file
+		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh $MAIL $DNS
+	fi
+	echo "Resstarting Apache container with SSL port mapped to 9005."
 	$ORG_DIR/start_apache.sh 9005
-	if [[ -h "/etc/kportal/ssl/server.crt" && -h "/etc/kportal/ssl/server.key" ]]; then
+	if [[ -h "$SSL_DIR/server.crt" && -h "$SSL_DIR/server.key" ]]; then
 		echo "kp_server certificates alresdy linked to certificates from LetsEncrypt"
 	else
 		echo "Creating links to LetsEncrypt certificates for kp_server."
-		cd "/etc/kportal/ssl"
+		cd "$SSL_DIR"
 		if [[ ! -d "letsencrypt" ]]; then
 			echo "Directory with Letsencrypt certificates not found."
 			exit 1
@@ -178,7 +191,7 @@ if [[ -z $skip_ssl_cert ]]; then
 		cd $ORG_DIR
 	fi
 elif [[ "$HOME" = *travis* ]]; then
-	echo "Restart apache continer on port 9005"
+	echo "Restarting Apache continer with SSL on port 9005"
 	$ORG_DIR/start_apache.sh 9005
 fi
 
