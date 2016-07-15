@@ -1,11 +1,22 @@
 #!/bin/bash
 set -e
 
+# Install K-portal in Ubuntu.
+# Apache runs inside Docker container.
+# SSL certificates obtained from LetsEncrypt.
+# If you don't have fixed DNS address, use self-signed certificates.
+# To use self-signed certificates set KP_SELF_CERT environment variable beofre running this script.
+
 #skip_user=1
 #skip_kpserver=1
 #skip_docker=1
 #skip_apache=1
 #skip_ssl_cert=1
+if [[ -n "$KP_SELF_CERT" ]]; then
+	export skip_ssl_cert=1
+	echo "Using self-signed SSL certificates."
+fi
+
 
 if [[ "$HOME" = *travis* ]]; then
 	export skip_docker=1
