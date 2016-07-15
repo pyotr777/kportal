@@ -6,12 +6,25 @@ set -e
 # SSL certificates obtained from LetsEncrypt.
 # If you don't have fixed DNS address, use self-signed certificates.
 # To use self-signed certificates set KP_SELF_CERT environment variable beofre running this script.
+# Other environment variables
+# KP_MAIL_ADD		E-mail for sending messages from K-portal (automatic). 
+# KP_MAIL_PASS 		Password for KP_MAIL_ADD.
+# KP_WEB_DNS		DNS name of this installation of K-portal.
+# KP_WEB_MAIL		E-mail for obtaining SSL certificates. (Used only if KP_SELF_CERT is not set).
 
 #skip_user=1
 #skip_kpserver=1
 #skip_docker=1
 #skip_apache=1
 #skip_ssl_cert=1
+
+# Save KP_* environment variables to ENV file
+echo "" > ENV
+for e in $(env | grep "KP_"); do
+	echo $e
+	echo "export $e" >> ENV
+done
+
 if [[ -n "$KP_SELF_CERT" ]]; then
 	export skip_ssl_cert=1
 	echo "Using self-signed SSL certificates."
@@ -169,7 +182,7 @@ if [[ -z $skip_ssl_cert ]]; then
 		# Obtain cerificates from LetsEncrypt and update Apache config file
 		docker $D_HOST_OPT cp install_certbot.sh apache:/certbot/
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
-		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh $MAIL $DNS
+		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
 	fi
 	echo "Resstarting Apache container with SSL port mapped to 9005."
@@ -186,8 +199,8 @@ if [[ -z $skip_ssl_cert ]]; then
 		sudo chmod -R +r letsencrypt
 		sudo chmod -R +x letsencrypt/archive
 		sudo chmod -R +x letsencrypt/live
-		CERT=letsencrypt/archive/kportal.ml/cert1.pem
-		KEY=letsencrypt/archive/kportal.ml/privkey1.pem
+		CERT=letsencrypt/archive/$KP_WEB_DNS/cert1.pem
+		KEY=letsencrypt/archive/$KP_WEB_DNS/privkey1.pem
 		if [[ ! -a "$CERT" ]]; then
 			echo "Certificate file not found: $CERT"
 			exit 1
@@ -220,4 +233,5 @@ sudo rm -rf "$INSTALL_DIR/$BOOSTARCHIVE"
 sudo rm -f "$INSTALL_DIR/$BOOSTARCHIVE.tar.bz2"
 
 cd "$ORG_DIR"
+# rm ENV
 
