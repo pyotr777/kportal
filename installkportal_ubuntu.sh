@@ -7,8 +7,6 @@ set -e
 # If you don't have fixed DNS address, use self-signed certificates.
 # To use self-signed certificates set KP_SELF_CERT environment variable beofre running this script.
 # Other environment variables
-# KP_MAIL_ADD		E-mail for sending messages from K-portal (automatic). 
-# KP_MAIL_PASS 		Password for KP_MAIL_ADD.
 # KP_WEB_DNS		DNS name of this installation of K-portal.
 # KP_WEB_MAIL		E-mail for obtaining SSL certificates. (Used only if KP_SELF_CERT is not set).
 
