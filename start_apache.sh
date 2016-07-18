@@ -4,7 +4,8 @@
 # Argument $1 is used to set custom SSL port number.
 
 DOCKER_HOST="-H 127.0.0.1:9555"
-SSL_DIR="/etc/kportal/ssl/letsencrypt"
+SSL_DIR="/etc/kportal/ssl/"
+WWW_DIR="/etc/kportal/www/"
 # Name of Docker image that is built from Dockerfile
 IMG="apache"
 # Name of Docker image used for restarting Apache with SSL on custom port
@@ -33,7 +34,7 @@ function create_image {
 
 # Start container from image SSL_IMG
 function restart_container {
-	docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v /etc/kportal/www:/etc/kportal/www -v $SSL_DIR:/etc/letsencrypt --name apache $SSL_IMG
+	docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:/$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $SSL_IMG
 	if [[ $? -ne 0 ]]; then
 		echo "Couldn't start Docker container with Apache2 from image $SSL_IMG."
 		docker $DOCKER_HOST images
