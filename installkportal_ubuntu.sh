@@ -90,6 +90,8 @@ else
 fi
 
 # Save KP_* environment variables to ENV file
+sudo touch "$KP_HOME/ENV"
+sudo chmod 666 "$KP_HOME/ENV"
 echo "" > $KP_HOME/ENV
 for e in $(env | grep "KP_"); do
 	echo $e
