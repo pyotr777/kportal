@@ -5,13 +5,21 @@
   <script src="/static/jquery/jquery-3.0.0.js"></script>
   <script>
     var connection;
+    var exec_flag=1;  // Prevent double execution of same command
     DNS = "ec2-52-197-172-238.ap-northeast-1.compute.amazonaws.com:8080"
     function exec() {
+      if (!exec_flag) {
+        console.log("Exec Flag is off");
+        return;
+      }
+      exec_flag=0;      
       command = $("#txt_NNN").val();
       console.log("Executing command "+command);
       console.log("DNS="+DNS);
       ExecOnServer(DNS, command); // Send the command to the server
+      setTimeout(function(){ exec_flag=1;}, 2000)
     }
+
     function ExecOnServer(DNS, command) {
       console.log("Accessing ws://"+DNS+"/exe")
       connection = new WebSocket('ws://'+DNS+'/exe', ['soap', 'xmpp']);
