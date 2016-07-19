@@ -1,6 +1,10 @@
 #!/bin/bash
 # Reconfigure Apache for LetsEncrypt SSL certificates
 
+if [[ -f "/ENV" ]]; then
+	source /ENV
+fi
+
 CERT=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/cert.pem
 KEY=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/privkey.pem
 

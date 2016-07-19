@@ -16,18 +16,23 @@ set -e
 #skip_apache=1
 #skip_ssl_cert=1
 
-# Save KP_* environment variables to ENV file
-echo "" > ENV
-for e in $(env | grep "KP_"); do
-	echo $e
-	echo "export $e" >> ENV
-done
+export TERM="screen-256color"
 
 if [[ -n "$KP_SELF_CERT" ]]; then
 	export skip_ssl_cert=1
 	echo "Using self-signed SSL certificates."
+else
+	if [[ -z "$KP_WEB_DNS" ]]; then 
+		echo "Need your site domain name for obtaining SSL certificates."
+		echo -n "Enter domain name and press [ENTER]: "
+		read KP_WEB_DNS
+	fi
+	if [[ -z "$KP_WEB_MAIL" ]]; then
+		echo "Need site administrator's e-mail address."
+		echo -n "Enter e-mail address and press [ENTER]: "
+		read KP_WEB_MAIL
+	fi
 fi
-
 
 if [[ "$HOME" = *travis* ]]; then
 	export skip_docker=1
@@ -82,6 +87,13 @@ else
 	KP_HOME=$(sudo su kportal -c 'echo $HOME')
 	echo "KP_HOME=$KP_HOME"
 fi
+
+# Save KP_* environment variables to ENV file
+echo "" > $KP_HOME/ENV
+for e in $(env | grep "KP_"); do
+	echo $e
+	echo "export $e" >> $KP_HOME/ENV
+done
 
 
 if [[ -z $skip_kpserver ]]; then 
@@ -156,30 +168,28 @@ if [[ -z $skip_tars ]]; then
 fi
 
 if [[ -z $skip_ssl_cert ]]; then
-	message "10. Obtaining SSL certificates from LetsEncrypt."	
+	message "10. SSL certificates from LetsEncrypt."	
 	# Use saved certificates in tar if present
 	# Must be in src/ssl/letsencrypt.tar.gz file
 	CRT_TAR="$KP_HOME/src/ssl/letsencrypt.tar.gz"
 	SSL_DIR="/etc/kportal/ssl"
 	if [[ -f "$CRT_TAR" ]]; then
 		echo "Found certificates in tar file."
-		if [[ ! -d letsencrypt || $(ls -1 letsencrypt | wc -l) > 1 ]]; then
+		if [[ ! -d "$SSL_DIR/letsencrypt" || $(ls -1 "$SSL_DIR/letsencrypt" | wc -l) > 1 ]]; then
 			# If directory doesn't exist or empty
 			echo "Extracting to $SSL_DIR/letsencrypt"
 			tar -xzf "$CRT_TAR" -C "$SSL_DIR"
+		else
+			echo "Installed sertificates found in $SSL_DIR/letsencrypt"
 		fi
 		# Reconfigure apahce to use LetsEncrypt certificates
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
-	else	
-		echo "Need administrator's e-mail address and your site domain name for obtaining SSL certificates."
-		echo -n "Enter e-mail address and press [ENTER]: "
-		read MAIL
-		echo -n "Enter domain name and press [ENTER]: "
-		read DNS
+	else
 		# Obtain cerificates from LetsEncrypt and update Apache config file
+		docker $D_HOST_OPT cp $KP_HOME/ENV apache:/ENV
 		docker $D_HOST_OPT cp install_certbot.sh apache:/certbot/
-		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
+		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/		
 		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
 	fi
@@ -219,7 +229,7 @@ if [[ -z $skip_ssl_cert ]]; then
 		ls -l
 		cd $ORG_DIR
 	fi
-elif [[ "$HOME" = *travis* ]]; then
+else
 	echo "Restarting Apache continer with SSL on port 9005"
 	$ORG_DIR/start_apache.sh 9005
 fi
