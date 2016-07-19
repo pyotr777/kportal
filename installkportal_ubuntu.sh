@@ -18,6 +18,13 @@ set -e
 
 export TERM="screen-256color"
 
+if [[ "$HOME" = *travis* ]]; then
+	export skip_docker=1
+	export skip_tars=1
+	export skip_ssl_cert=1
+	export KP_SELF_CERT=1
+fi
+
 if [[ -n "$KP_SELF_CERT" ]]; then
 	export skip_ssl_cert=1
 	echo "Using self-signed SSL certificates."
@@ -32,12 +39,6 @@ else
 		echo -n "Enter e-mail address and press [ENTER]: "
 		read KP_WEB_MAIL
 	fi
-fi
-
-if [[ "$HOME" = *travis* ]]; then
-	export skip_docker=1
-	export skip_tars=1
-	export skip_ssl_cert=1
 fi
 
 function message {
@@ -186,10 +187,11 @@ if [[ -z $skip_ssl_cert ]]; then
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
 	else
-		# Obtain cerificates from LetsEncrypt and update Apache config file
+		# Copy environment initialisation and 
 		docker $D_HOST_OPT cp $KP_HOME/ENV apache:/ENV
 		docker $D_HOST_OPT cp install_certbot.sh apache:/certbot/
-		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/		
+		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/	
+		# Obtain cerificates from LetsEncrypt and update Apache config file	
 		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
 	fi
