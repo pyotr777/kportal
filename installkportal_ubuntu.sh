@@ -10,34 +10,47 @@ set -e
 # KP_WEB_DNS		DNS name of this installation of K-portal.
 # KP_WEB_MAIL		E-mail for obtaining SSL certificates. (Used only if KP_SELF_CERT is not set).
 
-#skip_user=1
-#skip_kpserver=1
-#skip_docker=1
-#skip_apache=1
-#skip_ssl_cert=1
+#KP_SKIP_USER=1
+#KP_SKIP_KPSERVER=1
+#KP_SKIP_DOCKER=1
+#KP_SKIP_APACHE=1
+#KP_SKIP_SSL_CERT=1
+#KP_SKIP_TARS=1
+
+
+ORG_DIR="$(pwd)"
+cd "$(dirname $0)"
+SOURCE_DIR="$(pwd)"
+echo "Using $SOURCE_DIR as working directory."
+
+if [[ -f "$SOURCE_DIR/env_init" ]]; then
+	source "$SOURCE_DIR/env_init"
+fi
 
 export TERM="screen-256color"
 
 if [[ "$HOME" = *travis* ]]; then
-	export skip_docker=1
-	export skip_tars=1
-	export skip_ssl_cert=1
+	export KP_SKIP_DOCKER=1
+	export KP_SKIP_TARS=1
+	export KP_SKIP_SSL_CERT=1
 	export KP_SELF_CERT=1
 fi
 
 if [[ -n "$KP_SELF_CERT" ]]; then
-	export skip_ssl_cert=1
+	export KP_SKIP_SSL_CERT=1
 	echo "Using self-signed SSL certificates."
 else
 	if [[ -z "$KP_WEB_DNS" ]]; then 
 		echo "Need your site domain name for obtaining SSL certificates."
 		echo -n "Enter domain name and press [ENTER]: "
 		read KP_WEB_DNS
+		export KP_WEB_DNS
 	fi
 	if [[ -z "$KP_WEB_MAIL" ]]; then
 		echo "Need site administrator's e-mail address."
 		echo -n "Enter e-mail address and press [ENTER]: "
 		read KP_WEB_MAIL
+		export KP_WEB_MAIL
 	fi
 fi
 
@@ -50,14 +63,18 @@ function message {
 }
 
 message "Installing K-Portal"
-ORG_DIR=$(pwd)
-LOGDIR="$ORG_DIR/logs"
+
+LOGDIR="$SOURCE_DIR/logs"
 echo "ORG_DIR=$ORG_DIR"
 echo "HOME   =$HOME"
 echo "LOGDIR =$LOGDIR"
 mkdir -p "$LOGDIR"
 chmod 777 "$LOGDIR"
-ls -la "$ORG_DIR"
+cd "$SOURCE_DIR"
+ls -l 
+message "Environment"
+env | grep "KP_"
+
 
 export D_HOST_OPT="-H localhost:9555"
 
@@ -65,9 +82,9 @@ message "0. Installing required packages"
 sudo apt-get update > "$LOGDIR/update.log"
 sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make > "$LOGDIR/install.log"
 # Test if AUFS is installed
-$ORG_DIR/install_aufs.sh
+$SOURCE_DIR/install_aufs.sh
 
-if [[ -z $skip_user ]]; then 
+if [[ -z $KP_SKIP_USER ]]; then 
 	message "1. Create user kportal"
 	sudo useradd -m kportal || true
 	echo "Create directory for kp_server logs"
@@ -99,14 +116,14 @@ for e in $(env | grep "KP_"); do
 done
 
 
-if [[ -z $skip_kpserver ]]; then 
+if [[ -z $KP_SKIP_KPSERVER ]]; then 
 	message "2. Install kp_server"
-	$ORG_DIR/install_kpserver.sh
+	$SOURCE_DIR/install_kpserver.sh
 fi
 
-if [[ -z $skip_docker ]]; then	
+if [[ -z $KP_SKIP_DOCKER ]]; then	
 	message "3. Install Docker and give permissions to user kportal"
-	sudo $ORG_DIR/install_docker.sh
+	sudo $SOURCE_DIR/install_docker.sh
 fi
 
 # Add user kportal to docker group
@@ -114,7 +131,7 @@ sudo groupadd docker || true
 sudo usermod -aG docker kportal || true
 sudo su kportal -c "docker images" || true
 
-if [[ -z $skip_apache ]]; then
+if [[ -z $KP_SKIP_APACHE ]]; then
 	message "4. Installing Apache with SSL in Docker container"
 	sudo mkdir -p /etc/kportal/www/ssl/
 	sudo chown -R kportal:kportal /etc/kportal
@@ -122,14 +139,14 @@ if [[ -z $skip_apache ]]; then
 	sudo chmod 666 /etc/kportal/www/log_kp.txt
 	echo "Building new image"
 	echo "HOME=$HOME"
-	$ORG_DIR/install_apache2_docker.sh
+	$SOURCE_DIR/install_apache2_docker.sh
 fi
 
 cd "$KP_HOME"
 message "5. Restarting Docker daemon on port 9555"
 # start_server.sh should be installed on step 2 to /usr/local/bin.
 start_server.sh
-if [[ -z $skip_docker ]]; then
+if [[ -z $KP_SKIP_DOCKER ]]; then
 	ip a s bridge0 || true
 fi
 echo "Check docker"
@@ -139,7 +156,7 @@ echo "Docker on 9555?"
 sudo -E su kportal -c 'docker $D_HOST_OPT ps -a' || true
 
 message "6. Starting Apache2"
-$ORG_DIR/start_apache.sh
+$SOURCE_DIR/start_apache.sh
 
 
 message "7. Starting kp_server"
@@ -150,7 +167,7 @@ echo "Check that kp_server is running on port 9004"
 ps ax | grep "kp_server" | grep 9004
 
 
-if [[ -z $skip_tars ]]; then
+if [[ -z $KP_SKIP_TARS ]]; then
 	message "8. Loading Master Image"
 	cd "$KP_HOME/src/docker_images"
 	sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
@@ -170,7 +187,7 @@ if [[ -z $skip_tars ]]; then
 	cat "/etc/kportal/kportal_conf.xml"
 fi
 
-if [[ -z $skip_ssl_cert ]]; then
+if [[ -z $KP_SKIP_SSL_CERT ]]; then
 	message "10. SSL certificates from LetsEncrypt."	
 	# Use saved certificates in tar if present
 	# Must be in src/ssl/letsencrypt.tar.gz file
@@ -198,7 +215,7 @@ if [[ -z $skip_ssl_cert ]]; then
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
 	fi
 	echo "Resstarting Apache container with SSL port mapped to 9005."
-	$ORG_DIR/start_apache.sh 9005
+	$SOURCE_DIR/start_apache.sh 9005
 	if [[ -h "$SSL_DIR/server.crt" && -h "$SSL_DIR/server.key" ]]; then
 		echo "kp_server certificates alresdy linked to certificates from LetsEncrypt"
 	else
@@ -235,7 +252,7 @@ if [[ -z $skip_ssl_cert ]]; then
 	fi
 else
 	echo "Restarting Apache continer with SSL on port 9005"
-	$ORG_DIR/start_apache.sh 9005
+	$SOURCE_DIR/start_apache.sh 9005
 fi
 
 export INSTALL_DIR="$KP_HOME/install"

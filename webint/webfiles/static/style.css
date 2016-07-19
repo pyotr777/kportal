@@ -1,0 +1,24 @@
+h2 {
+	font-family:sans-serif;
+}
+
+.hidden_button {
+    visibility: hidden;
+}
+
+.active_button {
+    visibility: show;    
+}
+
+div.displayblock {
+    font-family: monospace;
+    white-space: pre;
+    border: 1px black solid;
+    height: 300px;
+    overflow-x:hidden;
+    overflow-y:visible;
+}
+
+div#div_NNN {
+    visibility: hidden;
+}

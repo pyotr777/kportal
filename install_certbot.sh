@@ -14,12 +14,14 @@ if [[ ! "$KP_WEB_DNS" ]]; then
 	echo "Envvar KP_WEB_DNS is not set. Need K-portal domain name for obtaining SSL certificates."
 	echo -n "Enter domain name (without protocol name: example.com) and press [ENTER]: "
 	read KP_WEB_DNS
+	export KP_WEB_DNS
 fi
 if [[ ! "$KP_WEB_MAIL" ]]; then
-        echo "Need administrator's e-mail addressfor obtaining SSL certificates."
-        echo -n "Enter e-mail address and press [ENTER]: "
-        read KP_WEB_MAIL
-    fi
+    echo "Need administrator's e-mail addressfor obtaining SSL certificates."
+    echo -n "Enter e-mail address and press [ENTER]: "
+    read KP_WEB_MAIL
+    export KP_WEB_MAIL        
+fi
 
 CERT=/etc/letsencrypt/live/$KP_WEB_DNS/cert.pem
 KEY=/etc/letsencrypt/live/$KP_WEB_DNS/privkey.pem

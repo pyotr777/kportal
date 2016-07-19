@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head> 
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/jquery/jquery-3.0.0.js"></script>
+  <script>
+    var connection;
+    DNS = "ec2-52-197-172-238.ap-northeast-1.compute.amazonaws.com:8080"
+    function exec() {
+      command = $("#txt_NNN").val();
+      console.log("Executing command "+command);
+      console.log("DNS="+DNS);
+      ExecOnServer(DNS, command); // Send the command to the server
+    }
+    function ExecOnServer(DNS, command) {
+      console.log("Accessing ws://"+DNS+"/exe")
+      connection = new WebSocket('ws://'+DNS+'/exe', ['soap', 'xmpp']);
+      // When the connection is open, send some data to the server
+      connection.onopen = function () {
+        connection.send(command); // Send the command to the server
+      };
+
+      // Log errors
+      connection.onerror = function (error) {
+        console.log('WebSocket Error ' + error);
+      };
+
+      // Log messages from the server
+      connection.onmessage = function (e) {
+        //console.log('Server: ' + e.data);
+        data = escape(e.data);
+        $("#out1").append("<div class=output>"+data+"</div>");
+        $("#out1").animate({ scrollTop: $('#out1').prop("scrollHeight")}, 10);
+      };
+    };
+    function escape(str) {
+      str = str.replace(/&/g, "&amp;");
+      str = str.replace(/</g, "&lt;");
+      str = str.replace(/>/g, "&gt;");
+      str = str.replace(/"/g, "&quot;");
+      str = str.replace(/'/g, "&#039;");
+      str = str.replace("[38;5;70m#", "<span style=\"color:#32b50a;\">");
+      str = str.replace("[m", "</span>");
+      return str
+    }
+  </script>
+</head>
+<body>
+<h1 id="start">Execution tests</h1>
+<div><input id="txt_NNN" type="text" name="cmd" onchange="exec()" />
+    <button id="exec_button_NNN" onclick="exec()">exec</button>
+</div>
+<div class="displayblock" id="out1"></div>
+</body>
