@@ -193,6 +193,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 	# Must be in src/ssl/letsencrypt.tar.gz file
 	CRT_TAR="$KP_HOME/src/ssl/letsencrypt.tar.gz"
 	SSL_DIR="/etc/kportal/ssl"
+	cd $SOURCE_DIR
 	if [[ -f "$CRT_TAR" ]]; then
 		echo "Found certificates in tar file."
 		if [[ ! -d "$SSL_DIR/letsencrypt" || $(ls -1 "$SSL_DIR/letsencrypt" | wc -l) > 1 ]]; then
@@ -206,7 +207,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
 	else
-		# Copy environment initialisation and 
+		# Copy environment initialisation file and script files
 		docker $D_HOST_OPT cp $KP_HOME/ENV apache:/ENV
 		docker $D_HOST_OPT cp install_certbot.sh apache:/certbot/
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/	
@@ -214,7 +215,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
 	fi
-	echo "Resstarting Apache container with SSL port mapped to 9005."
+	echo "Restarting Apache container with SSL port mapped to 9005."
 	$SOURCE_DIR/start_apache.sh 9005
 	if [[ -h "$SSL_DIR/server.crt" && -h "$SSL_DIR/server.key" ]]; then
 		echo "kp_server certificates alresdy linked to certificates from LetsEncrypt"
