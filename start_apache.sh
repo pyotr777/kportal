@@ -34,7 +34,7 @@ function create_image {
 
 # Start container from image SSL_IMG
 function restart_container {
-	docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:/$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $SSL_IMG
+	docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $SSL_IMG
 	if [[ $? -ne 0 ]]; then
 		echo "Couldn't start Docker container with Apache2 from image $SSL_IMG."
 		docker $DOCKER_HOST images
@@ -78,7 +78,7 @@ if [[ $? -eq 0 ]]; then
 		else
 			# Container not exists
 			# Start for the 1st time from image IMG
-			docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v /etc/kportal/www:/etc/kportal/www -v $SSL_DIR:/etc/letsencrypt --name apache $IMG
+			docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $IMG
 			if [[ $? -ne 0 ]]; then
 				echo "Couldn't start Docker container with Apache2 from image $IMG."
 				exit 1
@@ -90,6 +90,22 @@ else
 	echo "Cannot access Docker daemon."
 	exit 1
 fi
-
+sleep 2
 echo "Running containers"
 docker $DOCKER_HOST ps
+contid=$(docker $DOCKER_HOST ps -qf name=apache)
+if [[ -z "$contid" ]]; then
+	# Apache container is not running
+	echo "Restarting Apache container"
+	docker $DOCKER_HOST start apache
+	sleep 2
+	contid=$(docker $DOCKER_HOST ps -qf name=apache)
+	if [[ -z "$contid" ]]; then
+		echo "Apache container failed to start"
+		docker $DOCKER_HOST logs apache
+		exit 1
+	else 
+		echo "Apache container started with ID $contid"
+		docker $DOCKER_HOST ps
+	fi
+fi

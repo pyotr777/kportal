@@ -5,8 +5,9 @@ set -e
 # Apache runs inside Docker container.
 # SSL certificates obtained from LetsEncrypt.
 # If you don't have fixed DNS address, use self-signed certificates.
-# To use self-signed certificates set KP_SELF_CERT environment variable beofre running this script.
-# Other environment variables
+# To use self-signed certificates set KP_SELF_CERT environment variable before running this script,
+# or set it in env_init file.
+# Other environment variables:
 # KP_WEB_DNS		DNS name of this installation of K-portal.
 # KP_WEB_MAIL		E-mail for obtaining SSL certificates. (Used only if KP_SELF_CERT is not set).
 
@@ -167,28 +168,8 @@ echo "Check that kp_server is running on port 9004"
 ps ax | grep "kp_server" | grep 9004
 
 
-if [[ -z $KP_SKIP_TARS ]]; then
-	message "8. Loading Master Image"
-	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
-
-	message "9. Building Base Image"
-	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker $D_HOST_OPT build --rm -t ubuntu_base ."
-	echo "Saving Base Image to tar"
-	sudo -E su kportal -c "docker $D_HOST_OPT save -o ubuntu_base.tar ubuntu_base"
-	echo "Copying image tar to web site folder"
-	sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
-	sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
-	export IM_ID=$(sudo -E su kportal -c "docker $D_HOST_OPT images | grep ubuntu_base | awk '{ print \$3 }'") || true
-	echo "Base Image ID is $IM_ID"
-	# Set image ID in configuration file
-	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
-	cat "/etc/kportal/kportal_conf.xml"
-fi
-
 if [[ -z $KP_SKIP_SSL_CERT ]]; then
-	message "10. SSL certificates from LetsEncrypt."	
+	message "8. SSL certificates from LetsEncrypt."	
 	# Use saved certificates in tar if present
 	# Must be in src/ssl/letsencrypt.tar.gz file
 	CRT_TAR="$KP_HOME/src/ssl/letsencrypt.tar.gz"
@@ -215,7 +196,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
 	fi
-	echo "Restarting Apache container with SSL port mapped to 9005."
+	# Restarting Apache container with SSL port mapped to 9005.
 	$SOURCE_DIR/start_apache.sh 9005
 	if [[ -h "$SSL_DIR/server.crt" && -h "$SSL_DIR/server.key" ]]; then
 		echo "kp_server certificates alresdy linked to certificates from LetsEncrypt"
@@ -252,9 +233,30 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		cd $ORG_DIR
 	fi
 else
-	echo "Restarting Apache continer with SSL on port 9005"
+	# Restarting Apache continer with SSL on port 9005
 	$SOURCE_DIR/start_apache.sh 9005
 fi
+
+if [[ -z $KP_SKIP_TARS ]]; then
+	message "9. Loading Master Image"
+	cd "$KP_HOME/src/docker_images"
+	sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
+
+	message "10. Building Base Image"
+	cd "$KP_HOME/src/docker_images"
+	sudo -E su kportal -c "docker $D_HOST_OPT build --rm -t ubuntu_base ."
+	echo "Saving Base Image to tar"
+	sudo -E su kportal -c "docker $D_HOST_OPT save -o ubuntu_base.tar ubuntu_base"
+	echo "Copying image tar to web site folder"
+	sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
+	sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
+	export IM_ID=$(sudo -E su kportal -c "docker $D_HOST_OPT images | grep ubuntu_base | awk '{ print \$3 }'") || true
+	echo "Base Image ID is $IM_ID"
+	# Set image ID in configuration file
+	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
+	cat "/etc/kportal/kportal_conf.xml"
+fi
+
 
 export INSTALL_DIR="$KP_HOME/install"
 export BOOSTARCHIVE="boost_1_60_0"
