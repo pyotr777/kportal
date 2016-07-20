@@ -2,4 +2,5 @@
 LS="$(aws ec2 describe-instances --query 'Reservations[*].{ID:Instances[*].InstanceId,TAG:Instances[*].Tags,STATE:Instances[*].State.Name}' --output text)"
 # Highlight IDs
 esc=$(printf '\033')
-echo "$LS" | sed -r "s/^ID\s*[a-z0-9\-]*/${esc}[38;5;208m&${esc}[0m/"
+echo "$LS" | sed -r "s/^ID\s*[a-z0-9\-]*/${esc}[48;5;237m${esc}[38;5;208m&${esc}[0m/"
+ 
