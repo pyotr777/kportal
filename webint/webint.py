@@ -217,13 +217,16 @@ def exe(ws):
     print "Rec: " + msg
     command = urllib.unquote_plus(msg)
     print "Have command " + command + "."
-    proc = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=1, shell=True)
-    i = 0;
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, shell=True)
     with proc.stdout:
         for line in iter(proc.stdout.readline, b''):
             print line,            
             ws.send(line)
-            i += 1
+    with proc.stderr:
+        for line in iter(proc.stderr.readline, b''):
+            print line,            
+            ws.send("#STDERR"+line)
+    
     proc.wait()
     print "finish"
     next_block=getNext(command)

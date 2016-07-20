@@ -6,7 +6,8 @@
   <script>
     var connection;
     var exec_flag=1;  // Prevent double execution of same command
-    var next_block_flag = new RegExp("^#NEXT");
+    var next_block_key = "#NEXT";
+    var stderr_key = "#STDERR";
     DNS = "localhost:8080"
 
     // Call from text field #n
@@ -40,8 +41,13 @@
       connection.onmessage = function (e) {
         console.log('Server: ' + e.data);        
         // Check if we have new block
-        if (next_block_flag.test(e.data)) {
-          $("body").append(e.data.replace(/^#NEXT/,""))
+        if (e.data.indexOf(next_block_key)==0) {
+          data = e.data.replace(next_block_key,"")
+          $("body").append(data)
+        } else if (e.data.indexOf(stderr_key)==0) {
+          data = e.data.replace(stderr_key,"")
+          $("#out"+n).append("<div class=stderr>"+data+"</div>");
+          $("#out"+n).animate({ scrollTop: $('#out1').prop("scrollHeight")}, 10);
         } else {
           data = escape(e.data);
           $("#out"+n).append("<div class=output>"+data+"</div>");
@@ -64,7 +70,6 @@
 <body>
 <h1 id="start">Execution tests</h1>
 <div><input id="txt_1" type="text" name="cmd" onchange="exec(1)" />
-    <button id="exec_button_1" onclick="exec(1)">exec</button>
 </div>
 <div class="displayblock" id="out1"></div>
 </body>
