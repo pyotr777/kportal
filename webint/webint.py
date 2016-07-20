@@ -91,38 +91,40 @@ def Execute(command) :
 
 # Now only returns output.
 # In the future - analyse output.
-def displayOutput(command, output):
+def getNext(command, block=default_block):
     global block_counter
     block_counter += 1
-    print "Displaying output in " + default_block
+    print "Block counter = " + str(block_counter)
+    print "Displaying output in " + block
     # Default DIV block transformations
     div_transform_id = "someid"    
-    div_block_file = open(default_block)
-    outfilename = static_folder + "/block" + str(block_counter) + ".html"
-    print "Write to " + outfilename
-    out_block_file = open(outfilename, 'w')
+    div_block_file = open(block)
     div = div_block_file.read()
     # Replace default IDs with block unique IDs
     div = re.sub(r'NNN',str(block_counter),div)
-    # Insert output
-    div = re.sub(r'OUTPUT',output,div)
     # And command
-    div = re.sub(r'COMMAND',command,div)
+    div = re.sub(r'COMMAND',html_safe(command),div)
     # Replace block number variable i in javascript
     div = re.sub(r'var\s*i\s*=\s*1[;]*',r'var i = '+str(block_counter), div)
 
-    out_block_file.write(div)
-    out_block_file.write("\n")
-    out_block_file.close()
     div_block_file.close()
     return div
 
+# Replace symbols that can distroy html test field contents.
+def html_safe(command):
+    command = command.replace('\\',r'\\\\')
+    command = command.replace('"',r'\"')    
+    print command
+    return command
 
 # Workflow Start
 #Display emtpy HTML template with command field.
 @webint.route('/')
 def show_template():
-    print "Reading base page "+ html_base
+    global block_counter
+    block_counter = 1
+    print "Reading base page "+ html_base    
+    print "Block counter reset to " + str(block_counter)
     return bottle.static_file(html_base, root=web_folder)
 
 
@@ -224,6 +226,9 @@ def exe(ws):
             i += 1
     proc.wait()
     print "finish"
+    next_block=getNext(command)
+    ws.send("#NEXT"+next_block)
+    print "Next block sent"
     return
 
 
