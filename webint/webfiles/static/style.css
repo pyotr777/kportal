@@ -25,6 +25,10 @@ div.displayblock {
     overflow-y:visible;
 }
 
+.stderr {
+    color: red;
+}
+
 div#div_NNN {
     visibility: hidden;
 }
