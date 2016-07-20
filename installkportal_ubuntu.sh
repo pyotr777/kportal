@@ -198,7 +198,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 	fi
 	# Restarting Apache container with SSL port mapped to 9005.
 	$SOURCE_DIR/start_apache.sh 9005
-	if [[ -h "$SSL_DIR/server.crt" && -h "$SSL_DIR/server.key" ]]; then
+	if [[ -h "$SSL_DIR/server.crt" && -h "$SSL_DIR/server.key" && -h "$SSL_DIR/server.cer" ]]; then
 		echo "kp_server certificates alresdy linked to certificates from LetsEncrypt"
 	else
 		echo "Creating links to LetsEncrypt certificates for kp_server."
@@ -212,6 +212,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		sudo chmod -R +x letsencrypt/live
 		CERT=letsencrypt/archive/$KP_WEB_DNS/cert1.pem
 		KEY=letsencrypt/archive/$KP_WEB_DNS/privkey1.pem
+		CHAIN=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/fullchain1.pem
 		if [[ ! -a "$CERT" ]]; then
 			echo "Certificate file not found: $CERT"
 			exit 1
@@ -219,15 +220,20 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		if [[ ! -a "$KEY" ]]; then
 			echo "Key file not found: $KEY"
 			exit 1
-		fi		
+		fi
+		echo "Delete self-signed certificates which came from distribution."
 		if [[ -f server.crt ]]; then
 			sudo rm -f server.crt
 		fi
 		if [[ -f server.key ]]; then
 			sudo rm -f server.key
 		fi
+		if [[ -f server.cer ]]; then
+			sudo rm -f server.cer
+		fi
 		sudo -E su kportal -c "ln -s $CERT server.crt"
 		sudo -E su kportal -c "ln -s $KEY server.key"
+		sudo -E su kportal -c "ln -s $CHAIN server.cer"
 		echo "Links to certificates created"
 		ls -l
 		cd $ORG_DIR
