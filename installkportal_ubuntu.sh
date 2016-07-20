@@ -180,7 +180,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		if [[ ! -d "$SSL_DIR/letsencrypt" || $(ls -1 "$SSL_DIR/letsencrypt" | wc -l) > 1 ]]; then
 			# If directory doesn't exist or empty
 			echo "Extracting to $SSL_DIR/letsencrypt"
-			tar -xzf "$CRT_TAR" -C "$SSL_DIR"
+			sudo -E su -p kportal -c "tar -xzf $CRT_TAR -C $SSL_DIR"
 		else
 			echo "Installed sertificates found in $SSL_DIR/letsencrypt"
 		fi

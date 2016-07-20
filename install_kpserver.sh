@@ -1,11 +1,18 @@
 #!/bin/bash
 # Install Boost library, build kp_server, install it.
 
-echo "Check that kp_server is not installed."
+DIST="/etc/kportal"
+
+echo "Check if kp_server is installed."
+
 which kp_server > /dev/null
 if [[ $? -eq 0 ]]; then
-	echo "kp_server already installed."
-	exit 0
+	if [[ -d "$DIST" ]]; then
+		echo "kp_server already installed."
+		exit 0
+	else
+		sudo -E su kportal -c "mkdir -p $DIST"
+	fi
 fi
 
 ORG_DIR=$(pwd)
