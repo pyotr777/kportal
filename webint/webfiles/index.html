@@ -6,22 +6,25 @@
   <script>
     var connection;
     var exec_flag=1;  // Prevent double execution of same command
-    DNS = "ec2-52-197-172-238.ap-northeast-1.compute.amazonaws.com:8080"
-    function exec() {
+    var next_block_flag = new RegExp("^#NEXT");
+    DNS = "localhost:8080"
+
+    // Call from text field #n
+    function exec(n) {
       if (!exec_flag) {
         console.log("Exec Flag is off");
         return;
       }
       exec_flag=0;      
-      command = $("#txt_NNN").val();
+      command = $("#txt_"+n).val();
       console.log("Executing command "+command);
       console.log("DNS="+DNS);
-      ExecOnServer(DNS, command); // Send the command to the server
+      ExecOnServer(DNS, command, n); // Send the command to the server
       setTimeout(function(){ exec_flag=1;}, 2000)
     }
 
-    function ExecOnServer(DNS, command) {
-      console.log("Accessing ws://"+DNS+"/exe")
+    function ExecOnServer(DNS, command, n) {
+      console.log("Call to ExecOnServer with "+DNS+", "+command+", "+n)
       connection = new WebSocket('ws://'+DNS+'/exe', ['soap', 'xmpp']);
       // When the connection is open, send some data to the server
       connection.onopen = function () {
@@ -35,10 +38,15 @@
 
       // Log messages from the server
       connection.onmessage = function (e) {
-        //console.log('Server: ' + e.data);
-        data = escape(e.data);
-        $("#out1").append("<div class=output>"+data+"</div>");
-        $("#out1").animate({ scrollTop: $('#out1').prop("scrollHeight")}, 10);
+        console.log('Server: ' + e.data);        
+        // Check if we have new block
+        if (next_block_flag.test(e.data)) {
+          $("body").append(e.data.replace(/^#NEXT/,""))
+        } else {
+          data = escape(e.data);
+          $("#out"+n).append("<div class=output>"+data+"</div>");
+          $("#out"+n).animate({ scrollTop: $('#out1').prop("scrollHeight")}, 10);
+        }
       };
     };
     function escape(str) {
@@ -47,7 +55,7 @@
       str = str.replace(/>/g, "&gt;");
       str = str.replace(/"/g, "&quot;");
       str = str.replace(/'/g, "&#039;");
-      str = str.replace("[38;5;70m#", "<span style=\"color:#32b50a;\">");
+      str = str.replace("[38;5;70m", "<span style=\"color:#32b50a;\">");
       str = str.replace("[m", "</span>");
       return str
     }
@@ -55,8 +63,8 @@
 </head>
 <body>
 <h1 id="start">Execution tests</h1>
-<div><input id="txt_NNN" type="text" name="cmd" onchange="exec()" />
-    <button id="exec_button_NNN" onclick="exec()">exec</button>
+<div><input id="txt_1" type="text" name="cmd" onchange="exec(1)" />
+    <button id="exec_button_1" onclick="exec(1)">exec</button>
 </div>
 <div class="displayblock" id="out1"></div>
 </body>
