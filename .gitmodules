@@ -4,3 +4,6 @@
 [submodule "gitcompare"]
 	path = gitcompare
 	url = https://github.com/pyotr777/gitcompare.git
+[submodule "webint"]
+	path = webint
+	url = git@github.com:pyotr777/webint.git
