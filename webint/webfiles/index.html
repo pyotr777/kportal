@@ -21,7 +21,7 @@
       console.log("Executing command "+command);
       console.log("DNS="+DNS);
       ExecOnServer(DNS, command, n); // Send the command to the server
-      setTimeout(function(){ exec_flag=1;}, 2000)
+      setTimeout(function(){ exec_flag=1;}, 1000)
     }
 
     function ExecOnServer(DNS, command, n) {
@@ -65,11 +65,13 @@
       str = str.replace("[m", "</span>");
       return str
     }
+
+    $(document).ready(function(){
+      $("body").append($("<div>").load("/next"));
+    });
+
   </script>
 </head>
 <body>
 <h1 id="start">Execution tests</h1>
-<div><input id="txt_1" type="text" name="cmd" onchange="exec(1)" />
-</div>
-<div class="displayblock" id="out1"></div>
 </body>
