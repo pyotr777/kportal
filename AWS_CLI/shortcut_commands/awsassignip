@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ $# < 2 ]; then
+    echo "Usage: $(basename $0) <instance-id> <Elastic IP address>"
+    exit
+fi
+
+aws ec2 associate-address --instance-id $1 --public-ip $2 --allow-reassociation
