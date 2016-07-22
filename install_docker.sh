@@ -12,7 +12,7 @@ if [[ $? -eq 0 ]]; then
 	PID=$(ps ax | grep "docker" | grep "daemon" | awk '{ print $1}')
 	kill $PID
 	sleep 5
-	service docker start
+	service docker start || {echo "Docker service failed to start."; tail /var/log/upstart/docker.log; exit 1}
 	exit 0
 fi
 
