@@ -10,8 +10,20 @@ if [[ "$HOME" = *travis* ]]; then
 fi
 
 if [[ -z $TRAVIS ]]; then
+	# Check Docker status
+	# If Docker runs on 9555
+	docker -H 127.0.0.1:9555 images &>/dev/null
+	if [[ $? -eq 0 ]]; then
+		echo "Docker is running on 9555 port"
+		exit 0
+	fi
 	# Stop docker
-	sudo service docker stop
+	sudo docker images &>/dev/null
+	if [[ $? -eq 0 ]]; then
+		echo "Docker is running as a service. Stopping it."
+		sudo service docker stop
+		sleep 5
+	fi	
 
 	# Start bridge & start docker 
 	if [ ! "$(brctl show | grep bridge0)" ]; then
