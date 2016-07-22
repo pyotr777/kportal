@@ -175,6 +175,8 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 	CRT_TAR="$KP_HOME/src/ssl/letsencrypt.tar.gz"
 	SSL_DIR="/etc/kportal/ssl"
 	cd $SOURCE_DIR
+	# Copy environment initialisation file
+	docker $D_HOST_OPT cp $KP_HOME/ENV apache:/ENV
 	if [[ -f "$CRT_TAR" ]]; then
 		echo "Found certificates in tar file."
 		if [[ ! -d "$SSL_DIR/letsencrypt" || $(ls -1 "$SSL_DIR/letsencrypt" | wc -l) > 1 ]]; then
@@ -188,8 +190,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
 	else
-		# Copy environment initialisation file and script files
-		docker $D_HOST_OPT cp $KP_HOME/ENV apache:/ENV
+		# Copy script files		
 		docker $D_HOST_OPT cp install_certbot.sh apache:/certbot/
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/	
 		# Obtain cerificates from LetsEncrypt and update Apache config file	
