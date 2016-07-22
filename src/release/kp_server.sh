@@ -5,7 +5,9 @@ PID=$(ps ax | grep "kp_server " | grep 9004 | grep -v "grep" | awk '{ print $1 }
 if [[ "$PID" ]]; then
 	echo "Already running."
 	ps ax | grep "$PID" | grep -v "grep"
-	exit 0
+	echo "Killing PID $PID"
+	kill $PID
+	sleep 5
 fi
 
 echo "Starting kp_server. HOME_DIR=$HOME_DIR, LOGDIR=$LOGDIR."

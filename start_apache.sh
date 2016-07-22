@@ -44,7 +44,16 @@ function restart_container {
 
 docker $DOCKER_HOST images &>/dev/null
 if [[ $? -eq 0 ]]; then
-	echo "Starting Apache2 container with SSL on port $SSL"
+	# Check that container just stopped. Then start it and perform port tests.
+	# Container is not running
+	contid=$(docker $DOCKER_HOST ps -aqf name=apache)
+	if [[ "$contid" ]]; then
+		# Container is stopped
+		docker $DOCKER_HOST start apache
+		sleep 1
+	fi
+
+	echo "Check that Apache container is running with SSL on port $SSL"
 	contid=$(docker $DOCKER_HOST ps -qf name=apache)
 	if [[ "$contid" ]]; then
 		# Container apache is running
