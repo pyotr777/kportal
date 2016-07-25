@@ -4,7 +4,7 @@ if [[ $1 != "" ]]; then
 	if [[ $1 == "-do" ]]; then
 		OPT="-av"
 	else
-		echo "Connecting server $1"
+		echo "Connecting to $1"
 		server="$1"
 	fi
 fi
