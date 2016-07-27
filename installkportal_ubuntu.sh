@@ -81,7 +81,7 @@ export D_HOST_OPT="-H localhost:9555"
 
 message "0. Installing required packages"
 sudo apt-get update > "$LOGDIR/update.log"
-sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make > "$LOGDIR/install.log"
+sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make bridge-utils > "$LOGDIR/install.log"
 # Test if AUFS is installed
 $SOURCE_DIR/install_aufs.sh
 
