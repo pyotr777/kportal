@@ -11,12 +11,10 @@ if [[ $# < 1 ]]; then
 fi
 
 REMOTE=$1
-
+HOSTNAME="kportal.ml"
 ssh $REMOTE hostname 2>/dev/null || (echo "Cannot connect with 'SSH $REMOTE'." && exit 1)
 
-
 SSH_OPTIONS="-o ServerAliveInterval=15"
-SSH_X_OPTIONS="-X"
 
 # Copy files to remote
 echo "Synchronising installation files with remote location."
@@ -27,8 +25,8 @@ echo "Starting remote installation web-server."
 ssh $REMOTE $SSH_OPTIONS kportal/install_required_ubuntu.sh
 # Kill webint server if its already running
 ssh $REMOTE $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) &&sudo kill \$PID" || true
-echo "Open browser"
-ssh $REMOTE $SSH_OPTIONS $SSH_X_OPTIONS 'nohup kportal/start.sh localhost </dev/null' &
+
+./start.sh $HOSTNAME:8080 &
 echo "Start server"
 ssh $REMOTE $SSH_OPTIONS kportal/start_webint_server.sh
 
