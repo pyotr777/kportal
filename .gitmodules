@@ -3,7 +3,9 @@
 	url = https://github.com/pyotr777/kportal_settings.git 
 [submodule "gitcompare"]
 	path = gitcompare
-	url = https://github.com/pyotr777/gitcompare.git
+    url = https://github.com/pyotr777/gitcompare.git
+    branch = master
 [submodule "webint"]
 	path = webint
-	url = https://github.com/pyotr777/webint.git
+    url = https://github.com/pyotr777/webint.git
+    branch = master
