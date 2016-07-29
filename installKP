@@ -24,9 +24,9 @@ echo "Starting remote installation web-server."
 
 ssh $REMOTE $SSH_OPTIONS kportal/install_required_ubuntu.sh
 # Kill webint server if its already running
-ssh $REMOTE $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) &&sudo kill \$PID" || true
+ssh $REMOTE $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) && sudo kill \$PID" 2>/dev/null || true
 
 ./start.sh $HOSTNAME:8080 &
 echo "Start server"
-ssh $REMOTE $SSH_OPTIONS kportal/start_webint_server.sh
+ssh $REMOTE $SSH_OPTIONS -t kportal/start_webint_server.sh
 
