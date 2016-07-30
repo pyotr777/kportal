@@ -11,6 +11,7 @@ if [[ $# < 1 ]]; then
 fi
 
 REMOTE=$1
+REMOTEDIR="kportal/"
 HOSTNAME="kportal.ml"
 ssh $REMOTE hostname 2>/dev/null || (echo "Cannot connect with 'SSH $REMOTE'." && exit 1)
 
@@ -18,7 +19,7 @@ SSH_OPTIONS="-o ServerAliveInterval=15"
 
 # Copy files to remote
 echo "Synchronising installation files with remote location."
-./sync_up.sh $REMOTE -do
+./sync_up.sh $REMOTE:$REMOTEDIR -do
 
 echo "Starting remote installation web-server."
 

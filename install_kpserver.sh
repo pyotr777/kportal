@@ -2,6 +2,10 @@
 # Install Boost library, build kp_server, install it.
 
 DIST="/etc/kportal"
+if [[ "$HOME" = *travis* ]]; then
+    echo "Travis CI detected"
+    export TRAVIS=1
+fi
 
 echo "Check if kp_server is installed."
 
@@ -31,9 +35,13 @@ echo "Saving boost in $(pwd)."
 export BOOSTVERSION="1.60.0"
 export BOOSTARCHIVE="boost_1_60_0"
 echo "Installing BOOST $BOOSTVERSION into $KP_HOME/usr"
+if [[ -f "$KP_HOME/$BOOSTARCHIVE.tar.bz2" ]]; then
+    echo "Spotted boost archive at $KP_HOME/$BOOSTARCHIVE.tar.bz2"
+    mv $KP_HOME/$BOOSTARCHIVE.tar.bz2 .
+fi
 if [[ ! -f $BOOSTARCHIVE.tar.bz2 ]]; then
     echo "Downloading boost"
-    sudo -E su -p kportal -c 'wget -nv http://heanet.dl.sourceforge.net/project/boost/boost/$BOOSTVERSION/$BOOSTARCHIVE.tar.bz2'
+    sudo -E su -p kportal -c 'wget -nv http://downloads.sourceforge.net/project/boost/boost/$BOOSTVERSION/$BOOSTARCHIVE.tar.bz2'
 fi
 if [[ ! -d "$BOOSTARCHIVE" ]]; then
     sudo -E su -p kportal -c 'bzip2 -dc "$BOOSTARCHIVE.tar.bz2" | tar xf -'
@@ -43,9 +51,14 @@ cd "$BOOSTARCHIVE"
 echo "Building boost library"
 sudo touch $INSTALL_DIR/boostinstall.log
 sudo chmod 666 $INSTALL_DIR/boostinstall.log
-sudo ./bootstrap.sh --prefix=$KP_HOME/usr > $INSTALL_DIR/boostinstall.log
-echo "Installing boost library. Logs are in $INSTALL_DIR/boostinstall.log."
-sudo ./b2 install >> $INSTALL_DIR/boostinstall.log
+if [[ "$TRAVIS" ]]; then
+    sudo ./bootstrap.sh --prefix=$KP_HOME/usr > $INSTALL_DIR/boostinstall.log
+    echo "Installing boost library. Logs are in $INSTALL_DIR/boostinstall.log."
+    sudo ./b2 install >> $INSTALL_DIR/boostinstall.log
+else
+    sudo ./bootstrap.sh --prefix=$KP_HOME/usr
+    sudo ./b2 install
+fi
 echo "Boost installed into $KP_HOME/usr?"
 ls -l $KP_HOME/usr/
 echo "Building and installing kp_server"
