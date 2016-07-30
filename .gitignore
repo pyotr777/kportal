@@ -4,6 +4,7 @@
 *.tar
 *.zip
 *.tar.gz
+*.tar.bz2
 *.log
 *.o
 *.pem
