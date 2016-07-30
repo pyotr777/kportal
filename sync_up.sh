@@ -14,4 +14,5 @@ fi
 if [[ "$OPT" == *n* ]]; then
     echo "Dry run with options \"$OPT\". To actually transfer files execute with \"-do\" option: > $0 [server] -do"
 fi
-rsync $OPT --exclude-from 'rsyncexclude.txt' ./ $server:kportal/
+
+rsync $OPT --exclude-from 'rsyncexclude.txt' ./ $server
