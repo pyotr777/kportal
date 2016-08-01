@@ -12,7 +12,12 @@ fi
 
 REMOTE=$1
 REMOTEDIR="kportal/"
-HOSTNAME="kportal.ml"
+EXT_IP=$(curl ifconfig.me)
+echo "IP detected: $EXT_IP"
+HOSTNAME=$(dig +short -x "EXT_IP")
+echo "Hostname detected: $HOSTNAME"
+
+
 ssh $REMOTE hostname 2>/dev/null || (echo "Cannot connect with 'SSH $REMOTE'." && exit 1)
 
 SSH_OPTIONS="-o ServerAliveInterval=15"
@@ -27,7 +32,7 @@ ssh $REMOTE $SSH_OPTIONS kportal/install_required_ubuntu.sh
 # Kill webint server if its already running
 ssh $REMOTE $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) && sudo kill \$PID" 2>/dev/null || true
 
-./start.sh $HOSTNAME:8080 &
+./start_browser.sh $HOSTNAME:8080 &
 echo "Start server"
 ssh $REMOTE $SSH_OPTIONS -t kportal/start_webint_server.sh
 
