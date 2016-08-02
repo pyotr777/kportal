@@ -3,7 +3,19 @@
 # or restart apache container with SSL on custom host port.
 # Argument $1 is used to set custom SSL port number.
 
-DOCKER_HOST="-H 127.0.0.1:9555"
+DOCKER_COMMAND="docker -H 127.0.0.1:9555"
+$DOCKER_COMMAND images &>/dev/null
+if [[ "$?" != 0 ]]; then
+	export DOCKER_COMMAND="sudo docker"
+fi
+$DOCKER_COMMAND images &>/dev/null
+if [[ "$?" != 0 ]]; then
+	echo "Cannot connect to docker daemon with sudo docker and docker -H localhost:9555."
+	exit 1
+fi
+
+
+
 SSL_DIR="/etc/kportal/ssl/"
 WWW_DIR="/etc/kportal/www/"
 # Name of Docker image that is built from Dockerfile
@@ -23,41 +35,41 @@ fi
 
 # Commit apache container to image SSL_IMG
 function create_image {
-	img=$(docker $DOCKER_HOST images -q $SSL_IMG)				
+	img=$($DOCKER_COMMAND images -q $SSL_IMG)				
 	if [[ $img ]]; then
 		echo "Image $SSL_IMG already created."
 	else
-		docker $DOCKER_HOST commit apache $SSL_IMG
+		$DOCKER_COMMAND commit apache $SSL_IMG
 	fi
-	docker $DOCKER_HOST rm apache
+	$DOCKER_COMMAND rm apache
 }
 
 # Start container from image SSL_IMG
 function restart_container {
-	docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $SSL_IMG
+	$DOCKER_COMMAND run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $SSL_IMG
 	if [[ $? -ne 0 ]]; then
 		echo "Couldn't start Docker container with Apache2 from image $SSL_IMG."
-		docker $DOCKER_HOST images
+		$DOCKER_COMMAND images
 		exit 1
 	fi
 }
 
-docker $DOCKER_HOST images &>/dev/null
+$DOCKER_COMMAND images &>/dev/null
 if [[ $? -eq 0 ]]; then
 	# Check that container just stopped. Then start it and perform port tests.
 	# Container is not running
-	contid=$(docker $DOCKER_HOST ps -aqf name=apache)
+	contid=$($DOCKER_COMMAND ps -aqf name=apache)
 	if [[ "$contid" ]]; then
 		# Container is stopped
-		docker $DOCKER_HOST start apache
+		$DOCKER_COMMAND start apache
 		sleep 1
 	fi
 
 	echo "Check that Apache container is running with SSL on port $SSL"
-	contid=$(docker $DOCKER_HOST ps -qf name=apache)
+	contid=$($DOCKER_COMMAND ps -qf name=apache)
 	if [[ "$contid" ]]; then
 		# Container apache is running
-		ssl_port=$(docker $DOCKER_HOST inspect --format='{{(index (index .NetworkSettings.Ports "443/tcp") 0).HostPort}}' apache)
+		ssl_port=$($DOCKER_COMMAND inspect --format='{{(index (index .NetworkSettings.Ports "443/tcp") 0).HostPort}}' apache)
 		if [[ "$ssl_port" ]]; then
 			if [[ "$ssl_port" == "$SSL" ]]; then
 				# SSL port is mapped to what we need
@@ -66,20 +78,20 @@ if [[ $? -eq 0 ]]; then
 			else
 				# SSL port os not what we need
 				echo "Restarting container with SSL on port $SSL"
-				docker $DOCKER_HOST stop apache
+				$DOCKER_COMMAND stop apache
 				create_image
 				restart_container
 			fi
 		else
 			# SSL port is not open?
 			echo "SSL port is not opened"
-			docker $DOCKER_HOST stop apache
+			$DOCKER_COMMAND stop apache
 			create_image
 			restart_container
 		fi
 	else
 		# Container is not running
-		contid=$(docker $DOCKER_HOST ps -aqf name=apache)
+		contid=$($DOCKER_COMMAND ps -aqf name=apache)
 		if [[ "$contid" ]]; then
 			# Container is stopped
 			create_image
@@ -87,7 +99,7 @@ if [[ $? -eq 0 ]]; then
 		else
 			# Container not exists
 			# Start for the 1st time from image IMG
-			docker $DOCKER_HOST run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $IMG
+			$DOCKER_COMMAND run -d -p 80:80 -p $SSL:443 -v $WWW_DIR:$WWW_DIR -v $SSL_DIR:$SSL_DIR --name apache $IMG
 			if [[ $? -ne 0 ]]; then
 				echo "Couldn't start Docker container with Apache2 from image $IMG."
 				exit 1
@@ -101,20 +113,20 @@ else
 fi
 sleep 2
 echo "Running containers"
-docker $DOCKER_HOST ps
-contid=$(docker $DOCKER_HOST ps -qf name=apache)
+$DOCKER_COMMAND ps
+contid=$($DOCKER_COMMAND ps -qf name=apache)
 if [[ -z "$contid" ]]; then
 	# Apache container is not running
 	echo "Restarting Apache container"
-	docker $DOCKER_HOST start apache
+	$DOCKER_COMMAND start apache
 	sleep 2
-	contid=$(docker $DOCKER_HOST ps -qf name=apache)
+	contid=$($DOCKER_COMMAND ps -qf name=apache)
 	if [[ -z "$contid" ]]; then
 		echo "Apache container failed to start"
-		docker $DOCKER_HOST logs apache
+		$DOCKER_COMMAND logs apache
 		exit 1
 	else 
 		echo "Apache container started with ID $contid"
-		docker $DOCKER_HOST ps
+		$DOCKER_COMMAND ps
 	fi
 fi

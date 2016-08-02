@@ -35,9 +35,9 @@ echo "Saving boost in $(pwd)."
 export BOOSTVERSION="1.60.0"
 export BOOSTARCHIVE="boost_1_60_0"
 echo "Installing BOOST $BOOSTVERSION into $KP_HOME/usr"
-if [[ -f "$KP_HOME/$BOOSTARCHIVE.tar.bz2" ]]; then
-    echo "Spotted boost archive at $KP_HOME/$BOOSTARCHIVE.tar.bz2"
-    mv $KP_HOME/$BOOSTARCHIVE.tar.bz2 .
+if [[ -f "$KP_HOME/src/$BOOSTARCHIVE.tar.bz2" ]]; then
+    echo "Spotted boost archive at $KP_HOME/src/$BOOSTARCHIVE.tar.bz2"
+    sudo -E su -p kportal -c 'mv $KP_HOME/src/$BOOSTARCHIVE.tar.bz2 .'
 fi
 if [[ ! -f $BOOSTARCHIVE.tar.bz2 ]]; then
     echo "Downloading boost"

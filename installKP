@@ -1,26 +1,71 @@
-#!/bin/bash -e
+#!/bin/bash
 # Copy installation files from current directory to remote machine
 # and start remote installation.
 # Require 1 parameter: remote [user@]hostname.
 
+read -rd '' USAGE <<EOF
+	Usage:
+	$(basename $0) -t [user@]host [-i SSH identity file] [-u domain name]
+	Requires working SSH connection to host.
+	Domain name is part of URL of this K-portal installation as used in web browser.
+EOF
+
+
 if [[ $# < 1 ]]; then
-	echo "Usage:"
-	echo "$(basename $0) [user@]hostname"
-	echo "Requires working ssh connection to hostname."
+	echo "$USAGE"
 	exit 0
 fi
 
-REMOTE=$1
+while [ "$1" != "" ]; do
+    PARAM=$1
+    shift
+    VALUE=$1
+    case $PARAM in
+        -h | --help)
+            echo $USAGE
+            exit 0
+            ;;
+        -t)
+            REMOTE="$VALUE"
+            ;;
+        -i)
+            KEY="$VALUE"
+            ;;
+        -u)
+            DN="$VALUE"
+            ;;
+        *)
+            echo "ERROR: unknown parameter \"$PARAM\""
+            echo "$USAGE"
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [[ -z "$REMOTE" ]]; then
+	echo "$USAGE"
+	exit 1
+fi
+
+set -e
+
 REMOTEDIR="kportal/"
-echo "Installing K-portal on $REMOTE in $REMOTEDIR."
-echo "Detecting hostname and IP address."
+echo "Installing K-portal on host $REMOTE in directory $REMOTEDIR."
+
+echo "DN=$DN"
+
+echo "Detecting IP address."
 EXT_IP=$(ssh $REMOTE "curl -m 5 ifconfig.me 2>/dev/null || curl -m 5 icanhazip.com 2>/dev/null" 2>/dev/null)
 echo "IP detected: $EXT_IP"
-REMOTE_HOSTNAME=$(ssh $REMOTE "dig +short -x $EXT_IP | sed 's/\.$//' 2>/dev/null" 2>/dev/null)
-echo "Hostname detected: $REMOTE_HOSTNAME"
 
+if [[ -z "$DN" ]]; then
+	echo "Detecting domain name."
+	DN=$(ssh $REMOTE "dig +short -x $EXT_IP | sed 's/\.$//' 2>/dev/null" 2>/dev/null)
+	echo "Hostname detected: $DN"
+fi
 
-ssh $REMOTE hostname 2>/dev/null || (echo "Cannot connect with 'SSH $REMOTE'." && exit 1)
+ssh $REMOTE hostname &>/dev/null || (echo "Cannot connect with 'SSH $REMOTE'." && exit 1)
 
 SSH_OPTIONS="-o ServerAliveInterval=15"
 
@@ -34,7 +79,7 @@ ssh $REMOTE $SSH_OPTIONS kportal/install_required_ubuntu.sh
 # Kill webint server if its already running
 ssh $REMOTE $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) && sudo kill \$PID" 2>/dev/null || true
 
-./start_browser.sh $REMOTE_HOSTNAME:8080 &
+./start_browser.sh $DN:8080 &
 echo "Start server"
 ssh $REMOTE $SSH_OPTIONS -t kportal/start_webint_server.sh
 

@@ -36,6 +36,11 @@ if [[ ! -f "$CERT" || ! -f "$KEY" ]]; then
 	chmod +x certbot-auto
 	./certbot-auto -n --os-packages-only
 	./certbot-auto certonly -v -n -m $KP_WEB_MAIL -d $KP_WEB_DNS --apache --renew-by-default --agree-tos
+
+	echo "Moving LetsEncrypt certyficates to /etc/kportal/ssl/letsencrypt"
+	mv /etc/letsencrypt /etc/kportal/ssl/
+	cd /
+	ln -s /etc/kportal/ssl/letsencrypt/ letsencrypt
 fi
 
 
