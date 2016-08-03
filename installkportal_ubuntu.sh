@@ -124,6 +124,9 @@ if [[ -z $KP_SKIP_KPSERVER ]]; then
 	$SOURCE_DIR/install_kpserver.sh
 fi
 
+# Exit on image prepare stage
+exit 0
+
 if [[ -z $KP_SKIP_DOCKER ]]; then	
 	message "3. Install Docker and give permissions to user kportal"
 	sudo $SOURCE_DIR/install_docker.sh
