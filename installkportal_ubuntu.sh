@@ -25,6 +25,8 @@ SOURCE_DIR="$(pwd)"
 echo "Using $SOURCE_DIR as working directory."
 
 if [[ -f "$SOURCE_DIR/env_init" ]]; then
+	echo "Initialising environment with $SOURCE_DIR/env_init file:"
+	cat "$SOURCE_DIR/env_init"
 	source "$SOURCE_DIR/env_init"
 fi
 
