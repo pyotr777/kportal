@@ -21,7 +21,7 @@ fi
 
 ORG_DIR=$(pwd)
 echo "Came from $ORG_DIR"
-KP_HOME=$(sudo su kportal -c 'echo $HOME')
+export KP_HOME=$(sudo su kportal -c 'echo $HOME')
 echo "KP_HOME=$KP_HOME"
 export INSTALL_DIR="$KP_HOME/install"
 sudo -E su -p kportal -c 'echo "INSTALL_DIR=$INSTALL_DIR"'
