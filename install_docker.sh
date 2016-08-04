@@ -10,6 +10,10 @@ docker -H localhost:9555 images &>/dev/null
 if [[ $? -eq 0 ]]; then
 	echo "Docker daemon already running on port 9555. Restarting as a service."
 	PID=$(ps ax | grep "docker" | grep "daemon" | awk '{ print $1}')
+	if [[ -z "$PID" ]]; then
+		PID=$(ps ax | grep "docker" | grep "\-D" | awk '{ print $1}')
+	fi
+	echo $PID
 	kill $PID
 	sleep 8
 	service docker start || (echo "Docker service failed to start."; tail /var/log/upstart/docker.log; exit 1)
@@ -23,7 +27,7 @@ apt-get update
 apt-get purge lxc-docker
 apt-cache policy docker-engine
 uname -a
-apt-get install -y docker-engine 
+apt-get install -y docker-engine
 chown -R root:kportal /etc/docker
 chmod -R g+w /etc/docker
 

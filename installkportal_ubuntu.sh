@@ -18,6 +18,15 @@ set -e
 #KP_SKIP_SSL_CERT=1
 #KP_SKIP_TARS=1
 
+function message {
+    echo ""
+    echo -en "\033[38;5;70m# \033[m\n"
+    echo -en "\033[38;5;70m# $1\033[m\n"
+    echo -en "\033[38;5;70m# \033[m\n"
+    echo " "
+}
+
+message "Installing K-Portal"
 
 ORG_DIR="$(pwd)"
 cd "$(dirname $0)"
@@ -25,7 +34,7 @@ SOURCE_DIR="$(pwd)"
 echo "Using $SOURCE_DIR as working directory."
 
 if [[ -f "$SOURCE_DIR/env_init" ]]; then
-	echo "Initialising environment with $SOURCE_DIR/env_init file:"
+	message "Initialising environment with $SOURCE_DIR/env_init file:"
 	cat "$SOURCE_DIR/env_init"
 	source "$SOURCE_DIR/env_init"
 fi
@@ -57,16 +66,12 @@ else
 	fi
 fi
 
-function message {
-    echo ""
-    echo -en "\033[38;5;70m# \033[m\n"
-    echo -en "\033[38;5;70m# $1\033[m\n"
-    echo -en "\033[38;5;70m# \033[m\n"
-    echo " "
-}
 
-message "Installing K-Portal"
 
+
+message "Environment"
+
+env | grep "KP_"
 LOGDIR="$SOURCE_DIR/logs"
 echo "ORG_DIR=$ORG_DIR"
 echo "HOME   =$HOME"
@@ -74,10 +79,7 @@ echo "LOGDIR =$LOGDIR"
 mkdir -p "$LOGDIR"
 chmod 777 "$LOGDIR"
 cd "$SOURCE_DIR"
-ls -l 
-message "Environment"
-env | grep "KP_"
-
+#ls -l 
 
 export D_HOST_OPT="-H localhost:9555"
 
@@ -123,9 +125,6 @@ if [[ -z $KP_SKIP_KPSERVER ]]; then
 	message "2. Install kp_server"
 	$SOURCE_DIR/install_kpserver.sh
 fi
-
-# Exit on image prepare stage
-exit 0
 
 if [[ -z $KP_SKIP_DOCKER ]]; then	
 	message "3. Install Docker and give permissions to user kportal"

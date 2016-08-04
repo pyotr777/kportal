@@ -8,6 +8,11 @@ read -rd '' USAGE <<EOF
 	Whithout "-do" option a dry run will be perfomed. Use it to see the list of updated files.
 EOF
 
+if [[ "$#"<1 ]]; then
+	echo "$USAGE"
+	exit 1
+fi
+
 OPT="-anv"
 DIR="kportal"
 KEY=""

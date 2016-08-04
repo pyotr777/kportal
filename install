@@ -55,13 +55,13 @@ fi
 echo "DN=$DN"
 
 echo "Starting local installation."
-./install_required_ubuntu.sh
 # Kill webint server if its already running
 PID=$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print $2 }' | head -1) && sudo kill $PID 2>/dev/null || true
 
-./start_browser.sh $DN:8080 &
 echo "Starting web interface server."
-nohup ./start_webint_server.sh 2>/dev/null &
+cd $HOME/kportal/webint
+./webint.py > ../logs/webint.log 2>&1 &
 echo "Installation script will now quit."
-echo "If your browser has not opened installation page already, open this page:"
+echo "To continue installation open this page in your browser:"
 echo -en "\033[38;5;27mhttp://$DN:8080\033[m\n"
+exit
