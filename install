@@ -1,85 +1,67 @@
 #!/bin/bash
-# Copy installation files from current directory to remote machine
-# and start remote installation.
-# Require 1 parameter: remote [user@]hostname.
+# Script for local K-portal installation.
+# Ubuntu OS required.
 
 read -rd '' USAGE <<EOF
+	Script for local K-portal installation.
 	Usage:
-	$(basename $0) -t [user@]host [-i SSH identity file] [-u domain name]
-	Requires working SSH connection to host.
+	$(basename $0) [-d domain name]
 	Domain name is part of URL of this K-portal installation as used in web browser.
+	If no domain name parameter provided, domain name will be detected using "dig" command.
 EOF
 
+SOURCEDIR="kportal/"
 
-if [[ $# < 1 ]]; then
-	echo "$USAGE"
-	exit 0
-fi
+# Trim quotes around a string
+trimQuotes() {
+	v=$1
+	val=$(echo $v | sed 's/^\"//' | sed 's/\"$//')
+	echo "$val"
+}
 
-while [ "$1" != "" ]; do
-    PARAM=$1
-    shift
-    VALUE=$1
-    case $PARAM in
-        -h | --help)
-            echo $USAGE
-            exit 0
-            ;;
-        -t)
-            REMOTE="$VALUE"
-            ;;
-        -i)
-            KEY="$VALUE"
-            ;;
-        -u)
-            DN="$VALUE"
-            ;;
-        *)
-            echo "ERROR: unknown parameter \"$PARAM\""
-            echo "$USAGE"
-            exit 1
-            ;;
-    esac
-    shift
+while getopts "d:h" opt; do
+	case $opt in
+	d)
+		DN=$(trimQuotes "$OPTARG")
+		;;
+	h)
+		echo $USAGE
+		exit 0
+		;;	
+	\?)
+		echo "Invalid option: -$OPTARG" >&2
+		echo "$USAGE"
+		exit 1
+		;;
+	:)
+		echo "Option -$OPTARG requires an argument." >&2
+		echo -e "$USAGE"
+		exit 1
+		;;
+	esac
 done
-
-if [[ -z "$REMOTE" ]]; then
-	echo "$USAGE"
-	exit 1
-fi
 
 set -e
 
-REMOTEDIR="kportal/"
-echo "Installing K-portal on host $REMOTE in directory $REMOTEDIR."
-
-echo "DN=$DN"
-
-echo "Detecting IP address."
-EXT_IP=$(ssh $REMOTE "curl -m 5 ifconfig.me 2>/dev/null || curl -m 5 icanhazip.com 2>/dev/null" 2>/dev/null)
-echo "IP detected: $EXT_IP"
-
 if [[ -z "$DN" ]]; then
+	echo "Detecting IP address."
+	EXT_IP=$(ssh $REMOTE "curl -m 5 ifconfig.me 2>/dev/null || curl -m 5 icanhazip.com 2>/dev/null" 2>/dev/null)
+	echo "IP detected: $EXT_IP"
 	echo "Detecting domain name."
 	DN=$(ssh $REMOTE "dig +short -x $EXT_IP | sed 's/\.$//' 2>/dev/null" 2>/dev/null)
 	echo "Hostname detected: $DN"
 fi
 
-ssh $REMOTE hostname &>/dev/null || (echo "Cannot connect with 'SSH $REMOTE'." && exit 1)
+echo "DN=$DN"
 
-SSH_OPTIONS="-o ServerAliveInterval=15"
-
-# Copy files to remote
-echo "Synchronising installation files with remote location."
-./sync_up.sh $REMOTE:$REMOTEDIR -do
-
-echo "Starting remote installation web-server."
-
-ssh $REMOTE $SSH_OPTIONS kportal/install_required_ubuntu.sh
+echo "Starting local installation."
+kportal/install_required_ubuntu.sh
 # Kill webint server if its already running
-ssh $REMOTE $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) && sudo kill \$PID" 2>/dev/null || true
+PID=$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print $2 }' | head -1) && sudo kill $PID 2>/dev/null || true
 
 ./start_browser.sh $DN:8080 &
-echo "Start server"
-ssh $REMOTE $SSH_OPTIONS -t kportal/start_webint_server.sh
-
+echo "Starting web interface server."
+nohup kportal/start_webint_server.sh 2>/dev/null &
+echo "Installation script will now quit."
+echo "If your browser has not opened installation page already, open this page:"
+echo -en "\033[38;5;27mhttp://$DN:8080\033[m\n"
