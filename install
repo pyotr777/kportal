@@ -45,23 +45,23 @@ set -e
 
 if [[ -z "$DN" ]]; then
 	echo "Detecting IP address."
-	EXT_IP=$(ssh $REMOTE "curl -m 5 ifconfig.me 2>/dev/null || curl -m 5 icanhazip.com 2>/dev/null" 2>/dev/null)
+	EXT_IP=$(curl -m 5 ifconfig.me 2>/dev/null || curl -m 5 icanhazip.com 2>/dev/null)
 	echo "IP detected: $EXT_IP"
 	echo "Detecting domain name."
-	DN=$(ssh $REMOTE "dig +short -x $EXT_IP | sed 's/\.$//' 2>/dev/null" 2>/dev/null)
+	DN=$(dig +short -x $EXT_IP | sed 's/\.$//' 2>/dev/null)
 	echo "Hostname detected: $DN"
 fi
 
 echo "DN=$DN"
 
 echo "Starting local installation."
-kportal/install_required_ubuntu.sh
+./install_required_ubuntu.sh
 # Kill webint server if its already running
 PID=$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print $2 }' | head -1) && sudo kill $PID 2>/dev/null || true
 
 ./start_browser.sh $DN:8080 &
 echo "Starting web interface server."
-nohup kportal/start_webint_server.sh 2>/dev/null &
+nohup ./start_webint_server.sh 2>/dev/null &
 echo "Installation script will now quit."
 echo "If your browser has not opened installation page already, open this page:"
 echo -en "\033[38;5;27mhttp://$DN:8080\033[m\n"
