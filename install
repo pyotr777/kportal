@@ -4,48 +4,47 @@
 # Require 1 parameter: remote [user@]hostname.
 
 read -rd '' USAGE <<EOF
-	Usage:
-	$(basename $0) -t [user@]host [-i SSH identity file] [-u domain name]
-	Requires working SSH connection to host.
-	Domain name is part of URL of this K-portal installation as used in web browser.
+    Script for remote K-portal installation.
+    Usage:
+    $(basename $0) [user@]host [-i SSH identity file] [-d domain name]
+    Requires working SSH connection to host.
+    Domain name is part of URL of this K-portal installation as used in web browser.
 EOF
 
-
 if [[ $# < 1 ]]; then
-	echo "$USAGE"
-	exit 0
+    echo "$USAGE"
+    exit 0
 fi
 
-while [ "$1" != "" ]; do
-    PARAM=$1
-    shift
-    VALUE=$1
-    case $PARAM in
+while test $# -gt 0; do
+    case "$1" in
         -h | --help)
             echo $USAGE
             exit 0
             ;;
-        -t)
-            REMOTE="$VALUE"
-            ;;
         -i)
-            KEY="$VALUE"
+            KEY="-i $2";shift;
             ;;
-        -u)
-            DN="$VALUE"
+        -d)
+            DN="$2";shift;
             ;;
-        *)
-            echo "ERROR: unknown parameter \"$PARAM\""
+        --) 
+            shift
+            break;;
+        -*) 
+            echo "Invalid option: $1"
             echo "$USAGE"
-            exit 1
+            exit 1;;
+        *)
+            REMOTE="$1"
             ;;
     esac
     shift
 done
 
 if [[ -z "$REMOTE" ]]; then
-	echo "$USAGE"
-	exit 1
+    echo "$USAGE"
+    exit 1
 fi
 
 set -e
@@ -54,32 +53,33 @@ REMOTEDIR="kportal/"
 echo "Installing K-portal on host $REMOTE in directory $REMOTEDIR."
 
 echo "DN=$DN"
+SSH_COM="$KEY $REMOTE"
 
 echo "Detecting IP address."
-EXT_IP=$(ssh $REMOTE "curl -m 5 ifconfig.me 2>/dev/null || curl -m 5 icanhazip.com 2>/dev/null" 2>/dev/null)
+EXT_IP=$(ssh $SSH_COM "curl -m 5 ifconfig.me 2>/dev/null || curl -m 5 icanhazip.com 2>/dev/null" 2>/dev/null)
 echo "IP detected: $EXT_IP"
 
 if [[ -z "$DN" ]]; then
-	echo "Detecting domain name."
-	DN=$(ssh $REMOTE "dig +short -x $EXT_IP | sed 's/\.$//' 2>/dev/null" 2>/dev/null)
-	echo "Hostname detected: $DN"
+    echo "Detecting domain name."
+    DN=$(ssh $SSH_COM "dig +short -x $EXT_IP | sed 's/\.$//' 2>/dev/null" 2>/dev/null)
+    echo "Hostname detected: $DN"
 fi
 
-ssh $REMOTE hostname &>/dev/null || (echo "Cannot connect with 'SSH $REMOTE'." && exit 1)
+ssh $SSH_COM hostname &>/dev/null || (echo "Cannot connect with 'SSH $SSH_COM'." && exit 1)
 
 SSH_OPTIONS="-o ServerAliveInterval=15"
 
 # Copy files to remote
 echo "Synchronising installation files with remote location."
-./sync_up.sh $REMOTE:$REMOTEDIR -do
+./sync_up.sh $KEY $REMOTE -do
 
 echo "Starting remote installation web-server."
 
-ssh $REMOTE $SSH_OPTIONS kportal/install_required_ubuntu.sh
+ssh $SSH_COM $SSH_OPTIONS kportal/install_required_ubuntu.sh
 # Kill webint server if its already running
-ssh $REMOTE $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) && sudo kill \$PID" 2>/dev/null || true
+ssh $SSH_COM $SSH_OPTIONS "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) && sudo kill \$PID" 2>/dev/null || true
 
 ./start_browser.sh $DN:8080 &
 echo "Start server"
-ssh $REMOTE $SSH_OPTIONS -t kportal/start_webint_server.sh
+ssh $SSH_COM $SSH_OPTIONS kportal/start_webint_server.sh
 

@@ -5,9 +5,24 @@ if [[ -f "/ENV" ]]; then
 	source /ENV
 fi
 
-CERT=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/cert.pem
-KEY=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/privkey.pem
-CHAIN=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/lets-encrypt-x1-cross-signed.pem
+# Create softlink /etc/letsencrypt -> /etc/kportal/ssl/letsencrypt
+cd /etc
+ln -s /etc/kportal/ssl/letsencrypt/ letsencrypt
+
+CERT=$(ls /etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/cert*.pem | sed -n 1p)
+if [[ $? -ne 0 ]]; then
+    echo "Certificate file not found: $CERT"
+    exit 1
+fi
+KEY=$(ls /etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/privkey*.pem | sed -n 1p)
+if [[ $? -ne 0 ]]; then
+    echo "Key file not found: $KEY"
+    exit 1
+fi
+CHAIN=$(ls letsencrypt/live/$KP_WEB_DNS/fullchain*.pem | sed -n 1p)
+if [[ $? -ne 0 ]]; then
+    echo "Chain file not found: $CHAIN"
+fi
 
 if [[ -f "$CERT" ]]; then
     echo "Certificate file $CERT found."

@@ -18,6 +18,15 @@ set -e
 #KP_SKIP_SSL_CERT=1
 #KP_SKIP_TARS=1
 
+function message {
+    echo ""
+    echo -en "\033[38;5;70m# \033[m\n"
+    echo -en "\033[38;5;70m# $1\033[m\n"
+    echo -en "\033[38;5;70m# \033[m\n"
+    echo " "
+}
+
+message "Installing K-Portal"
 
 ORG_DIR="$(pwd)"
 cd "$(dirname $0)"
@@ -25,7 +34,7 @@ SOURCE_DIR="$(pwd)"
 echo "Using $SOURCE_DIR as working directory."
 
 if [[ -f "$SOURCE_DIR/env_init" ]]; then
-	echo "Initialising environment with $SOURCE_DIR/env_init file:"
+	message "Initialising environment with $SOURCE_DIR/env_init file:"
 	cat "$SOURCE_DIR/env_init"
 	source "$SOURCE_DIR/env_init"
 fi
@@ -57,16 +66,10 @@ else
 	fi
 fi
 
-function message {
-    echo ""
-    echo -en "\033[38;5;70m# \033[m\n"
-    echo -en "\033[38;5;70m# $1\033[m\n"
-    echo -en "\033[38;5;70m# \033[m\n"
-    echo " "
-}
 
-message "Installing K-Portal"
+message "Environment"
 
+env | grep "KP_"
 LOGDIR="$SOURCE_DIR/logs"
 echo "ORG_DIR=$ORG_DIR"
 echo "HOME   =$HOME"
@@ -74,10 +77,7 @@ echo "LOGDIR =$LOGDIR"
 mkdir -p "$LOGDIR"
 chmod 777 "$LOGDIR"
 cd "$SOURCE_DIR"
-ls -l 
-message "Environment"
-env | grep "KP_"
-
+#ls -l 
 
 export D_HOST_OPT="-H localhost:9555"
 
@@ -213,16 +213,19 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		sudo chmod -R +r letsencrypt
 		sudo chmod -R +x letsencrypt/archive
 		sudo chmod -R +x letsencrypt/live
-		CERT=letsencrypt/archive/$KP_WEB_DNS/cert1.pem
-		KEY=letsencrypt/archive/$KP_WEB_DNS/privkey1.pem
-		CHAIN=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/fullchain1.pem
-		if [[ ! -a "$CERT" ]]; then
+		CERT=$(ls letsencrypt/live/$KP_WEB_DNS/cert*.pem | sed -n 1p)
+		if [[ $? -ne 0 ]]; then
 			echo "Certificate file not found: $CERT"
 			exit 1
 		fi
-		if [[ ! -a "$KEY" ]]; then
+		KEY=$(ls letsencrypt/live/$KP_WEB_DNS/privkey*.pem | sed -n 1p)
+		if [[ $? -ne 0 ]]; then
 			echo "Key file not found: $KEY"
 			exit 1
+		fi
+		CHAIN=$(ls letsencrypt/live/$KP_WEB_DNS/fullchain*.pem | sed -n 1p)
+		if [[ $? -ne 0 ]]; then
+			echo "Chain file not found: $CHAIN"
 		fi
 		echo "Delete self-signed certificates which came from distribution."
 		if [[ -f server.crt ]]; then

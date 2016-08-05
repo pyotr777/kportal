@@ -39,8 +39,6 @@ if [[ ! -f "$CERT" || ! -f "$KEY" ]]; then
 
 	echo "Moving LetsEncrypt certyficates to /etc/kportal/ssl/letsencrypt"
 	mv /etc/letsencrypt /etc/kportal/ssl/
-	cd /
-	ln -s /etc/kportal/ssl/letsencrypt/ letsencrypt
 fi
 
 
