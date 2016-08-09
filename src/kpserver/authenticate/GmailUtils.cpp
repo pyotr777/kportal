@@ -328,6 +328,48 @@ size_t GmailUtils::payload_source(void *ptr, size_t size, size_t nmemb, void *us
 
 bool GmailUtils::SendEmail(std::string to, std::string name, std::string url, const std::string public_key_str){
   std::cout << "GmailUtils::SendEmail( to = " << to << ", name = " << name << ")\n";
+    ///
+    /// Confirm with curl command
+    //
+    /// Create message
+    std::stringstream ss; std::string line;
+
+    ss << "From: " << "Kportal admin <" << g_admin_email_addr << ">\r\n";
+    ss << "To: <" << to << ">\r\n";
+    ss << "Subject: [kportal] Accept provider register\r\n";
+    ss << "Hi, " << to << "\r\n";
+    ss << "Your email has accepted to Provider. You should logout and login again.\r\n";
+    ss << "\r\n";
+    ss << "Below is docker image base, you can use to create other image and upload to server. \r\n";
+    ss << "Image name (repository): " << name << "\r\n";
+    ss << "Download url: " << url << "\r\n";
+    ss << "\r\n";
+    ss << "And one more, please accept below public keys.\r\n" ;
+    ss << public_key_str << "\r\n";
+    ss << "\r\n";
+    ss << "Regards\r\n";
+    ss << "Kportal Admin\r\n";
+    std::string msg = ss.str();
+    std::string cmd = std::string(" echo \"" + msg + "\" | curl --url \"smtps://smtp.gmail.com:465\"  \
+                                         --ssl-reqd   --mail-from \"anlab.provider@gmail.com\" \
+                                         --mail-rcpt \"anlab.provider01@gmail.com\"   \
+                                         --user \"anlab.provider@gmail.com:anlab123\" --insecure;");
+    std::cout << "Cmd: " << cmd.c_str() << std::endl;
+    std::string stdout = Exec(cmd.c_str());
+    if( stdout == ""){
+      std::cout << "Send email have done!\n";
+      return true;
+    } else {
+      std::cout << "[ERR] Send email got fail." << '\n';
+      std::cout << "Response string: " << stdout;
+    }
+
+    return false;
+
+
+  // Websocketpp error when send email & do something with tls
+
+
   bool bError = false;
 
   try
