@@ -2,8 +2,8 @@
 # Build Docker image with Apache2 with ssl support
 pwd
 echo "Building apache Docker image"
-DOCKER_HOST=""
-docker $DOCKER_HOST images &>/dev/null
+export DOCKER_HOST=""
+sudo docker $DOCKER_HOST images &>/dev/null
 if [[ "$?" -ne 0 ]];then
 	# Couldnt contact docker on Unix socket. Try with port 9555.
 	export DOCKER_HOST="-H localhost:9555"
