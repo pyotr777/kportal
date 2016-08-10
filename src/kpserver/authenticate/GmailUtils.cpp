@@ -350,10 +350,11 @@ bool GmailUtils::SendEmail(std::string to, std::string name, std::string url, co
     ss << "Regards\r\n";
     ss << "Kportal Admin\r\n";
     std::string msg = ss.str();
+
     std::string cmd = std::string(" echo \"" + msg + "\" | curl --url \"smtps://smtp.gmail.com:465\"  \
-                                         --ssl-reqd   --mail-from \"anlab.provider@gmail.com\" \
-                                         --mail-rcpt \"anlab.provider01@gmail.com\"   \
-                                         --user \"anlab.provider@gmail.com:anlab123\" --insecure;");
+                                         --ssl-reqd   --mail-from \"" + g_admin_email_addr + "\" \
+                                         --mail-rcpt \"" + to + "\"   \
+                                         --user \"" + g_admin_email_addr + ":" + g_admin_email_pass + "\" --insecure;");
     std::cout << "Cmd: " << cmd.c_str() << std::endl;
     std::string stdout = Exec(cmd.c_str());
     if( stdout == ""){
