@@ -1,6 +1,19 @@
 #!/bin/bash
-LS="$(aws ec2 describe-instances --query 'Reservations[*].{ID:Instances[*].InstanceId,TAG:Instances[*].Tags,STATE:Instances[*].State.Name}' --output text)"
-# Highlight IDs
-esc=$(printf '\033')
-echo "$LS" | sed -r "s/^ID\s*[a-z0-9\-]*/${esc}[48;5;237m${esc}[38;5;208m&${esc}[0m/"
+# Print ID, State and Tags for all instances.
+# With -s option print only IDs.
+# With instance ID (and option -s) show only information for given instance.
+
+if [[ $# -lt 1 ]]; then
+	LS="$(aws ec2 describe-instances --query 'Reservations[*].{ID:Instances[*].InstanceId,TAG:Instances[*].Tags,STATE:Instances[*].State.Name}' --output text)"
+	# Highlight IDs
+	esc=$(printf '\033')
+	echo "$LS" | sed -r "s/^ID\s*[a-z0-9\-]*/${esc}[48;5;237m${esc}[38;5;208m&${esc}[0m/"
+elif [[ "$1" == "-s" ]]; then
+	if [[ -z "$2" ]]; then
+		aws ec2 describe-tags --output text | awk '{ print $3"\t"$5 }'
+	else 
+		aws ec2 describe-tags --filter "Name=resource-id,Values=$2" --output text | awk '{ print $3"\t"$5 }'
+	fi
+fi
+
  

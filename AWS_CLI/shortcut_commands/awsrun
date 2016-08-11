@@ -1,2 +1,23 @@
 #!/bin/bash
-aws ec2 run-instances --cli-input-json file://$1
+# Launch new instance and assign it Name tag
+
+usage="Usage: $(basename $0) <launch parameters json file> [<tag>]"
+if [[ $# -le 0 ]]; then 
+	echo "$usage"
+	exit 0
+elif [[ $# -eq 1 ]]; then
+	aws ec2 run-instances --cli-input-json file://$1
+else
+	echo "Start and assign tag $2"
+	output="$(aws ec2 run-instances --cli-input-json file://$1 --output text)"	
+	ID="$( eval 'echo "$output"' | grep 'INSTANCES' | awk '{print $7}')"
+	if [[ -z "$ID" ]]; then
+		echo "Couldnt get instance ID from :"
+		echo "$output"
+		exit 1
+	else
+		echo "Started with ID $ID"	
+	fi
+	awstag $ID $2
+	aws ec2 describe-tags --output text | grep "$ID"
+fi

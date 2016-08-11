@@ -1,2 +1,10 @@
 #!/bin/bash
-aws ec2 stop-instances --instance-ids $1
+
+if [[ $# < 1 ]]; then
+	echo "Usage: $(basename $0) <instance id or tag Name>"
+	exit 1
+fi
+
+# Get ID by ID or tag
+ID="$(awsls -s | grep $1 | awk '{ print $1 }')"
+aws ec2 stop-instances --instance-ids $ID

@@ -67,8 +67,6 @@ else
 fi
 
 
-
-
 message "Environment"
 
 env | grep "KP_"
@@ -79,7 +77,9 @@ echo "LOGDIR =$LOGDIR"
 mkdir -p "$LOGDIR"
 chmod 777 "$LOGDIR"
 cd "$SOURCE_DIR"
-#ls -l 
+
+echo "T $TERM"
+echo "S $SHELL"
 
 export D_HOST_OPT="-H localhost:9555"
 
@@ -105,7 +105,7 @@ if [[ -z $KP_SKIP_USER ]]; then
 		sudo chown -R kportal:kportal "$KP_HOME/src"
 	fi
 	echo "Source code in $KP_HOME (src dir)?"
-	ls -la "$KP_HOME"
+	ls -la --color=always "$KP_HOME"
 else 
 	KP_HOME=$(sudo su kportal -c 'echo $HOME')
 	echo "KP_HOME=$KP_HOME"
@@ -212,19 +212,23 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 			echo "Directory with Letsencrypt certificates not found."
 			exit 1
 		fi
+		ls --color letsencrypt
 		sudo chmod -R +r letsencrypt
 		sudo chmod -R +x letsencrypt/archive
 		sudo chmod -R +x letsencrypt/live
-		CERT=letsencrypt/archive/$KP_WEB_DNS/cert1.pem
-		KEY=letsencrypt/archive/$KP_WEB_DNS/privkey1.pem
-		CHAIN=/etc/kportal/ssl/letsencrypt/live/$KP_WEB_DNS/fullchain1.pem
-		if [[ ! -a "$CERT" ]]; then
+		CERT=$(ls letsencrypt/live/$KP_WEB_DNS/cert*.pem | sed -n 1p)
+		if [[ $? -ne 0 ]]; then
 			echo "Certificate file not found: $CERT"
 			exit 1
 		fi
-		if [[ ! -a "$KEY" ]]; then
+		KEY=$(ls letsencrypt/live/$KP_WEB_DNS/privkey*.pem | sed -n 1p)
+		if [[ $? -ne 0 ]]; then
 			echo "Key file not found: $KEY"
 			exit 1
+		fi
+		CHAIN=$(ls letsencrypt/live/$KP_WEB_DNS/fullchain*.pem | sed -n 1p)
+		if [[ $? -ne 0 ]]; then
+			echo "Chain file not found: $CHAIN"
 		fi
 		echo "Delete self-signed certificates which came from distribution."
 		if [[ -f server.crt ]]; then
@@ -240,7 +244,7 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		sudo -E su kportal -c "ln -s $KEY server.key"
 		sudo -E su kportal -c "ln -s $CHAIN server.cer"
 		echo "Links to certificates created"
-		ls -l
+		ls -l --color
 		cd $ORG_DIR
 	fi
 else
@@ -276,5 +280,5 @@ sudo rm -rf "$INSTALL_DIR/$BOOSTARCHIVE"
 sudo rm -f "$INSTALL_DIR/$BOOSTARCHIVE.tar.bz2"
 
 cd "$ORG_DIR"
-# rm ENV
+sudo rm "$KP_HOME/ENV"
 
