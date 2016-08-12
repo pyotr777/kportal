@@ -167,6 +167,9 @@ $SOURCE_DIR/start_apache.sh
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 
+# Check that kp_server is still running 
+echo "Check that kp_server is running on port 9004"
+ps ax | grep "kp_server" | grep 9004 || true
 if [[ -z $KP_SKIP_SSL_CERT ]]; then
 	message "8. SSL certificates from LetsEncrypt."	
 	# Use saved certificates in tar if present
