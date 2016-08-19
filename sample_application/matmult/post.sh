@@ -2,3 +2,4 @@
 
 echo "Post command"
 ls -l
+ls -l > post.sh

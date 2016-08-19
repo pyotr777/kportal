@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-image="matmult"
+image="matmult2"
 docker="docker"
 
 if [[ -n "$1" ]]; then
