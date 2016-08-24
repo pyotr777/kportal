@@ -2,4 +2,4 @@
 
 echo "Post command"
 ls -l
-ls -l > post.sh
+ls -l > post.log

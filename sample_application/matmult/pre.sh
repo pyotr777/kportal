@@ -2,4 +2,4 @@
 
 echo "Pre command"
 ls -l
-ls -l > pre.sh
+ls -l > pre.log
