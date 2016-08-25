@@ -1,0 +1,54 @@
+#!/bin/bash
+# Stop web inetrface (webint) server for K-portal setup.
+
+read -rd '' USAGE <<EOF
+    Script for stoppin web interface (webint) server for K-portal setup.
+    Usage:
+    $(basename $0) [user@]host [-i SSH identity file]
+    Requires working SSH connection to host.
+    If K-portal files are not on the host, run "install" script first.
+EOF
+
+if [[ $# < 1 ]]; then
+    echo "$USAGE"
+    exit 0
+fi
+while test $# -gt 0; do
+    case "$1" in
+        -h | --help)
+            echo $USAGE
+            exit 0
+            ;;
+        -i)
+            KEY="-i $2";shift;
+            ;;
+        --) 
+            shift
+            break;;
+        -*) 
+            echo "Invalid option: $1"
+            echo "$USAGE"
+            exit 1;;
+        *)
+            REMOTE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [[ -z "$REMOTE" ]]; then
+    echo "$USAGE"
+    exit 1
+fi
+
+set -e
+
+REMOTEDIR="kportal/"
+echo "Stopping web insterface server for K-portal setup."
+
+SSH_COM="$KEY $REMOTE"
+
+ssh $SSH_COM hostname &>/dev/null || (echo "Cannot connect with 'SSH $SSH_COM'." && exit 1)
+
+# Kill webint server
+ssh $SSH_COM "PID=\$(sudo lsof -i -n -P | grep '*:8080 (LISTEN)' | awk '{ print \$2 }' | head -1) && sudo kill \$PID" 2>/dev/null || true
