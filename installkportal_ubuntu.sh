@@ -163,7 +163,7 @@ sudo -E su kportal -c 'docker $D_HOST_OPT ps -a' || true
 
 message "6. Starting Apache2"
 if [[ -z $(which start_apache.sh) ]]; then
-	cp $SOURCE_DIR/start_apache.sh /usr/local/bin/
+	sudo cp $SOURCE_DIR/start_apache.sh /usr/local/bin/
 fi
 start_apache.sh
 
