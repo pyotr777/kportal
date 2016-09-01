@@ -24,7 +24,7 @@ echo $LD_LIBRARY_PATH
 if [ ! -d "$LOGDIR" ]; then
 	mkdir -p "$LOGDIR"
 fi
-nohup kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log & 
+nohup /usr/local/bin/kp_server $@ 1>$LOGDIR/stdout.log 2>$LOGDIR/stderr.log & 
 PID="$!"
 echo "Is kp_server running? PID=$PID"
 if [[ "$PID" ]]; then
