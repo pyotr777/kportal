@@ -167,7 +167,6 @@ if [[ -z $(which start_apache.sh) ]]; then
 fi
 start_apache.sh
 
-
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 
@@ -257,31 +256,64 @@ else
 fi
 
 if [[ -z $KP_SKIP_TARS ]]; then
-	message "9. Loading Master Image"
-	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
+	IM_ID=$(docker $D_HOST_OPT images -q "base_image")
+	if [[ -z "$IM_ID" ]]; then
+		message "9. Loading Master Image"	
+		cd "$KP_HOME/src/docker_images"
+		sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
+	fi
 
 	message "10. Building Base Image"
 	cd "$KP_HOME/src/docker_images"
-	sudo -E su kportal -c "docker $D_HOST_OPT build --rm -t ubuntu_base ."
-	echo "Saving Base Image to tar"
-	sudo -E su kportal -c "docker $D_HOST_OPT save -o ubuntu_base.tar ubuntu_base"
-	echo "Copying image tar to web site folder"
-	sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
-	sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
-	export IM_ID=$(sudo -E su kportal -c "docker $D_HOST_OPT images | grep ubuntu_base | awk '{ print \$3 }'") || true
-	echo "Base Image ID is $IM_ID"
-	# Set image ID in configuration file
-	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
-	cat "/etc/kportal/kportal_conf.xml"
+	IM_ID=$(docker $D_HOST_OPT images -q "ubuntu_base")
+	if [[ -z "$IM_ID" ]]; then
+		sudo -E su kportal -c "docker $D_HOST_OPT build --rm -t ubuntu_base ."
+	fi
+	if [[ -f "ubuntu_base.tar" ]]; then
+		echo "Saving Base Image to tar"
+		sudo -E su kportal -c "docker $D_HOST_OPT save -o ubuntu_base.tar ubuntu_base"
+		echo "Copying image tar to web site folder"
+		sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
+		sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
+		export IM_ID=$(docker $D_HOST_OPT images -q "ubuntu_base") || true
+		if [[ -z "$IM_ID" ]]; then
+			echo "Couldn't get image ID for ubuntu_base" 1>&2
+			exit 1
+		fi
+		echo "Base Image ID is $IM_ID"
+		# Set image ID in configuration file
+		sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
+		cat "/etc/kportal/kportal_conf.xml"
+	else
+		echo "Base image already saved to ubuntu_base.tar"
+	fi
 fi
 
+export STARTUP_SCRIPT="/usr/local/bin/startup.sh"
+
+str=$(grep "startup" /etc/rc.local) || true
+if [[ -z "$str" ]]; then
+	message "11. Install startup script"
+	sudo cp "$SOURCE_DIR/startup.sh" /usr/local/bin/
+	if [[ -f /etc/rc.local ]]; then
+		sudo sed -i -r "s#^exit 0#echo \"executing /etc/rc.local\"\n$STARTUP_SCRIPT || exit 1\nexit 0\n#" /etc/rc.local
+		echo "Startup script installed."
+	else
+		echo "Not found /etc/rc.local." 1>&2
+		echo "To start K-portal after reboot use $STARTUP_SCRIPT script"
+	fi
+else 
+	echo "Startup script already installed."
+	ls -l $STARTUP_SCRIPT
+	cat /etc/rc.local
+fi
 
 export INSTALL_DIR="$KP_HOME/install"
 export BOOSTARCHIVE="boost_1_60_0"
 echo "Remove boost archive $INSTALL_DIR/$BOOSTARCHIVE"
 sudo rm -rf "$INSTALL_DIR/$BOOSTARCHIVE"
 sudo rm -f "$INSTALL_DIR/$BOOSTARCHIVE.tar.bz2"
+
 
 cd "$ORG_DIR"
 sudo rm "$KP_HOME/ENV"
