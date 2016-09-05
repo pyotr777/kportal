@@ -1,0 +1,8 @@
+*
+.*
+*.*
+!.gitignore
+/javascripts/
+/stylesheets/
+/*.html
+/*.json
