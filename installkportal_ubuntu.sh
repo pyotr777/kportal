@@ -86,7 +86,7 @@ export D_HOST_OPT="-H localhost:9555"
 
 message "0. Installing required packages"
 sudo apt-get update > "$LOGDIR/update.log"
-sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make bridge-utils > "$LOGDIR/install.log"
+sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python python-dev gcc g++ wget make bridge-utils > "$LOGDIR/apt_install.log"
 # Test if AUFS is installed
 $SOURCE_DIR/install_aufs.sh
 
@@ -261,32 +261,37 @@ if [[ -z $KP_SKIP_TARS ]]; then
 		message "9. Loading Master Image"	
 		cd "$KP_HOME/src/docker_images"
 		sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
+		echo "Image base_image loaded."
+		sudo docker $D_HOST_OPT images
 	fi
 
 	message "10. Building Base Image"
+	TAR_IMG="/etc/kportal/www/images/ubuntu_base.tar"
 	cd "$KP_HOME/src/docker_images"
 	IM_ID=$(docker $D_HOST_OPT images -q "ubuntu_base")
 	if [[ -z "$IM_ID" ]]; then
 		sudo -E su kportal -c "docker $D_HOST_OPT build --rm -t ubuntu_base ."
 	fi
-	if [[ -f "ubuntu_base.tar" ]]; then
+	if [[ ! -f "ubuntu_base.tar" ]]; then
 		echo "Saving Base Image to tar"
 		sudo -E su kportal -c "docker $D_HOST_OPT save -o ubuntu_base.tar ubuntu_base"
+	fi
+	if [[ ! -f "$TAR_IMG" ]]; then
 		echo "Copying image tar to web site folder"
-		sudo -E su kportal -c "mv ubuntu_base.tar /etc/kportal/www/images/"
-		sudo chmod 666 "/etc/kportal/www/images/ubuntu_base.tar"
-		export IM_ID=$(docker $D_HOST_OPT images -q "ubuntu_base") || true
-		if [[ -z "$IM_ID" ]]; then
-			echo "Couldn't get image ID for ubuntu_base" 1>&2
-			exit 1
-		fi
-		echo "Base Image ID is $IM_ID"
-		# Set image ID in configuration file
-		sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
-		cat "/etc/kportal/kportal_conf.xml"
+		sudo mv ubuntu_base.tar /etc/kportal/www/images/
+		sudo chmod 666 "$TAR_IMG"
 	else
 		echo "Base image already saved to ubuntu_base.tar"
 	fi
+	IM_ID=$(docker $D_HOST_OPT images -q "ubuntu_base")
+	if [[ -z "$IM_ID" ]]; then
+		echo "Couldn't get image ID for ubuntu_base" 1>&2
+		exit 1
+	fi
+	echo "Base Image ID is $IM_ID"
+	# Set image ID in configuration file
+	sudo sed -r -i 's|<Image\s+id=(.*)/>|<Image id="'$IM_ID'" tag="ubuntu_base"/>|Ig' /etc/kportal/kportal_conf.xml
+	cat "/etc/kportal/kportal_conf.xml"
 fi
 
 export STARTUP_SCRIPT="/usr/local/bin/startup.sh"
