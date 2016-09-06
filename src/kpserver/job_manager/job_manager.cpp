@@ -49,15 +49,15 @@ ResponseCode JobManager::getListEntryOfJob(std::string jobId,std::string curDir,
       std::cout << "Connect to master get entry: " << containerId << std::endl;
 			ret = NetworkUtil::ProcessGetListEntry(host, Container_Com_Port, pathDir, listEntry);
 			if (ret == FILE_ACTION_SUCCESS) {
-				for (std::map<string, bool>::iterator it=listEntry.begin(); it!=listEntry.end(); ++it) {
-					std::string startFile, stopFile, infoFile;
-					startFile = jobId + ".sh";
-					stopFile = "stop_" + jobId + ".sh";
-					infoFile = jobId + ".info";
-					if (it->first.compare(startFile) == 0 || it->first.compare(stopFile) == 0 || it->first.compare(infoFile) == 0) {
-						listEntry.erase(it);
-					}
-				}
+				//for (std::map<string, bool>::iterator it=listEntry.begin(); it!=listEntry.end(); ++it) {
+					//std::string startFile, stopFile, infoFile;
+					//startFile = jobId + ".sh";
+					//stopFile = "stop_" + jobId + ".sh";
+					//infoFile = jobId + ".info";
+					//if (it->first.compare(startFile) == 0 || it->first.compare(stopFile) == 0 || it->first.compare(infoFile) == 0) {
+					//	listEntry.erase(it);
+					//}
+				//}
 			}
 		}
 		data_manager.disConnectDB();
