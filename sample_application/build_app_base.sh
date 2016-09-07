@@ -1,16 +1,18 @@
 #!/bin/bash -e
 
-image="matmult"
+appname="matmult"
 docker="docker"
 
 if [[ -n "$1" ]]; then
-    image="$1"
+    appname="$1"
 fi
-echo "Building Docker image."
-echo "Using name $image"
-$docker ps -a
-$docker build -t $image .
-$docker save -o "$image".tar $image
+
+image=$(echo $appname | tr '[:upper:]' '[:lower:]')
+echo "Building Docker image $image."
+echo "Using application $appname."
+$docker images
+$docker build -t $image -f Dockerfile-$appname .
+$docker save -o "$appname".tar $image
 $docker rmi $image
-#$docker load -i "$image".tar
-echo "Done." 
+#$docker load -i "$appname".tar
+echo "Done."

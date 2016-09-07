@@ -3,5 +3,5 @@
 
 /usr/local/bin/start_server.sh
 /usr/local/bin/start_apache.sh 9005
-/usr/local/bin/kp_server.sh 9004 -tls
+sudo -u kportal /usr/local/bin/kp_server.sh 9004 -tls
 
