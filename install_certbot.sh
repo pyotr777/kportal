@@ -10,6 +10,9 @@ if [[ -f "/ENV" ]]; then
 	source /ENV
 fi
 
+echo "Running $0 with env:"
+env | grep "KP_"
+
 if [[ ! "$KP_WEB_DNS" ]]; then
 	echo "Envvar KP_WEB_DNS is not set. Need K-portal domain name for obtaining SSL certificates."
 	echo -n "Enter domain name (without protocol name: example.com) and press [ENTER]: "
@@ -20,7 +23,7 @@ if [[ ! "$KP_WEB_MAIL" ]]; then
     echo "Need administrator's e-mail addressfor obtaining SSL certificates."
     echo -n "Enter e-mail address and press [ENTER]: "
     read KP_WEB_MAIL
-    export KP_WEB_MAIL        
+    export KP_WEB_MAIL
 fi
 
 CERT=/etc/letsencrypt/live/$KP_WEB_DNS/cert.pem
@@ -37,10 +40,12 @@ if [[ ! -f "$CERT" || ! -f "$KEY" ]]; then
 	./certbot-auto -n --os-packages-only
 	./certbot-auto certonly -v -n -m $KP_WEB_MAIL -d $KP_WEB_DNS --apache --renew-by-default --agree-tos
 
-	echo "Moving LetsEncrypt certyficates to /etc/kportal/ssl/letsencrypt"
+	echo "Moving LetsEncrypt certificates to /etc/kportal/ssl/letsencrypt"
 	mv /etc/letsencrypt /etc/kportal/ssl/
-	cd /
+	echo "Making link in /etc/letsencrypt"
+	cd /etc
 	ln -s /etc/kportal/ssl/letsencrypt/ letsencrypt
+	ls -l lets*
 fi
 
 
