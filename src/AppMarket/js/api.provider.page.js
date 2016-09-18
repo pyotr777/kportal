@@ -89,6 +89,10 @@ $(document).on("pageshow", "#provider", function(e, data){
     /// Load login name
     uLogin_success();
     
+    // Get public_key
+    $("#provider-publickey").val(localStorage.publicKey != undefined  ? localStorage.publicKey : ""); 
+
+    // Set tab focus
     if( ( providerObj.from == "newapp" && providerObj.id != undefined )
     	&& providerObj.from !== "editapp"
 		&& providerObj.services  

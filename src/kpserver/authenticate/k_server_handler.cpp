@@ -790,6 +790,7 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
             resNode.push_back(JSONNode(TAG_VALID_STR, VALID));
             resNode.push_back(JSONNode(TAG_USER_TYPE_STR, userType));
             resNode.push_back(JSONNode(TAG_LOGIN_ID_STR, loginId));
+            resNode.push_back(JSONNode(TAG_PUBLICKEY_STR, usr.getPublicKey()));
             isValid = true;
         }
         else
@@ -822,7 +823,8 @@ void request<request_endpoint_type>::processConnectRequest(MessageHeader& header
             ///	Send response report num of packet data
             resNode.push_back(JSONNode(TAG_REQUEST_ID_STR, header.getRequestID()));
             resNode.push_back(JSONNode(TAG_VALID_STR, VALID));
-			resNode.push_back(JSONNode(TAG_USER_TYPE_STR, userType));
+            resNode.push_back(JSONNode(TAG_USER_TYPE_STR, userType));
+            resNode.push_back(JSONNode(TAG_PUBLICKEY_STR, usr.getPublicKey()));       
 
             /// Set user info to connection
       std::cout << "before set user info to connection: uio -> getEmail() "<<

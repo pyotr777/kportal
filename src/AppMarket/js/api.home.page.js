@@ -183,7 +183,8 @@ function home_loginCallback( msg ){
 		}
 		
 		localStorage.userType = msg.userType;
-		
+		localStorage.publicKey = msg.publicKey ? msg.publicKey : "";
+
 		/// Redirect to provider page if is provider
 		if( localStorage.userType == "provider" ){
 			$.mobile.changePage("#provider");
