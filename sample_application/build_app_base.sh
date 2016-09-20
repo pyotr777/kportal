@@ -10,9 +10,15 @@ fi
 image=$(echo $appname | tr '[:upper:]' '[:lower:]')
 echo "Building Docker image $image."
 echo "Using application $appname."
+
+# Prepare Dockerfile
+echo "FROM ubuntu_base" > Dockerfile
+echo "MAINTAINER Peter Bryzgalov" >> Dockerfile
+echo "ADD $appname /$appname" >> Dockerfile
+
+
 $docker images
-$docker build -t $image -f Dockerfile-$appname .
+$docker build -t $image .
 $docker save -o "$appname".tar $image
 $docker rmi $image
-#$docker load -i "$appname".tar
 echo "Done."
