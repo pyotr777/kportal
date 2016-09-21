@@ -23,20 +23,22 @@ echo "Diagnostic info:"
 echo "Env:"
 env | grep -i openfoam
 echo "PWD: $(pwd)"
+ORG_DIR=$(pwd)
 echo "Files:"
 find .
 
 cd damBreak
 . ../RunFunctions
 mv 0/alpha.water.org 0/alpha.water
-rm log.blockMesh
-rm log.setFields
-rm log.interFoam
+
 
 runApplication blockMesh
 runApplication setFields
 runApplication interFoam
 echo "--- Job finished ---"
+echo "PWD: $(pwd)"
+echo "Return to top directory $ORG_DIR"
+cd $ORG_DIR
 echo "Files:"
 find .
 
