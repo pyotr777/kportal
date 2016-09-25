@@ -23,9 +23,10 @@ install:
 	$(info Installing kp_server to $(BIN_DIR).)
 	mkdir -p $(PREFIX)
 	mkdir -p $(PREFIX)/log
+	mkdir -p $(PREFIX)/kdeskdaemon
 	$(CP) -rf AppMarket/ssl/ $(PREFIX)
 	$(CP) -rf $(APPMARKET_DIR) $(DOCUMENT_ROOT)
-	$(CP) $(RELEASE_DIR)/kdeskdaemon $(BIN_DIR)/
+	$(CP) $(RELEASE_DIR)/kdeskdaemon $(PREFIX)/kdeskdeamon/
 	chmod 666  $(BIN_DIR)/kdeskdaemon
 	$(CP) $(RELEASE_DIR)/start_server.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/start_docker.sh $(BIN_DIR)/

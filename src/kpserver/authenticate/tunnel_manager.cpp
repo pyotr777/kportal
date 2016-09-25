@@ -3,7 +3,7 @@
 extern std::map<std::string, unsigned int> g_tunnels;
 extern pthread_mutex_t g_tunnels_lock;
 #define  KDESK_HOST ".k.aics.riken.jp"
-#define KDESKDAEMON_PATH "/bin/kdeskdaemon"
+#define KDESKDAEMON_PATH "/etc/kportal/kdeskdaemon/kdeskdaemon"
 TunnelManager::TunnelManager() {
   //exit_code = 0;
 }
