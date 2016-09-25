@@ -4,6 +4,7 @@
 #define MESSAGE_SOCKET_H
 
 #include <iostream>
+#include <set>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -14,9 +15,9 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <vector>
 
 #include <dirent.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -57,11 +58,12 @@ class Socket {
 
   bool SendFile(const std::string &) const;
   bool SendFolder(const std::string &) const;
-  bool SendListFile(const std::vector<std::string> &);
+  bool SendListFile(const std::vector<std::string> &, const std::string except_path);
 
   bool RecvFile(const std::string &, std::string &);
   bool RecvFolder(const std::string &, std::vector<std::string>&);
   bool RecvListFile(const std::string &);
+
 
   bool GetFileNameInFolder(const std::string &,
                            std::vector<std::string> &,
@@ -71,6 +73,10 @@ class Socket {
   void SetNonBlocking ( const bool );
   bool IsValid() const { return m_sock != -1; }
   int GetSock() const {return m_sock;}
+  
+  std::vector<std::string> SplitPath(const std::string& str, const std::set<char> delimiters);
+  std::string SubDirPath(const std::string except_path, const std::string file_path);
+
  private:
   int m_sock;
   sockaddr_in m_addr;

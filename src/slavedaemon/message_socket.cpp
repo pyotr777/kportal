@@ -1,6 +1,9 @@
 // Implementation of the Socket class.
 #include "message_socket.h"
 
+#define PATH_SEPARATOR_CHAR '/'
+#define PATH_SEPARATOR "/"
+
 Socket::Socket() :
   m_sock ( -1 )
 {
@@ -108,7 +111,7 @@ bool Socket::Send ( const std::string s ) const {
 }
 
 int Socket::Send (const char* bytes, const unsigned int& size) const {
-  std::cout << "Socket::Send bsize=" << size << ",last byte=" << bytes[size - 1] << std::endl;
+  //std::cout << "Socket::Send bsize=" << size << ",last byte=" << bytes[size - 1] << std::endl;
   unsigned int out_bytes = 0;
 
   while (out_bytes < size) {
@@ -128,7 +131,7 @@ int Socket::Send (const char* bytes, const unsigned int& size) const {
    } else {
      out_bytes += n;
      //printf("Socket sent (%d bytes).\n", n);
-     std::cout << "Socket sent (" << n << " bytes).\n";
+     //std::cout << "Socket sent (" << n << " bytes).\n";
    }
   }
   return out_bytes;
@@ -209,7 +212,7 @@ bool Socket::GetFileNameInFolder(const std::string &path_folder,
   path_sub_foldername.push_back(foldername);
 
   /* get path filename and path subfolder*/
-  while ((pdir = readdir(dir))) {
+  while ((pdir = readdir(dir)) != NULL) {
     struct stat st;
 
     if(strcmp(pdir->d_name, ".") == 0 || strcmp(pdir->d_name, "..") == 0) {
@@ -265,7 +268,7 @@ bool Socket::SendFile(const std::string &r_path_filename) const {
     std::cout << "No response from client\n";
     return false;
   }
-  std::cout <<"recv response: " << response << std::endl;
+  //std::cout <<"recv response: " << response << std::endl;
   response = "";
 
   Reader *x = new Reader(r_path_filename);
@@ -293,7 +296,7 @@ bool Socket::SendFile(const std::string &r_path_filename) const {
       return false;
     }
     Recv(response);
-    std::cout << "recv response: " << response << std::endl;
+    //std::cout << "recv response: " << response << std::endl;
     response= "";
   }
   std::string finish = "*";
@@ -609,7 +612,7 @@ int Socket::Recv (char* buffer, unsigned int size) const {
    } else {
      in_bytes += n;
      //printf("Socket receieve (%d bytes).\n", n);
-     std::cout << "Socket receieve ("<< n << " bytes).\n";
+     //std::cout << "Socket receieve ("<< n << " bytes).\n";
    }
   }
   return in_bytes;
@@ -683,7 +686,7 @@ void Socket::StatusFolder(const std::string &path_folder, const std::vector<std:
   }
 
   std::vector<std::string> filename;
-  while (pdir = readdir(dir)) {
+  while ((pdir = readdir(dir))!= NULL) {
     struct stat st;
 
     if(strcmp(pdir->d_name, ".") == 0 || strcmp(pdir->d_name, "..") == 0) {
@@ -714,36 +717,104 @@ void Socket::StatusFolder(const std::string &path_folder, const std::vector<std:
   closedir(dir);
 }
 
-bool Socket::SendListFile(const std::vector<std::string> &listfile) {
-  for (unsigned int i = 0; i < listfile.size(); i++) {
-    if (i < listfile.size() - 1) {
-      Send("Is not endfile");
-      std::string receiver_said;
-      Recv(receiver_said);
-      std::cout << receiver_said << std::endl;
-    } else {
-      Send("Is endfile");
-      std::string receiver_said;
-      Recv(receiver_said);
+std::vector<std::string> Socket::SplitPath(
+  const std::string& str
+  , const std::set<char> delimiters)
+{
+  std::vector<std::string> result;
+  char const* pch = str.c_str();
+  char const* start = pch;
+  for(; *pch; ++pch)
+  {
+    if (delimiters.find(*pch) != delimiters.end())
+    {
+      if (start != pch)
+      {
+        std::string str(start, pch);
+        result.push_back(str);
+      }
+      else
+      {
+        result.push_back("");
+      }
+      start = pch + 1;
     }
-    if (SendFile(listfile.at(i))) {
+  }
+  result.push_back(start);
+  return result;
+}
 
+std::string Socket::SubDirPath(const std::string except_path, const std::string file_path){
+  std::string sub_dir_path = "", edirname;
+  std::set<char> delims;
+  delims.insert('\\');
+  delims.insert('/');
+  std::vector<std::string> except_dirs = SplitPath(except_path, delims);
+  std::vector<std::string> file_dirs = SplitPath(file_path, delims);
+  unsigned int ie = 0;
+  for(unsigned int i = 0; i < file_dirs.size() - 1; i++){
+    if(file_dirs[i] == ""){
+      continue;
+    }
+    edirname = "";
+    for(; ie < except_dirs.size(); ie++){
+      if(except_dirs[ie] == "") continue;
+      edirname = except_dirs[ie];
+      break;
+    }
+    //std::cout << "Except dir name: " << edirname << " vs " << file_dirs[i] << std::endl;
+    if(edirname != file_dirs[i]){
+      sub_dir_path = sub_dir_path + file_dirs[i] + PATH_SEPARATOR;
+      //std::cout <<"sub_dir_path = " << sub_dir_path << std::endl;
     } else {
+      ie ++;
+    }
+  }
+  if(sub_dir_path.length() > 0){
+    sub_dir_path = PATH_SEPARATOR + sub_dir_path;
+  }
+  return sub_dir_path;
+}
+
+bool Socket::SendListFile(const std::vector<std::string> &listfile, const std::string except_path) {
+  for (unsigned int i = 0; i < listfile.size(); i++) {
+    std::string pre_dir = SubDirPath(except_path, listfile[i]);
+    pre_dir = (pre_dir != "") ? pre_dir : "Is not endfile";
+    Send(pre_dir.c_str());
+    std::string receiver_said;
+    Recv(receiver_said);
+    //std::cout << receiver_said << std::endl;
+    if (SendFile(listfile.at(i))) {
+    } else {
+      std::cout << "ERR: Sending file " << listfile.at(i) << " failted.";
       return false;
     }
   }
+  Send("Is endfile");
   return true;
 }
 
 bool Socket::RecvListFile(const std::string &path_folder) {
-  std::string sender_said;
+  std::string pre_sub_path;
   do {
-    std::string path_file;
-    Recv(sender_said);
-    std::cout << sender_said;
+    std::string saved_file_path, save_to_dir = path_folder;
+    pre_sub_path = "";
+    Recv(pre_sub_path);
+    if(pre_sub_path == "Is endfile"){
+      std::cout << "Recv list file have DONE";
+      break;
+    }
+    std::cout << pre_sub_path;
+    if(pre_sub_path.at(0) == PATH_SEPARATOR_CHAR && pre_sub_path.at(pre_sub_path.length() - 1) == PATH_SEPARATOR_CHAR){
+      save_to_dir += pre_sub_path;
+      std::string cmd = "mkdir -p \"" + save_to_dir + "\"";
+      system(cmd.c_str());
+    }
+    std::cout << "Save to: " << save_to_dir << std::endl;
     Send("Receiver already\n");
-    if(!RecvFile(path_folder, path_file)) return false;
-  } while (sender_said != "Is endfile");
+    if(!RecvFile(save_to_dir, saved_file_path))
+      return false;
+  } while (true);
   return true;
 }
 

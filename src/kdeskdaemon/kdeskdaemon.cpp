@@ -21,6 +21,8 @@
 #include "../slavedaemon/socket_exception.h"
 #include "stream_redirect.hpp"
 
+#define PATH_SEPARATOR "/"
+#define PATH_SEPARATOR_CHAR '/'
 const char* kJobDirName = "/kportal/jobs/";
 const char* kLogExtension = ".stdout";
 const char* kErrExtension = ".stderr";
@@ -57,7 +59,7 @@ void RunPjstat(const std::string& pjm_job_id, std::string& state, std::string& s
 bool RunPjwait(Socket& sock, const std::string& kp_job_id, const std::string& pjm_job_id);
 bool RunKAccountJ(Socket& socket, const std::string& kdeskacc);
 bool SendStatusEvent(Socket& kp_socket, const std::string& kp_job_id, const std::string& pjm_job_id, const std::string& status, const std::string& start_date, const std::string& eslapse_time);
-
+int RecursiveFileList(const std::string dir_path, std::vector<std::string>& files);
 std::vector<std::string> GetNewFiles(const std::string& directory, const std::vector<std::string>& olds_files);
 void Split(const std::string &str, char del,
                 std::vector<std::string> *out);
@@ -230,7 +232,7 @@ bool ProcessMessage(Message& msg, Socket& socket){
             if(g_home_job_dir.size() > 0){
               std::string cmd = std::string("rm -r ") + g_home_job_dir +  std::string("/") + job_id ;
               std::cout << "cmd: " << cmd << std::endl;
-              std::string stdout = SystemCommandUtils::Exec(cmd.c_str());
+              std::string stdout = "ingore remove just test";// = SystemCommandUtils::Exec(cmd.c_str());
               std::cout << "stdout: " << stdout << std::endl;
             }
           } else {
@@ -321,7 +323,7 @@ void ProcessSubmitJob(Socket& socket, const std::string job_id, const std::strin
   Message notify_msg = Message(Header(MT_COMMAND, g_kdesk_port, 0, 0, CMD_JOB_STATE), NULL),
       err_msg = Message(Header(MT_COMMAND, g_kdesk_port, 0, 0, CMD_ACK_ERR), NULL);
 
-  if(socket.SendListFile(new_files)){
+  if(socket.SendListFile(new_files, job_path + PATH_SEPARATOR)){
     std::cout << "send file to slavedaemon success.\n";
     std::string status, start_date, eslapse_time;
     RunPjstat(pjm_jid, status, start_date, eslapse_time);
@@ -359,6 +361,7 @@ std::vector<std::string> GetNewFiles(const std::string& path_folder, const std::
     std::cout << "file: " << olds_files[j] << std::endl;
   }
   std::vector<std::string> new_files;
+/*
   DIR *dir;
   dirent *pdir;
   dir = opendir(path_folder.c_str());
@@ -366,19 +369,18 @@ std::vector<std::string> GetNewFiles(const std::string& path_folder, const std::
     std::cout << "folder not exist\n";
     return new_files;
   }
-
+*/
   std::string _path_folder;
-  if (path_folder.at(path_folder.length() - 1) != '/') {
-    _path_folder = path_folder;
-    _path_folder = _path_folder + '/';
+  if (path_folder.at(path_folder.length() - 1) == PATH_SEPARATOR_CHAR){
+    _path_folder = path_folder.substr(0, path_folder.length() - 1); 
   } else {
     _path_folder = path_folder;
   }
 
   std::vector<std::string> cur_files;
- 
-
-
+  int rlt = RecursiveFileList(_path_folder, cur_files);
+  
+/*
   while (pdir = readdir(dir)) {
     struct stat st;
 
@@ -397,7 +399,7 @@ std::vector<std::string> GetNewFiles(const std::string& path_folder, const std::
       cur_files.push_back(_path_folder + pdir->d_name);
     } 
   }
-
+*/
   for (unsigned int i = 0; i < cur_files.size(); i++) {
     bool foo = false;
     for (unsigned int j = 0; j < olds_files.size(); j++) {
@@ -412,9 +414,38 @@ std::vector<std::string> GetNewFiles(const std::string& path_folder, const std::
     }
   }
   std::cout << "num of file: " << new_files.size() << std::endl;
-  closedir(dir);
+  //closedir(dir);
   std::cout << "  finish"<< std::endl;
   return new_files;
+}
+
+int RecursiveFileList(const std::string dir_path, std::vector<std::string>& files){
+  DIR *dir;
+  dirent *pdir;
+  dir = opendir(dir_path.c_str());
+  if (dir == NULL) {
+    std::cout << dir_path.c_str() << " can not open.\n";
+    return -1;
+  }
+  //d::vector<std::string> cur_files;
+  while (pdir = readdir(dir)) {
+    struct stat st;
+    if(strcmp(pdir->d_name, ".") == 0 || strcmp(pdir->d_name, "..") == 0) {
+      continue;
+    }
+    if (fstatat(dirfd(dir), pdir->d_name, &st, 0) < 0) {
+      std::cout << "Some error in fstatat\n";
+      continue;
+    }
+    if (S_ISREG(st.st_mode)) {
+      std::string dname(pdir->d_name);
+      std::cout << "cur file: " << dir_path + pdir->d_name << std::endl;
+      files.push_back(dir_path + PATH_SEPARATOR + pdir->d_name);
+    } else if (S_ISDIR(st.st_mode)){
+      RecursiveFileList(dir_path + PATH_SEPARATOR + pdir->d_name, files);
+    }
+  }
+  closedir(dir);
 }
 
 bool RunPjwait(Socket& socket, const std::string& kp_job_id, const std::string& pjm_job_id){
