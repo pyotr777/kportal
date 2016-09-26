@@ -12,13 +12,13 @@ KPTOOL_DIR = ./kptool
 INCLUDE = ./include
 BIN_DIR = /usr/local/bin
 
-all: 
+all:
 	$(CD) $(INCLUDE)/libtar-1.2.11; make; cp lib/libtar.a  ../../lib
 	$(CD) $(INCLUDE)/websocketpp-0.2.3-dev; make
 	$(CD) $(KPTOOL_DIR); make
 	$(CD) $(KDESKDAEMON_DIR); make
 	$(CD) $(KPSERVER_DIR); make
-	
+
 install:
 	$(info Installing kp_server to $(BIN_DIR).)
 	mkdir -p $(PREFIX)
@@ -26,17 +26,17 @@ install:
 	mkdir -p $(PREFIX)/kdeskdaemon
 	$(CP) -rf AppMarket/ssl/ $(PREFIX)
 	$(CP) -rf $(APPMARKET_DIR) $(DOCUMENT_ROOT)
-	$(CP) $(RELEASE_DIR)/kdeskdaemon $(PREFIX)/kdeskdeamon/
-	chmod 666  $(BIN_DIR)/kdeskdaemon
+	$(CP) $(RELEASE_DIR)/kdeskdaemon $(PREFIX)/kdeskdaemon/
+	chmod 666  $(PREFIX)/kdeskdaemon
 	$(CP) $(RELEASE_DIR)/start_server.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/start_docker.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_server.sh $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_server $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/kp_tool $(BIN_DIR)/
 	$(CP) $(RELEASE_DIR)/$(DEFAULT_JOBSH_FILE) $(PREFIX)
-	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)	
-	chmod 777 -R $(PREFIX)	
-	
+	$(CP) $(RELEASE_DIR)/$(KP_CONFIG_FILE) $(PREFIX)
+	chmod 777 -R $(PREFIX)
+
 uninstall:
 	rm -rf $(PREFIX)
 	rm -f $(BIN_DIR)/kp_server
