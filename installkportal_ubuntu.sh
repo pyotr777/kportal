@@ -270,7 +270,7 @@ if [[ -z $KP_SKIP_TARS ]]; then
 	cd "$KP_HOME/src/docker_images"
 	IM_ID=$(docker $D_HOST_OPT images -q "ubuntu_base")
 	if [[ -z "$IM_ID" ]]; then
-		sudo -E su kportal -c "docker $D_HOST_OPT build --rm -t ubuntu_base ."
+		sudo -E su kportal -c "docker $D_HOST_OPT build --rm -f Dockerfile -t ubuntu_base .."
 	fi
 	if [[ ! -f "ubuntu_base.tar" ]]; then
 		echo "Saving Base Image to tar"
