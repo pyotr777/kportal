@@ -3,15 +3,16 @@
 #PJM --rsc-list "elapse=[MAX_ELAPSE_TIME]"
 #PJM -s
 #PJM --stg-transfiles all
-#PJM --stgin "./*.s.* ./"
-#PJM --stgin "./[EXE_FILE] ./"
-#PJM --stgin-dir "./[STAGE_IN_DIR] ./"
+#PJM --stgin-dir "./staging_test ./"
 #PJM --stgout "./* ./"
-#PJM --stgout-dir "./[STAGE_OUT_DIR] ./"
+#PJM --stgout-dir "./stgoutdir ./"
 . /work/system/Env_base
 echo "On node $(hostname -f)"
 pwd
 ls -l
+echo "Stage out dir is stgoutdir."
+mkdir stgoutdir
+touch stgoutdir/stgout_test.txt
 filename="COMPNODETEST_$(hostname -d).txt"
 echo "Creating file $filename"
 touch $filename
