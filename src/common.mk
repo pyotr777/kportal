@@ -1,7 +1,7 @@
 #BOOST_PREFIX ?= /home/hpcutest1/kportal/usr/local
-BOOST_PREFIX ?= /home/kportal/usr
+BOOST_PREFIX ?= /usr
 #BOOST_PREFIX ?= /home/anlab/usr/local
-BOOST_LIB_PATH		?= $(BOOST_PREFIX)/lib
+BOOST_LIB_PATH		?= $(BOOST_PREFIX)/lib/x86_64-linux-gnu
 BOOST_INCLUDE_PATH ?= $(BOOST_PREFIX)/include
 
 #KPSERVER_PATH ?= ..
