@@ -2,6 +2,10 @@
 .*
 *.*
 !.gitignore
+!/images
+!*.jpg
+!*.gif
+!*.png
 /javascripts/
 /stylesheets/
 /*.html
