@@ -23,7 +23,17 @@
             <h4>Contents</h4>
             <ul>
                 <li><a href=#InstMan>Installation Manual</a></li>
+                <ul>
+                	<li><a href="#Reqrmt">Requirements</a></li>
+                    <li><a href="#SSL">About SSL certificates</a></li>
+                    <li><a href="#InstProc">Installation Procedure</a></li>
+                </ul>
                 <li><a href=#UserMan>User Manual</a></li>
+                <ul>
+                	<li><a href="#Provider">Provider</a></li>
+                    <li><a href="#Staging">Staging</a></li>
+                    <li><a href="#Notes">Notes</a></li>
+                </ul>
             </ul>
             <!--h4>Links</h4>
             <ul>
@@ -32,30 +42,253 @@
 
         </header>
         <section>
-        <h2 id="InstMan">Installation Manual</h2>
-        <h3>Requirements</h3>
-        <ul>
-            <li>A remote<sup><a href="#note1">[1]</a></sup> computer (physical or virtual) with internet access.</li>
+            <h2 id="InstMan">Installation Manual</h2>
+            <h3 id="Reqrmt">Requirements</h3>
+            <ul>
+                <li>A remote<sup><a href="#note1">[1]</a></sup> computer (physical or virtual) with internet access.</li>
+                    <ul>
+                        <li>Open ports 22, 80, 8080, 9004 and 9005.</li>
+                        <li>Ubuntu OS version 14 or later.</li>
+                    </ul>
+                <li>SSH access to the remote computer.</li>
+            </ul>
+
+            <note id="note1"/>[1] K-portal can be installed on local computer as well. This can be done by omitting steps ... and ...</note>
+
+            <h3 id="SSL">About SSL certificates</h3>
+            <p>K-portal works with HTTPS protocol and requires SSL certificates. You can use self-signed certificates or obtain them from
+            <a href="https://letsencrypt.org/" target="_blank">LetsEncrypt</a>. Both ways are supprted by K-portal installtion scripts. </p>
+
+            <h3 id="InstProc">Installation Procedure</h3>
+        </section>
+        
+        <section>
+            <h2 id="UserMan">User Manual</h2>
+            
+          <h3 id="Provider">Provider</h3>
+            
+          <h4>Download Base Docker Image for Building Application Images</h4>
+          <p>There are 2 ways to download the base docker image:</p>
+            <ul>
+            <li>Download from email when user register to provider.
+              <p>After User register to become Provider, User will receive an email with a link to download the base image.</p></li>
+              
+              
+              
+            <li>Provider downloads from [Download&Search Base Image] Tab of  [Image Management] screen.
+              <p>Open [Download & search public base images] tab on Images Management screen.</p>
+              
+                <img src="images/image020.gif">
+              
+                <p>Input "base" string to search docker images. These docker images are public.</p>
+                
+                <p>List of base images will be displayed. Provider can't see private docker images.</p> 
+                <p>Click [Dowload] button to download the base docker image.</p></li>
+            </ul>
+            
+          <h4>Install Application in Docker Image</h4>
+            
+          <p>After dowloading base image, provider will install application in Docker Image. Those applications must be complier for K-computer.</p>
+          <p>Example: service Copy, service Sleep, Service Sum.</p>
+            
+            
+          <h4>Upload Docker image</h4>
+            
+          <p>Open Images Management Screen by click [Image Management] button on Provider’s Home screen.</p>
+            
+          <p>Select [Creat New Images] tab to upload Docker image.</p>
+            
+            <img src="images/image021.gif">
+            
+          <p>User can upload many docker images from own PC.</p>
+            
+          <p>Email address and System User Name display name which be registed. So, they can’t edit.</p>
+            
+          <p>Input [Docker image Name] textbox and description for new docker image.</p>
+            
+          <p>Click [Browser] button to open folder have docker image which want to upload. Select one docker image.</p>
+            
+          <p>Click [X] to delete link folder.</p>
+            
+          <p>[Public] checkbox can check or uncheck. If it is checked, this docker image can be used by the another providers .If it is unchecked, it will be private and the another providers won't see it.</p>
+            
+            <p>After input all information, click [Upload] button to upload docker image. Then progress bar will display.
+            </p>
+          <p>Please waitting to finish upload.</p>
+            
+            
+          <p>Note: Docker image file size is hundreds of MegaBytes, so Provider may have to wait for a while for upload to finish.</p>
+            
+            
+          <h4>Edit docker image</h4>
+            
+            
+            
+          <p>Provider click [Manage Uploaded image] tab on Images Management screen.</p>
+            
+            <img src="images/image022.gif">
+            
+          <p>Click [Edit] button to edit.</p>
+            
+            <img src="images/image023.gif">
+            
+          <p>Provider can’t edit Docker image name, download url.</p>
+            
+          <p>Provider only can edit public and description.</p>
+            
+          <p>After edit, click Save. Click cancel to don’t save information which provider edited.</p>
+            
+            
+            
+          <h4>Delete Docker image</h4>
+            
+          <p>Open [Manage Upload Images] tab on Image Management screen.</p>
+            
+            <img src="images/image024.gif">
+            
+            <p>Click [Delete] button to delete docker image corresponds. Then, all application used this docker image will be delete, too.</p>
+            
+          <h4>Register new application</h4>
+            
+            <p>Open [New App] tab on Provider’s home screen.</p>
+            
+            <img src="images/image025.gif">
+            
+          <p>[Properties] tab and [Run Method] tab.</p>
+            
+            <ul>
+                <li>[Properties] tab includes setting information that related to service: Name, Application Path ( Docker image name and Path) , Folder stage in, Folder stage out, Icon, Max elapsed time (s), Number of nodes, Description.</li>
                 <ul>
-                    <li>Open ports 22, 80, 8080, 9004 and 9005.</li>
-                    <li>Ubuntu OS version 14 or later.</li>
+                    <li>Docker image name: All docker images which are uploaded by provider.</li>
+                    
+                    <li>Path: Path  includes file binary.</li>
+                    
+                    <li>Folder stage in: using folder stage in to move to K-computer.<sup><a href="#note2">[2]</a></sup></li>
+                    
+                    <li>Folder stage out: folder result is returned after running on the K-computer.<sup><a href="#note2">[2]</a></sup>
+                    <note id="note2">[2] For staging details see <a href="#Staging">Staging</a> section.</note></li>
                 </ul>
-            <li>SSH access to the remote computer.</li>
-        </ul>
+                <li>[Run Method] tab shows a run method of service.</li>
+                <p>Each service has only one run method.</p>
+            
+                <p>In [Run Method] tab has also 2 sub-tabs: Parameters and Preview.</p>
+                <ul>
+                    <li>[Parameters] tab:
+                    
+                    <p>Run method of service has one or many parameter(s).</p>
+                    
+                    <p>If user wants to increase number of parameters, user can use [Add] button.</p></li>
+                    
+                    <li>[Preview] tab:
+                    
+                       <p>When add new parameter, popup create new parameter is displayed as below figure.</p>
+                    </li>
+                </ul>
+            </ul>
+            
+            <img src="images/image026.gif">
+            
+            
+          <p>User can input and set information and value for new parameter.</p>
+            
+          <p>After click/tap [Done] button, new parameter is saved for service.</p>
+            
+          <p>Provider can edit or delete parameter that be created by using [Edit] or [Delete] button.</p>
+            
+          <p>To complete creating service, after inputted and set all necessary information, user can click [Next] button to move to Confirm after create service Screen.</p>
+            
+            <img src="images/image027.gif">
+            
+          <p>Then, click/tap [Save] button to save information that is setted; or click/tap [Publish] button to not only save information but also public service.</p>
+            
+          <p>If click/tap [Save] button, application is displayed with status is private.</p>
+            
+          <p>If click/tap [Publish] button, application is displayed with status is public.</p>
+            
+          <p>Click/Tap on [Back to Edit] button to back to [New App] tab to edit information which is inputted before.</p>
+            
+          <p><strong>Example for Service Copy</strong><br>
+            
+            <img src="images/image028.gif"><br>
+            
+            <img src="images/image029.gif"></p>
+            
+            
+            <h4>Edit Application</h4>
+            
+            
+            
+          <p>Open App Tab on Provider screen. Then, click to select one app item. Service’s detail display. Provider click [Back to edit] button to open detail includes User Tab, Wait List Tab and Detail Tab.</p>
+            
+          <p>Select Detail Tab to edit information.</p>
+            
+            <img src="images/image030.gif">
+            
+          <p>Provider can edit all items except id item.</p>
+            
+          <p>After provider edit, click Next to Save.</p>
+            
+            
+            
+          <h4>Delete Application</h4>
+            
+          <p>Open [App] tab on Provider’s home screen, select on Application:</p>
+            
+            <img src="images/image031.gif">
+            <img src="images/image032.gif">
+            
+            <p>Click [Delete] button to delete application.</p>
+            
+            
+            
+          <h4>Remove Provider</h4>
+            
+          <p>On Provider’s home screen, click [Remove register] button .All images of provider also will be deleted</p>
+            
+            <img src="images/image033.gif">
+            
+          <warning>All Provider's applications docker images, applications and corresponding jobs records for all users that used these applications will be deleted!</warning>
+             
+          <h4>Management user use application</h4>
+            
+            <p>After Provider click/tap on 1 entry of Service on [Apps] tab of Manage Screen for Logged in Provider, [Users] tab of Status Screen of Given Service is displayed as below figure.</p>
+            
+            <img src="images/image034.gif">
+            
+            <ul>
+            <li>Service that be selected on Manage Screen for Logged in Provider is displayed Service’s Name on the top screen.
+            <p>System supplies a filter Users box for Provider's Searching user.</p>
+            <p>List of all Users that using that Service is displayed corresponded with number of notification on [Apps] tab of Manage Screen for Logged in Provider</p>
+            <p>Provider can remove any Users when not want to permit that User use own Service by clicking/tapping on Remove icon on right side as above figure.</p>
+            <p>Provider can add user directly for own service by inputting mail address of user, then click/tap on [Add] button.</p>
+            </li>
+            <li>After Provider click/tap on 1 entry of Service on [Wait List] tab of Manage Screen for Logged in Provider, [Wait List] tab of Status Screen of Given Service is displayed</li>
+            
+             <img src="images/image035.gif">
+            </ul>
+             
+            System also supplies a filter Users box for Provider’s Searching user on this tab.
+            List of Users that is waiting for acceptance for using Service is displayed corresponded with number of notification on [Wait List] tab of Manage Screen for Logged in Provider.
+            Provider can accept or remove any Users by clicking/tapping on Accept icon or Remove icon on right side as above figure. User is accepted will be auto updated in List of Users on [Users] tab of Service.
+            
+            
+          <h3 id="Staging">Staging</h3>
+            <p>Files from K-portal application must be copied to K computer compute nodes and back in two staging steps.</p>
+            <ol>
+            <li>Staging between K-portal application and K login nodes,</li>
+            <li>Staging between K login nodes and compute nodes.</li>
+            </ol>
+            <p><b>Step 1.</b> is defined in application properties on K-portal using "Folder stage in" and "Folder stage out" parameters. </p>
+            <p>"Folder stage in" folder will be copied to K login node keeping only the last directory name in the path. For example, if you set "Folder stage in" to something like /myapp/dir1/dir2/, this directory will be copied to K login node with the name "dir2".<br/>
+            In job script template file placeholder [STAGE_IN_DIR] will be replaced with the same last directory name in the path from "Folder stage in".</p>
+            <p>"Folder stage out" folder will be copied from K login node into K-portal. In job script template file it will replace [STAGE_OUT_DIR].</p>
+            <p><b>Step 2.</b>  staging is defined using job script. Set files and folders for staging in and out in job script template file. Use [STAGE_IN_DIR] and [STAGE_OUT_DIR] placeholders mentioned above. Consult K computer job management system "Parallelnavi" for staging details.</p>
 
-        <note id="note1"/>[1] K-portal can be installed on local computer as well. This can be done by omitting steps ... and ...</note>
 
-        <h3>About SSL certificates</h3>
-        <p>K-portal works with HTTPS protocol and requires SSL certificates. You can use self-signed certificates or obtain them from
-        <a href="https://letsencrypt.org/" target="_blank">LetsEncrypt</a>. Both ways are supprted by K-portal installtion scripts. </p>
+          <h3 id="Notes">Notes</h3>
+            <h4>View Job files in Safari</h4>
+            <p>To be able to view finished job files in Safari browser on OS X (MAC OS) and iOS  disable blocking pop-up windows setting. On OS X: Safari preferences / Security / Block pop-up windows. On iOS: Settings / Safari / Block Pop-ups.</p>
 
-        <h3>Installation Procedure</h3>
-
-        <h2 id="UserMan">User Manual</h2>
-        <h3>Notes</h3>
-        <h5>View Job files in Safari</h5>
-        <p>To be able to view finished job files in Safari browser on OS X (MAC OS) and iOS  disable blocking pop-up windows setting. On OS X: Safari preferences / Security / Block pop-up windows. On iOS: Settings / Safari / Block Pop-ups.</p>
- 
         </section>
 
         <footer>

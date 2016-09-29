@@ -8,13 +8,28 @@ body {
   line-height: 1.3;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color:#222;
-  margin:0 0 20px;
+h1, h2, h3 {
+  color:#222;  
+}
+
+h4, h5, h6 {
+  color:#494949;  
 }
 
 p, ul, ol, table, pre, dl {
   margin:0 0 20px;
+}
+
+ul p {
+    margin:2pt 0 3pt 0;
+}
+
+section h1, h2, h3, h4 {
+    margin-top: 12pt;
+}
+
+header h4, h5 {
+    margin-bottom: 18pt;
 }
 
 h1, h2, h3 {
@@ -26,20 +41,31 @@ h1 {
 }
 
 h2 {
-  font-size:24pt;  
-  border-bottom: 1px dotted #ccc
+  font-size:28pt;  
+  border-bottom: 1px dotted #ddd;
+  margin-bottom: 18pt;
 }
 
-h3, h4, h5, h6 {
-  color:#494949;  
+h3 {
+  font-size:23pt;
+    margin-bottom: 18pt;
 }
 
 h4 {
-    border-bottom: 1px dotted #ccc
+    border-bottom: 1px dotted #eee;
 }
 
-section h1,h2,h3,h4 {
-    margin-top: 12pt;
+warning {
+    margin: 12pt 0 18pt;
+    display: block;
+    font-style: italic;
+    color: #ff6381;
+}
+
+note {
+    display: block;
+    color:#9fa8b9;
+    margin: 6pt 0 6pt;
 }
 
 ul {
@@ -130,9 +156,6 @@ header {
   position:fixed;
 }
 
-header h2, h3, h4, h5 {
-    margin-bottom: 12pt;
-}
 
 header .buttons {
   list-style:none;
@@ -144,7 +167,7 @@ header .buttons {
 
 
 header ul.buttons li {
-  width:89px;
+  width:200px;
   float:left;
   border-right:1px solid #e0e0e0;
   height:40px;
@@ -179,7 +202,7 @@ strong {
 
 header ul li + li + li {
   border-right:none;
-  width:89px;
+  width:200px;
 }
 
 header ul a strong {
@@ -189,9 +212,11 @@ header ul a strong {
 }
 
 section {
-  width:500px;
+  min-width:500px;
+  margin-left:500px;
   float:right;
-  padding-bottom:50px;
+  padding: 0px 10px 30px 10px;
+  
 }
 
 small {
@@ -239,9 +264,9 @@ footer p {
   }
 
   section {
-    border:1px solid #e5e5e5;
-    border-width:1px 0;
-    padding:20px 0;
+    border:1px solid #ededed;
+    border-radius:5px;
+    padding:12px;
     margin:0 0 20px;
   }
 
