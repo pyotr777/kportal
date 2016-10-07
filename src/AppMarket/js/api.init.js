@@ -50,6 +50,16 @@ $( window ).resize(function() {
 		});
 		//$( "#app-list-jobs" ).listview();
 	});*/
+
+	/// Scale content
+	function ScaleContentToDevice(){
+    		scroll(0, 0);
+		var content = $.mobile.getScreenHeight() - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight() - $(".ui-content").outerHeight() + $(".ui-content").height();
+	$(".ui-content").height(content);
+}
+	$(window).on("resize orientationchange", function(){
+        	ScaleContentToDevice();
+	})
 	
 	$( document ).bind( "pagebeforechange", function( e, data ) {
 //		console.log("Bp: pagebeforechange: data = ");
