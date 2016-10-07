@@ -250,6 +250,20 @@ function ufile_getFileName( fullPath ){
 }
 
 /*
+ *
+ */
+function ufile_isSafari(){
+  var ua = navigator.userAgent.toLowerCase(); 
+  if (ua.indexOf('safari') != -1) { 
+    if (ua.indexOf('chrome') > -1) {
+      return false;
+    } else {
+      return true; // Safari
+    }
+  }
+}
+
+/*
  *	Util save BufferArray to local file
  */
 function ufile_saveDownloadFile( fileNameToSaveAs, data ){
@@ -593,5 +607,10 @@ function uMime_getMimeByExt(extensionStr) {
 		console.log("mime type = " + extToMimes[ext]);
 		return extToMimes[ext];
 	}
-	return extToMimes['*'];
+	if(ufile_isSafari()){
+		return extToMimes['txt'];
+	} else {
+		return extToMimes['*'];
+	}
+
 };
