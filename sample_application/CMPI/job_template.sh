@@ -8,5 +8,6 @@
 #PJM --stgout-dir "rank=* ./ ./[STAGE_OUT_DIR]"
 #PJM -s
 . /work/system/Env_base
+ls -l
 mpiexec ./[EXE_FILE] [EXE_ARGS]
 

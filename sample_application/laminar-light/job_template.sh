@@ -8,6 +8,7 @@
 #PJM --stgin "/home/ra000007/a03106/OpenFOAM/OpenFOAM-2.4.0/platforms/S64FXFccDPOpt/bin/blockMesh ./bin/"
 #PJM --stgin "/home/ra000007/a03106/OpenFOAM/OpenFOAM-2.4.0/platforms/S64FXFccDPOpt/bin/setFields ./bin/"
 #PJM --stgin "/home/ra000007/a03106/OpenFOAM/OpenFOAM-2.4.0/platforms/S64FXFccDPOpt/bin/interFoam ./bin/"
+#PJM --stgin "/home/ra000007/a03106/OpenFOAM/OpenFOAM-2.4.0/platforms/S64FXFccDPOpt/bin/foamToVTK ./bin/"
 #PJM --stgin "/home/ra000007/a03106/OpenFOAM/OpenFOAM-2.4.0/bin/tools/RunFunctions ./"
 #PJM --stgin "/home/ra000007/a03106/OpenFOAM/OpenFOAM-2.4.0/etc/controlDict ./etc/"
 #PJM --stgin "/home/ra000007/a03106/OpenFOAM/OpenFOAM-2.4.0/etc/cellModels ./etc/"
@@ -35,6 +36,11 @@ mv 0/alpha.water.org 0/alpha.water
 runApplication blockMesh
 runApplication setFields
 runApplication interFoam
+
+# Convert to VTK
+echo "foam to tVTK"
+foamToVTK
+
 echo "--- Job finished ---"
 echo "PWD: $(pwd)"
 echo "Return to top directory $ORG_DIR"
