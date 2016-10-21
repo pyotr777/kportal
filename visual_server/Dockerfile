@@ -27,9 +27,9 @@ RUN apt-get install -y python-matplotlib python-numpy python-scipy python-pandas
     python-tk && apt-get -y autoremove
 
 RUN pip install -U pip
-RUN pip install matplotlib
-RUN pip install Pillow
-RUN pip install Flask
+RUN pip install -U matplotlib
+RUN pip install -U Pillow
+RUN pip install -U Flask
 
 RUN /usr/bin/python --version
 RUN pip freeze
