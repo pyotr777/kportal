@@ -1,3 +1,3 @@
 FROM ubuntu_base
 MAINTAINER Peter Bryzgalov
-ADD CMPI /CMPI
+ADD mixerVessel2D /mixerVessel2D

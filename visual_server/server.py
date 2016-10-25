@@ -7,8 +7,10 @@ from subprocess import call
 import make_images
 app = Flask(__name__)
 
-version="0.04b"
+version="0.05b"
 print "Flask VTK->images->movie server version " + version
+
+movie_fname = "out.mp4"
 
 @app.route('/')
 def api_root():
@@ -18,19 +20,6 @@ def api_root():
 if __name__ == '__main__':
     app.run()
 
-
-@app.route('/files_', methods = ['POST'])
-def receive_files_():
-    if request.headers['Content-Type'] == 'application/octet-stream' :
-        files = ""
-        for f in request.files:
-            files += str(f) + ", "
-        f = open("./binary",'wb')
-        f.write(request.data)
-        f.close()
-        return "File ./binary written. Files: " + files
-    else:
-        return "415 Unsupported Media Type"
 
 @app.route('/files', methods = ['POST'])
 def receive_files():
@@ -44,14 +33,15 @@ def receive_files():
         print "Calling make_images.py"
         make_images.make_images()
         print "export directory should be created."
-        print "Read images with pattern export/cavity_%04d.png"
+        print "Read images with pattern export/img_%04d.png"
+        if os.path.isfile(movie_fname):
+            os.remove(movie_fname)
         call("./make_movie.sh")
-        movie_fname = "out.mp4"
+
         print "Movie file "+ movie_fname +" created."
         return send_file(movie_fname, mimetype='video/mp4')
     else:
         return "415 Unsupported Media Type"
-
 
 
 def untar(fname):
