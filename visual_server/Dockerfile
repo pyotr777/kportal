@@ -1,4 +1,4 @@
-FROM ubuntu:12.04
+FROM ubuntu:16.04
 MAINTAINER Peter Bryzgalov <peterbryz@yahoo.com> @ CHITEC, Stair lab.
 
 # Install Flask server and VTK
@@ -17,10 +17,10 @@ RUN apt-get install -y --no-install-recommends \
 RUN apt-get update
 
 RUN apt-get install -y build-essential ffmpeg && apt-get -y autoremove
-RUN apt-get install -y libtiff4-dev libjpeg8-dev && apt-get -y autoremove
+RUN apt-get install -y libtiff5-dev libjpeg8-dev && apt-get -y autoremove
 RUN apt-get install -y libmp3lame-dev libvorbis-dev libtheora-dev \
     libspeex-dev yasm pkg-config libopenjpeg-dev libx264-dev && apt-get -y autoremove
-RUN apt-get install -y libvtk5-dev libvtk5.8 && apt-get -y autoremove
+RUN apt-get install -y libvtk5-dev libvtk5.10 && apt-get -y autoremove
 RUN apt-get install -y python-vtk python-pyvtk && apt-get -y autoremove
 RUN apt-get install -y python-setuptools python-pip && apt-get -y autoremove
 RUN apt-get install -y python-matplotlib python-numpy python-scipy python-pandas \

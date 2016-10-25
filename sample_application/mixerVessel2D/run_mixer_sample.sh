@@ -35,6 +35,10 @@ application=`getApplication`
 
 mv 0.org 0
 
+chmod +x ./makeMesh
+
+echo "In $(pwd)."
+ls -l
 runApplication ./makeMesh
 cp 0/alpha.water.org 0/alpha.water
 runApplication setFields

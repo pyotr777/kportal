@@ -115,9 +115,9 @@ def generateFilename(base, vtkdir, imdir, i, n):
     return source, img
 
 
-vtkdir = "VTK"
+vtkdir = "sample/VTK"
 imdir = "export"
-filename_base = "mixerVessel2D_"
+filename_base = "sample_"
 max_i = 500
 
 # Main function that reads source files and produces images
