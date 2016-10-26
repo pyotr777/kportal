@@ -33,10 +33,10 @@ Recieve movie in MP4 format.
   </tr>
   
   <tr>
-  	<td></td>
+  	<td>◯</td>
   	<td>0.</td>
   	<td>↓</td>
-  	<td>Submit. Staging step 1.</td>
+  	<td>Submit. Staging Step 1.</td>
   	<td></td>
   	<td>Submitting K-portal job.</td>
   </tr>
@@ -47,14 +47,14 @@ Recieve movie in MP4 format.
   	<td>K-login</td>
   	<td></td>
   	<td>App files</td>
-  	<td></td>
+  	<td>Have to add +x permission to ./makeMesh, because permissions lost after stage-in Step 1. <br></td>
   </tr>
   
   <tr>
-  	<td></td>
+  	<td>◯</td>
   	<td>1.</td>
   	<td>↓</td>
-  	<td>pjsub. stage-in. Staging step 2.</td>
+  	<td>pjsub. stage-in. Staging Step 2.</td>
   	<td></td>
   	<td></td>
   </tr>
@@ -65,11 +65,11 @@ Recieve movie in MP4 format.
   	<td>K-compute</td>
   	<td></td>
   	<td>/0<br>/1<br>...</td>
-  	<td>Dirs created by OpenFOAM</td>
+  	<td>Dirs created by OpenFOAM in directory sample/.</td>
   </tr>
   
   <tr>
-  	<td></td>
+  	<td>◯</td>
   	<td>2.</td>
   	<td>↓</td>
   	<td>foamToVTK</td>
@@ -87,7 +87,7 @@ Recieve movie in MP4 format.
   </tr>
   
   <tr>
-  	<td></td>
+  	<td>◯</td>
   	<td>3.</td>
   	<td>↓</td>
   	<td>stage-out. Step 2.</td>
@@ -105,7 +105,7 @@ Recieve movie in MP4 format.
   </tr>
   
   <tr>
-  	<td></td>
+  	<td>◯</td>
   	<td>4.</td>
   	<td>↓</td>
   	<td>post-job command. tar -czvf ...</td>
@@ -213,7 +213,7 @@ Recieve movie in MP4 format.
   </tr>
   
     <tr>
-  	<td></td>
+  	<td>◯</td>
   	<td>10.</td>
   	<td>↓</td>
   	<td>post- command. mailx -a out.mp4...</td>
@@ -222,12 +222,13 @@ Recieve movie in MP4 format.
   </tr>
   
     <tr>
-  	<td></td>
+  	<td>◯</td>
   	<td></td>
   	<td>K-login</td>
   	<td></td>
   	<td>job files<br>out.mp4</td>
-  	<td></td>
+  	<td>After job finished takes some time to download all files to K-portal.<br>
+  	<a href="https://github.com/pyotr777/kportal/issues/12">issue #12</a></td>
   </tr>
   
     <tr>
