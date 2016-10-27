@@ -23,12 +23,13 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         4;
+endTime         6;
 
 deltaT          1e-3;
 
 writeControl    adjustableRunTime;
 
+// Movie uses 10 frames/sec rate
 writeInterval   0.05;
 
 purgeWrite      0;

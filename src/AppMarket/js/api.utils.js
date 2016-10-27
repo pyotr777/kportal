@@ -74,7 +74,7 @@ function uStorage_backupData(){
 		sessionStorage.setItem("appObj", JSON.stringify( appObj ));
 	if(asubmitObj !== undefined)
 		sessionStorage.setItem("asubmitObj", JSON.stringify( asubmitObj ));
-	
+
 	if(typeof(jobDetailObj) != "undefined")
 		sessionStorage.setItem("jobDetailObj", JSON.stringify( jobDetailObj ));
 	if(jobsObj !== undefined)
@@ -138,22 +138,22 @@ $(document).on('click', '.login-btn', function(e){
 
 /*
  * *******************************************************
- * Generate icon path 
+ * Generate icon path
  * *******************************************************
  */
 function uIcon_genIconPath( serviceId ){
 	var ran = Math.random();
-	return ( ( serviceId && serviceId !== "" ) ? ( "images/" + serviceId + ".png?" + ran ) : "images/no-image.png" ); 
+	return ( ( serviceId && serviceId !== "" ) ? ( "images/" + serviceId + ".png?" + ran ) : "images/no-image.png" );
 }
 
 /*
- * *******************************************************  
+ * *******************************************************
  * 						Multi times click
  * *******************************************************
  */
 
 /*///This will prevent event triggering more then once
-	if(e.handled !== true) 
+	if(e.handled !== true)
     {
         e.handled = true;
         return true;
@@ -161,7 +161,7 @@ function uIcon_genIconPath( serviceId ){
 */
 
 /*
- * *******************************************************  
+ * *******************************************************
 * 						Object until
  * *******************************************************
  */
@@ -178,7 +178,7 @@ Object.size = function(obj) {
 };
 
 /*
- * ******************************************************* 
+ * *******************************************************
 * 						File utils
  * *******************************************************
  */
@@ -253,8 +253,8 @@ function ufile_getFileName( fullPath ){
  *
  */
 function ufile_isSafari(){
-  var ua = navigator.userAgent.toLowerCase(); 
-  if (ua.indexOf('safari') != -1) { 
+  var ua = navigator.userAgent.toLowerCase();
+  if (ua.indexOf('safari') != -1) {
     if (ua.indexOf('chrome') > -1) {
       return false;
     } else {
@@ -269,7 +269,7 @@ function ufile_isSafari(){
 function ufile_saveDownloadFile( fileNameToSaveAs, data ){
 	console.log("SAVE DOWNLOAD FILE");
 	console.log("fileNameToSaveAs = " + fileNameToSaveAs);
-	
+
 	var ie = navigator.userAgent.match(/MSIE\s([\d.]+)/),
         ie11 = navigator.userAgent.match(/Trident\/7.0/) && navigator.userAgent.match(/rv:11/),
         ieVer=(ie ? ie[1] : (ie11 ? 11 : -1));
@@ -278,7 +278,7 @@ function ufile_saveDownloadFile( fileNameToSaveAs, data ){
         return;
     }
 	/// Check file type
-	
+
 	var dataBlob;
 	if(data instanceof Blob){
 		dataBlob = data;
@@ -287,7 +287,7 @@ function ufile_saveDownloadFile( fileNameToSaveAs, data ){
 		var mime = uMime_getMimeByExt(ext);
         dataBlob = new Blob([data],{'type': mime, endings: 'native'});
 	}
-	
+
     if (ie || ie11) {
 		/// IE api to save file
         window.navigator.msSaveBlob(dataBlob, fileNameToSaveAs);
@@ -332,11 +332,11 @@ function ufile_saveDownloadFile( fileNameToSaveAs, data ){
 			downloadLink.click();
 		}
     }
-	return; 
+	return;
 }
 
 /*
- * ******************************************************* 
+ * *******************************************************
  * 						Menu button handler utils
  * *******************************************************
  */
@@ -358,7 +358,7 @@ $(document).on('click', '.menu-btn', function(e){
 });
 
 /*
- * ******************************************************* 
+ * *******************************************************
  * 						Convert utils
  * *******************************************************
  */
@@ -386,7 +386,7 @@ function uint2ab(x) {
 	return ab;
 }
 /*
- * ******************************************************* 
+ * *******************************************************
  * 				Remove provider permission
  * *******************************************************
  */
@@ -401,12 +401,13 @@ function uRegister_rejectProvider(){
 	});
 }
 /*
- * ******************************************************* 
- * 				Mime types convert from extension 
+ * *******************************************************
+ * 				Mime types convert from extension
  * *******************************************************
  */
 function uMime_getMimeByExt(extensionStr) {
     var extToMimes = {
+        'mp4' : 'movie/mp4',
 		'323' : 'text/h323',
 		'*' : 'application/octet-stream',
 		'acx' : 'application/internet-property-stream',

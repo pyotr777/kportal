@@ -54,7 +54,7 @@ def extractFlatData(nodes, a, U):
 # Remove data for |U| == 0 and z != 0
 def extractNonzeroData(nodes, a, U):
     merged = np.empty([len(nodes),7])
-    print "Extrcting |U|!=0.\na:{} U:{} nodes:{}".format(a.shape, U.shape, nodes.shape)
+    # print "Extrcting |U|!=0.\na:{} U:{} nodes:{}".format(a.shape, U.shape, nodes.shape)
     merged[:,0] = a
     merged[:,1:3] = U[:,:2]
     merged[:,3:6] = nodes
@@ -62,7 +62,7 @@ def extractNonzeroData(nodes, a, U):
     merged[:, 6] = np.power(U[:,0],2) + np.power(U[:,1],2)
     merged_nonzero = merged[np.where(merged[:,6] > 0.01)]
     merged_nonzero = merged_nonzero[np.where(merged_nonzero[:,5] == 0)]
-    print "Nonzero matrix shape: {}".format(merged_nonzero.shape)
+    # print "Nonzero matrix shape: {}".format(merged_nonzero.shape)
     # Extract nodes, p and U arrays from z0 array
     a = merged_nonzero[:,0]
     U = merged_nonzero[:,1:3]
@@ -95,12 +95,22 @@ def plotVector_combined(nodes, U, vmin, vmax, filename=""):
 
 # Plot 2D data on existing figure
 def plot2D_combined(nodes, a, vmin, vmax):
-    cmap = mpl.cm.seismic
-    color_map = plt.cm.get_cmap('GnBu')
+    cdict = {'red': [(0.0, 0.216,0.216),
+                     (0.5, 0.99, 0.99),
+                     (1.0, 0.5,  0.5)],
+
+         'green': [(0.0,  0.655, 0.655),
+                   (0.5,  0.99,  0.99),
+                   (1.0,  0.99,  0.99)],
+
+         'blue':  [(0.0,  0.99,  0.99),
+                   (0.5,  0.8,   0.8),
+                   (1.0,  0.788, 0.788)]}
+    mymap = mpl.colors.LinearSegmentedColormap("mymap",cdict)
     sc = plt.scatter(nodes[:,0],nodes[:,1],
-                     s=550,
+                     s=150,
                      c = a,
-                     cmap = color_map,
+                     cmap = mymap,
                      vmin = vmin,
                      vmax = vmax,
                      linewidth=0,
@@ -132,7 +142,7 @@ def make_images():
         src_file, img_file = generateFilename(filename_base, vtkdir, imdir, i, n)
         # print "Looking for " + src_file
         if os.path.isfile(src_file):
-            print "Found " + src_file
+            # print "Found " + src_file
             n += 1
             filename = src_file
             vtk_data = getData(filename)
@@ -143,13 +153,13 @@ def make_images():
 
             vmin = np.nanmin(a)
             vmax = np.nanmax(a)
-            print "Alpha range: {} - {}, shape: {}".format(vmin,vmax, a.shape)
+            # print "Alpha range: {} - {}, shape: {}".format(vmin,vmax, a.shape)
 
             nodes_half, a_half, U_half = extractFlatData(nodes, a, U)
             nodes_nonzero, a_nonzero, U_nonzero = extractNonzeroData(nodes, a, U)
 
             # Plot combined figure
-            plt.figure(figsize=(14,12))
+            plt.figure(figsize=(5,5))
             axes = plt.gca()
             plt.axis([-.1, .1, -.1, .1])
             plt.xlabel('X')
@@ -158,7 +168,7 @@ def make_images():
 
             plt.title('Alpha water and Velocity vector')
             plot2D_combined(nodes_half, a_half, vmin, vmax)
-            plotVector_combined(nodes_nonzero, U_nonzero, 0, 0.4)
+            # plotVector_combined(nodes_nonzero, U_nonzero, 0, 0.4)
 
             plt.savefig(img_file,bbox_inches='tight')
             plt.close()
