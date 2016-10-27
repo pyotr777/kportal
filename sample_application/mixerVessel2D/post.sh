@@ -17,4 +17,4 @@ job_end=$(cat $inf_file | grep -i "job end date")
 job_nodes=$(cat $inf_file | grep -i "NODE NUM (REQUIRE)")
 job_cpus=$(cat $inf_file | grep -i "CPU NUM (REQUIRE)")
 
-echo -e "MixerVessle2D simulation\n$job_start\n$job_end\n$job_nodes\n$job_cpus\n" | mailx -s "mixerVessel2D movie" -a $mfile -r kportal.aics.riken@gmail.com peter@stair.center &>> post.log
+echo -e "MixerVessle2D simulation\n$job_start\n$job_end\n$job_nodes\n$job_cpus\n" | mailx -s "mixerVessel2D movie" -a $mfile peter@stair.center &>> post.log

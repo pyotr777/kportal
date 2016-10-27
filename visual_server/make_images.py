@@ -95,22 +95,11 @@ def plotVector_combined(nodes, U, vmin, vmax, filename=""):
 
 # Plot 2D data on existing figure
 def plot2D_combined(nodes, a, vmin, vmax):
-    cdict = {'red': [(0.0, 0.216,0.216),
-                     (0.5, 0.99, 0.99),
-                     (1.0, 0.5,  0.5)],
-
-         'green': [(0.0,  0.655, 0.655),
-                   (0.5,  0.99,  0.99),
-                   (1.0,  0.99,  0.99)],
-
-         'blue':  [(0.0,  0.99,  0.99),
-                   (0.5,  0.8,   0.8),
-                   (1.0,  0.788, 0.788)]}
-    mymap = mpl.colors.LinearSegmentedColormap("mymap",cdict)
+    color_map = plt.cm.get_cmap('plasma_r')
     sc = plt.scatter(nodes[:,0],nodes[:,1],
                      s=150,
                      c = a,
-                     cmap = mymap,
+                     cmap = color_map,
                      vmin = vmin,
                      vmax = vmax,
                      linewidth=0,
@@ -167,7 +156,7 @@ def make_images():
             plt.axis('off')
 
             plt.title('Alpha water and Velocity vector')
-            plot2D_combined(nodes_half, a_half, vmin, vmax)
+            plot2D_combined(nodes_half, a_half, vmin-0.1, vmax+0.2)
             # plotVector_combined(nodes_nonzero, U_nonzero, 0, 0.4)
 
             plt.savefig(img_file,bbox_inches='tight')
