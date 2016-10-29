@@ -124,14 +124,18 @@ def make_images():
     try:
         os.stat(imdir)
     except:
+        print "Creating export dir."
         os.mkdir(imdir)
 
+    print "Files in " + vtkdir
+    for f in os.listdir(vtkdir):
+        print os.path.join(vtkdir,f)
     n = 0   # image counter
     for i in range(0,max_i+1):
         src_file, img_file = generateFilename(filename_base, vtkdir, imdir, i, n)
         # print "Looking for " + src_file
         if os.path.isfile(src_file):
-            # print "Found " + src_file
+            print "Found " + src_file
             n += 1
             filename = src_file
             vtk_data = getData(filename)

@@ -7,7 +7,7 @@ from subprocess import call
 import make_images
 app = Flask(__name__)
 
-version="0.05b"
+version="0.08b"
 print "Flask VTK->images->movie server version " + version
 
 movie_fname = "out.mp4"
@@ -30,14 +30,22 @@ def receive_files():
         print "Accessed /files endpoint. Request files written =" + filename
         file.save(filename)
         untar(filename)
+        print "Remove tar file " + filename
+        # os.remove(filename)
+        print "Check that sample directory exists:"
+        for f in os.listdir("sample/VTK"):
+            print "sample/VTK/"+f
+        print "Rename files in sample/VTK:"
+        call("./rename_vtk_files.sh sample/VTK")
         print "Calling make_images.py"
         make_images.make_images()
-        print "export directory should be created."
+        print "Check that export directory has been created."
+        for f in os.listdir("export"):
+            print "export/"+f
         print "Read images with pattern export/img_%04d.png"
         if os.path.isfile(movie_fname):
             os.remove(movie_fname)
         call("./make_movie.sh")
-
         print "Movie file "+ movie_fname +" created."
         return send_file(movie_fname, mimetype='video/mp4')
     else:
