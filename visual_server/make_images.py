@@ -97,7 +97,7 @@ def plotVector_combined(nodes, U, vmin, vmax, filename=""):
 def plot2D_combined(nodes, a, vmin, vmax):
     color_map = plt.cm.get_cmap('plasma_r')
     sc = plt.scatter(nodes[:,0],nodes[:,1],
-                     s=150,
+                     s=40,
                      c = a,
                      cmap = color_map,
                      vmin = vmin,
@@ -117,7 +117,50 @@ def generateFilename(base, vtkdir, imdir, i, n):
 vtkdir = "sample/VTK"
 imdir = "export"
 filename_base = "sample_"
-max_i = 500
+max_i = 800
+
+def make_image(vtk_fname, n):
+    try:
+        os.stat(imdir)
+    except:
+        print "Creating export dir."
+        os.mkdir(imdir)
+    img_file = os.path.join(imdir,"img_"+str(n).zfill(4)+".png")
+    print "Making image "+ img_file + " from " + vtk_fname
+    filename = vtk_fname
+    vtk_data = getData(filename)
+    nodes = getNodes(filename)
+    alpha = vtk_to_numpy(vtk_data.GetArray(1))
+    U = vtk_to_numpy(vtk_data.GetArray(3))
+    a = alpha
+
+    vmin = np.nanmin(a)
+    vmax = np.nanmax(a)
+    # print "Alpha range: {} - {}, shape: {}".format(vmin,vmax, a.shape)
+
+    nodes_half, a_half, U_half = extractFlatData(nodes, a, U)
+    #nodes_nonzero, a_nonzero, U_nonzero = extractNonzeroData(nodes, a, U)
+
+    # Plot combined figure
+    plt.figure(figsize=(4,4))
+    axes = plt.gca()
+    plt.axis([-.15, .15, -.15, .15])
+    plt.xlabel('X (cm)')
+    plt.ylabel('Y (cm)')
+    #plt.axis('off')
+    axes.spines['left'].set_color('white')
+    axes.spines['right'].set_color('white')
+    axes.spines['top'].set_color('white')
+    axes.spines['bottom'].set_color('white')
+
+    plt.title('Water alpha')
+    plot2D_combined(nodes_half, a_half, vmin-0.1, vmax+0.2)
+    # plotVector_combined(nodes_nonzero, U_nonzero, 0, 0.4)
+
+    plt.savefig(img_file,bbox_inches='tight',dpi=150)
+    plt.close()
+    
+
 
 # Main function that reads source files and produces images
 def make_images():
@@ -133,38 +176,11 @@ def make_images():
     n = 0   # image counter
     for i in range(0,max_i+1):
         src_file, img_file = generateFilename(filename_base, vtkdir, imdir, i, n)
-        # print "Looking for " + src_file
+        #print "Looking for " + src_file
         if os.path.isfile(src_file):
             print "Found " + src_file
+            make_image(src_file, n)
             n += 1
-            filename = src_file
-            vtk_data = getData(filename)
-            nodes = getNodes(filename)
-            alpha = vtk_to_numpy(vtk_data.GetArray(1))
-            U = vtk_to_numpy(vtk_data.GetArray(3))
-            a = alpha
-
-            vmin = np.nanmin(a)
-            vmax = np.nanmax(a)
-            # print "Alpha range: {} - {}, shape: {}".format(vmin,vmax, a.shape)
-
-            nodes_half, a_half, U_half = extractFlatData(nodes, a, U)
-            nodes_nonzero, a_nonzero, U_nonzero = extractNonzeroData(nodes, a, U)
-
-            # Plot combined figure
-            plt.figure(figsize=(5,5))
-            axes = plt.gca()
-            plt.axis([-.1, .1, -.1, .1])
-            plt.xlabel('X')
-            plt.ylabel('Y')
-            plt.axis('off')
-
-            plt.title('Alpha water and Velocity vector')
-            plot2D_combined(nodes_half, a_half, vmin-0.1, vmax+0.2)
-            # plotVector_combined(nodes_nonzero, U_nonzero, 0, 0.4)
-
-            plt.savefig(img_file,bbox_inches='tight')
-            plt.close()
 
 
 if __name__ == "__main__":
