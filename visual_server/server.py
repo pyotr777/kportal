@@ -7,7 +7,7 @@ from subprocess import call
 import make_images
 app = Flask(__name__)
 
-version="0.16b"
+version="0.17b"
 print "Flask VTK->images->movie server version " + version
 
 movie_fname = "out.mp4"
@@ -31,14 +31,11 @@ def receive_files():
         file.save(filename)
         untar(filename)
         print "Remove tar file " + filename
-        # os.remove(filename)
+        os.remove(filename)
         print "Check that sample directory exists:"
         for f in os.listdir("sample/VTK"):
             print "sample/VTK/"+f
-        #print "Rename files in sample/VTK:"
-        #call("./rename_vtk_files.sh sample/VTK")
-        #print "Calling make_images.py"
-        #make_images.make_images()
+
         print "Check that export directory has been created."
         for f in os.listdir("export"):
             print "export/"+f

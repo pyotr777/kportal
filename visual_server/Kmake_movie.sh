@@ -15,8 +15,8 @@ tar -czvf $dir/VTK.tar.gz $dir/VTK
 echo "Contacting image server at $vserver"
 curl -F file=@"$dir/VTK.tar.gz" $vserver > $dir/$mfile
 rm $dir/VTK.tar.gz
-ls -l 
+ls -l
 echo "Sending mail"
 
-echo -e "MixerVessle2D simulation" | mailx -s "mixerVessel2D movie" -a $dir/$mfile peter@stair.center
+mailx -s "mixerVessel2D movie" -a $dir/$mfile peter@stair.center < parameters.txt
 
