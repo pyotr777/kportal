@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 # Copy test case and change mesh parameters.
 # Should be ran from OpenFOAM run directory.
@@ -44,6 +44,16 @@ Na=12
 # Number of cells in the thickness of the slab
 Nz=1
 
+# Simulation end time (s)
+endT=6
+
+controldict="mixerVessel2D/system/controlDict"
+
+# Rotation speed
+omega=6.2831853
+
+fvoptions="mixerVessel2D/constant/fvOptions"
+
 sed -r -i "s/define\(\s*r\s*,.*/define(r, $r)/" $filename
 grep -C 1 "define(r," $filename
 echo ""
@@ -64,4 +74,15 @@ sed -r -i "s/define\(\s*Ni\s*,.*/define(Ni, $Ni)/" $filename
 grep -C 1 "define(Ni," $filename
 echo ""
 
-printf "r    rb   Rb   R\n%3.1f  %3.1f  %3.1f  %3.1f\n     Ni\n     %3.1f\n" $r $rb $Rb $R $Ni > parameters.txt
+
+sed -r -i "s/endTime\s*.*/endTime\t\t$endT/" $controldict
+grep "^endTime" $controldict
+echo ""
+
+
+sed -r -i "s/\s*omega\s*constant\s*.*/        omega     constant $omega;/" $fvoptions
+grep "omega" $fvoptions
+echo ""
+
+
+printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nMesh cells radially between impeller and baffle tips:\n%u\nendTime:  %3.1f\nRotation speed:  %f\n\n" $r $rb $Rb $R $Ni $endT $omega > parameters.txt
