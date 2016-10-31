@@ -10,11 +10,12 @@ if [[ -d $dirs ]]; then
 	mv $dirs $dir
 fi
 
-tar -czvf $dir/VTK.tar.gz $dir/VTK
+if [[ ! -f "$dir/VTK.tar.gz" ]]; then
+	tar -czvf $dir/VTK.tar.gz $dir/VTK
+fi
 
 echo "Contacting image server at $vserver"
 curl -F file=@"$dir/VTK.tar.gz" $vserver > $dir/$mfile
-rm $dir/VTK.tar.gz
 ls -l
 echo "Sending mail"
 

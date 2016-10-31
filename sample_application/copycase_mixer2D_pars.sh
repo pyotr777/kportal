@@ -75,7 +75,7 @@ grep -C 1 "define(Ni," $filename
 echo ""
 
 
-sed -r -i "s/endTime\s*.*/endTime\t\t$endT/" $controldict
+sed -r -i "s/^endTime\s*.*/endTime\t\t$endT;/" $controldict
 grep "^endTime" $controldict
 echo ""
 
