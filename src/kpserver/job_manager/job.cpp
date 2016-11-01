@@ -197,7 +197,7 @@ ResponseCode Job::generateShFile(Service& sv) {
       if(pa_job->getParamId() != param->getParamID()){
         continue;
       }
-      argss << param->getOptionName();
+      argss << " " << param->getOptionName();
       if (pa_job->getType() == VALUE_ONLY) {
         argss << " " << pa_job->getValue();
       } else if (pa_job->getType() == ARG_LOCAL) {
