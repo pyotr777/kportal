@@ -29,12 +29,12 @@ export MPI_BUFFER_SIZE=20000000
 
 cd sample
 
-echo "Parameters for jobscript: $@"
+echo "Parameters for jobscript: [EXE_ARGS]"
 # Change case parameters
-if [[ "$#">0 ]]; then
+if [[ "[EXE_ARGS]" ]]; then
 	chomd +x ./change_case_pars.sh
-	echo "Passing parameters: $@"
-	./change_case_pars.sh "$@"
+	echo "Passing parameters: [EXE_ARGS]"
+	./change_case_pars.sh "[EXE_ARGS]"
 fi
 
 . ../RunFunctions
