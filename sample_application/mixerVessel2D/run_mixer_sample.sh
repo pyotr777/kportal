@@ -28,6 +28,15 @@ export WM_PROJECT_SITE=../etc
 export MPI_BUFFER_SIZE=20000000
 
 cd sample
+
+echo "Parameters for jobscript: $@"
+# Change case parameters
+if [[ "$#">0 ]]; then
+	chomd +x ./change_case_pars.sh
+	echo "Passing parameters: $@"
+	./change_case_pars.sh "$@"
+fi
+
 . ../RunFunctions
 echo "$(getApplication)"
 # Set application name

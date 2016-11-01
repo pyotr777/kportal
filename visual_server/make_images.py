@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
 import vtk
 from mpl_toolkits.mplot3d import Axes3D
-import os
+import os, sys
 
 def getData(filename):
     # load a vtk file as input
@@ -128,10 +128,15 @@ def make_image(vtk_fname, n):
     img_file = os.path.join(imdir,"img_"+str(n).zfill(4)+".png")
     print "Making image "+ img_file + " from " + vtk_fname
     filename = vtk_fname
-    vtk_data = getData(filename)
-    nodes = getNodes(filename)
-    alpha = vtk_to_numpy(vtk_data.GetArray(1))
-    U = vtk_to_numpy(vtk_data.GetArray(3))
+    try:
+        vtk_data = getData(filename)
+        nodes = getNodes(filename)
+        alpha = vtk_to_numpy(vtk_data.GetArray(1))
+        U = vtk_to_numpy(vtk_data.GetArray(3))
+    except:
+        print "Error parcing " + vtk_fname,  sys.exc_info()[0]
+        return
+
     a = alpha
 
     vmin = np.nanmin(a)
@@ -145,21 +150,21 @@ def make_image(vtk_fname, n):
     plt.figure(figsize=(4,4))
     axes = plt.gca()
     plt.axis([-.15, .15, -.15, .15])
-    plt.xlabel('X (cm)')
-    plt.ylabel('Y (cm)')
+    plt.xlabel('X (x10 cm)')
+    plt.ylabel('Y (x10 cm)')
     #plt.axis('off')
     axes.spines['left'].set_color('white')
     axes.spines['right'].set_color('white')
     axes.spines['top'].set_color('white')
     axes.spines['bottom'].set_color('white')
 
-    plt.title('Water alpha')
+    plt.title('Liquid alpha')
     plot2D_combined(nodes_half, a_half, vmin-0.1, vmax+0.2)
     # plotVector_combined(nodes_nonzero, U_nonzero, 0, 0.4)
 
     plt.savefig(img_file,bbox_inches='tight',dpi=150)
     plt.close()
-    
+
 
 
 # Main function that reads source files and produces images
