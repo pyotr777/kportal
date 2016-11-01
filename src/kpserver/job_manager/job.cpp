@@ -191,12 +191,13 @@ ResponseCode Job::generateShFile(Service& sv) {
   // Matching parameter vs value
   for (int j = 0; j < listParamOfService.size(); j++) {
     Parameter* param = &listParamOfService[j];
-
+    
     for (int i = 0; i < (int)listParam.size(); i++) {
       param_job* pa_job = &listParam[i];
       if(pa_job->getParamId() != param->getParamID()){
         continue;
       }
+      argss << param->getOptionName();
       if (pa_job->getType() == VALUE_ONLY) {
         argss << " " << pa_job->getValue();
       } else if (pa_job->getType() == ARG_LOCAL) {
