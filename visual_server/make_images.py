@@ -158,7 +158,7 @@ def make_image(vtk_fname, n):
     axes.spines['top'].set_color('white')
     axes.spines['bottom'].set_color('white')
 
-    plt.title('Liquid alpha')
+    #plt.title('Liquid alpha')
     plot2D_combined(nodes_half, a_half, vmin-0.1, vmax+0.2)
     # plotVector_combined(nodes_nonzero, U_nonzero, 0, 0.4)
 

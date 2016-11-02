@@ -6,15 +6,18 @@
 read -rd '' USAGE <<EOF
 	Change mesh parameters. Should be ran from case directory.
 	Usage:
-	$(basename $0) [-r hub radius (x10 cm)] [-rb Impeller tip radius] [-Rb Baffle tip radius] [-R Tank raidus] [-t Simulation time (s)] [-s Rotation speed (rps)]
-	Whithout "-do" option a dry run will be perfomed. Use it to see the list of updated files.
+	$(basename $0) [-r hub radius (x10 cm)] [-rb Impeller tip radius] [-Rb Baffle tip radius] [-R Tank raidus]
+	 [-t Simulation time (s)] [-s Rotation speed (rps)]
+	 [-e email address for sending simulation video]
 EOF
+
+echo "$0"
 
 if [[ "$#"<1 ]]; then
 	echo "$USAGE"
 	exit 1
 else
-	echo "Got parameters in $0: $@"
+	echo "Got parameters: $@"
 fi
 
 filename="constant/polyMesh/blockMeshDict.m4"
@@ -52,6 +55,8 @@ Na=12
 Nz=1
 
 pi=3.14159265359
+
+email=peter@stair.center
 
 while test $# -gt 0; do
 	case "$1" in
@@ -91,6 +96,9 @@ while test $# -gt 0; do
 			grep "omega" $fvoptions;
 			echo "";
 			;;
+		-e)
+			email=$2;shift;
+			echo "export email=\"$2\"" > sample/email.source
 		--)
 			shift
 			break;;
@@ -108,4 +116,4 @@ done
 
 
 
-printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nSimulation time (s):  %3.1f\nRotation speed (rps):  %f\n\n" $r $rb $Rb $R $endT $omega > ../parameters.txt
+printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $endT $omega > parameters.txt
