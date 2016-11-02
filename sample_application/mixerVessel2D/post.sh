@@ -2,8 +2,8 @@
 
 echo "Postscript $0 $@" > post.log
 
-if [[ -f "email.source" ]]; then
-	source email.source
+if [[ -f "sample/email.source" ]]; then
+	source sample/email.source
 else
 	echo "No email.source found!" >> post.log
 	echo "Use default address" >> post.log
@@ -34,7 +34,7 @@ echo -e "MixerVessel2D simulation\n$job_start\n$job_end \
 \n$job_cpus\n" > mail_body.txt
 cat sample/paramaters.txt >> mail_body.txt
 
-mailx -s "mixerVessel2D movie" -a $mfile $email &>> post.log < mail_body.txt
+mailx -s "mixerVessel2D movie" -a $mfile -r kportal.aics.riken@gmail.com $email &>> post.log < mail_body.txt
 echo "Clean files" >> post.log
 rm -rf sample/VTK &>> post.log
 rm email.source &>> post.log
