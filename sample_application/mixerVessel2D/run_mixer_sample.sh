@@ -27,7 +27,7 @@ export PATH=../bin:${PATH}
 export WM_PROJECT_SITE=../etc
 export MPI_BUFFER_SIZE=20000000
 
-echo "$0 v.171-1"
+echo "$0 v.171-2"
 cd sample
 
 echo "Parameters for jobscript: [EXE_ARGS]"
