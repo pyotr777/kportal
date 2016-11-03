@@ -31,7 +31,7 @@ job_start=$(cat $inf_file | grep -i "job start date")
 job_end=$(cat $inf_file | grep -i "job end date")
 job_nodes=$(cat $inf_file | grep -i "NODE NUM (REQUIRE)")
 job_cpus=$(cat $inf_file | grep -i "CPU NUM (REQUIRE)")
-host_name=$(cat sample/hostname -f)
+host_name=$(cat sample/hostname.txt -f)
 
 echo -e "MixerVessel2D simulation\n$job_start\n$job_end \
 \n$job_nodes \
