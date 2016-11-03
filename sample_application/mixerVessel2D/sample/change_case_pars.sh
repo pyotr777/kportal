@@ -98,7 +98,9 @@ while test $# -gt 0; do
 			;;
 		-e)
 			email=$2;shift;
-			echo "export email=\"$2\"" > sample/email.source
+			echo "export email=\"$email\"" > sample/email.source;
+			echo "Use email $email";
+			;;
 		--)
 			shift
 			break;;
