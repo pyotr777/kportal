@@ -85,7 +85,7 @@ while test $# -gt 0; do
 			echo "";
 			;;
 		-t)
-			t=$2;shift;
+			endT=$2;shift;
 			sed -r -i "s/^endTime\s*.*/endTime\t\t$endT;/" $controldict;
 			grep "^endTime" $controldict;
 			echo "";
