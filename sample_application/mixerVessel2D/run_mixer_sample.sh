@@ -27,7 +27,8 @@ export PATH=../bin:${PATH}
 export WM_PROJECT_SITE=../etc
 export MPI_BUFFER_SIZE=20000000
 
-echo "$0 v.169-1"
+
+echo "$0 v.171-2"
 cd sample
 
 echo "Parameters for jobscript: [EXE_ARGS]"
@@ -37,6 +38,12 @@ if [[ "[EXE_ARGS]" ]]; then
 	echo "Passing parameters: [EXE_ARGS]"
 	./change_case_pars.sh [EXE_ARGS]
 fi
+
+# Save hostname
+hostname -f > hostname.txt
+
+pwd
+ls -l
 
 . ../RunFunctions
 echo "$(getApplication)"
@@ -58,5 +65,6 @@ echo "$(pwd)/.."
 ls -l ..
 # Convert to VTK
 ../bin/foamToVTK -ascii
+
 
 

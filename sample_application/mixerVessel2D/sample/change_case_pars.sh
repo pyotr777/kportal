@@ -85,7 +85,7 @@ while test $# -gt 0; do
 			echo "";
 			;;
 		-t)
-			t=$2;shift;
+			endT=$2;shift;
 			sed -r -i "s/^endTime\s*.*/endTime\t\t$endT;/" $controldict;
 			grep "^endTime" $controldict;
 			echo "";
@@ -98,8 +98,8 @@ while test $# -gt 0; do
 			;;
 		-e)
 			email=$2;shift;
-			echo "export email=\"$2\"" > sample/email.source;
-			echo "Saved address $email to email.source";
+			echo "export email=\"$email\"" > email.source;
+			echo "Use email $email";
 			;;
 		--)
 			shift
@@ -118,4 +118,4 @@ done
 
 
 
-printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $endT $omega > parameters.txt
+printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $omega $endT > parameters.txt
