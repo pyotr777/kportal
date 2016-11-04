@@ -91,7 +91,8 @@ while test $# -gt 0; do
 			echo "";
 			;;
 		-s)
-			omega=$(awk "BEGIN {print $pi*$2}");shift;
+			rspeed=$2;shift;
+			omega=$(awk "BEGIN {print $pi*$rspeed}");
 			sed -r -i "s/\s*omega\s*constant\s*.*/        omega     constant $omega;/" $fvoptions;
 			grep "omega" $fvoptions;
 			echo "";
@@ -118,4 +119,4 @@ done
 
 
 
-printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $omega $endT > parameters.txt
+printf "Mixer vessel configuration (distance from center, x10 cm):\n\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %3.1f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $rspeed $endT > parameters.txt
