@@ -119,4 +119,4 @@ done
 
 
 
-printf "Mixer vessel configuration (distance from center, x10 cm):\n\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %3.1f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $rspeed $endT > parameters.txt
+printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %3.1f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $rspeed $endT > parameters.txt

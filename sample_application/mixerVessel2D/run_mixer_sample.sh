@@ -28,7 +28,7 @@ export WM_PROJECT_SITE=../etc
 export MPI_BUFFER_SIZE=20000000
 
 
-echo "$0 v.173-1"
+echo "$0 v.174-1"
 cd sample
 
 echo "Parameters for jobscript: [EXE_ARGS]"
