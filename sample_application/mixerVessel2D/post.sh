@@ -24,7 +24,7 @@ echo "Contacting image server at $vserver" >> post.log
 curl -F file=@"VTK.tar.gz" $vserver > $mfile 2>> post.log
 rm VTK.tar.gz
 ls -l >> post.log
-echo "Sending mail" >> post.log
+
 # Get job information
 inf_file=$(ls -1 job.i* | head -1)
 job_start=$(cat $inf_file | grep -i "job start date")
@@ -33,13 +33,20 @@ job_nodes=$(cat $inf_file | grep -i "NODE NUM (REQUIRE)")
 job_cpus=$(cat $inf_file | grep -i "CPU NUM (REQUIRE)")
 host_name=$(cat sample/hostname.txt)
 
-echo -e "MixerVessel2D simulation\n$job_start\n$job_end \
+echo "hostname: $host_name" >> post.log
+
+echo -e "MixerVessel2D simulation\n \
+\nK COMPUTER NODE NAME : $host_name \
 \n$job_nodes \
-\nK COMPUTER NODE NAME\t: $host_name \
-\n$job_cpus\n" > mail_body.txt
+\n$job_cpus \
+\n $job_start\n$job_end \
+\n" > mail_body.txt
 cat sample/parameters.txt >> mail_body.txt
+echo "Sending mail to $email" >> post.log
 
 mailx -s "mixerVessel2D movie" -a $mfile -r kportal.aics.riken@gmail.com $email &>> post.log < mail_body.txt
+echo "move movie file to sample directory" >> post.log
+mv $mfile sample/
 echo "Clean files" >> post.log
 rm -rf sample/VTK &>> post.log
 #rm email.source &>> post.log
