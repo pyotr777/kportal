@@ -558,8 +558,6 @@ ResponseCode Job::Submit() {
   std::string result, header_result;
 
   std::size_t found;
-  ///if(false) /// just test
-  //{
   NetworkUtil::requestHttp(DockerTcp_IP, DockerTcp_Port, request, result, header_result);
   found = header_result.find(DOCKER_RESPONE_HTTP_201);
   if (found == std::string::npos) {
@@ -617,24 +615,29 @@ ResponseCode Job::Submit() {
     std::cout << "get job container ip is failed.\n";
     return ret;
   }
-  //}
 
   // Save container id & Save status
   status = JOB_START;
   container_id = containerId;
-  
+
   // Save job info to master container
   std::cout << "job container ip:" << job_containner_ip.c_str() << std::endl;
   std::string json_str;
   generateJsonStr(json_str);
   FileNetworkUtils fileNetworkUtil(host, Container_Com_Port, pathJob + PATH_SEPARATOR + job_id + ".info");
+  //strJsonOfJob = json_str;  // Save to runtime job object
+
   fileNetworkUtil.Open();
   ret = FILE_ACTION_ERROR;
 
   int tryi = 0;
   while (ret != FILE_ACTION_SUCCESS && tryi++ <= 3) {
     ret = fileNetworkUtil.Write(json_str);
-    std::cout << "try write file info job \n";
+    if(ret == FILE_ACTION_SUCCESS){
+      std::cout << "Save job info success.\n";
+      break;
+    }
+    std::cout << "ERR: Can not save job info. Try again after 5s! \n";
     sleep(5);
   }
   fileNetworkUtil.Close();

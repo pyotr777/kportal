@@ -1420,21 +1420,31 @@ void request<request_endpoint_type>::processSubmitJob(MessageHeader& header, JSO
 template <typename request_endpoint_type>
 void request<request_endpoint_type>::processResubmitJob(MessageHeader& header, JSONNode::const_iterator& i, JSONNode& n)
 {
-    std::cout << "RESUBMIT_JOB" << std::endl;
-    ++i;
-    std::string jobId = "";
-    if (i != n.end() && i -> name() == TAG_JOB_STR && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE)
-        jobId = i -> as_string();
+  std::cout << "RESUBMIT_JOB" << std::endl;
+  ++i;
+  std::string jobId = "";
+  if (i != n.end() && i -> name() == TAG_JOB_STR && i -> type() != JSON_ARRAY && i -> type() != JSON_NODE)
+    jobId = i -> as_string();
 
-	Job old_job;
-	old_job.setId(jobId);
-	cs -> getInfoOfJob(old_job);
+    Job old_job;
+    old_job.setId(jobId);
+    cs -> getInfoOfJob(old_job);
     //old_job.setPath(string(DEFAULT_JOB_FOLDER) + string("/") + jobId);
 
-	Job job;
-	JSONNode node = libjson::parse(old_job.getStrJsonOfJob());
-    ResponseCode ret = cs -> InitJob(node,job);
-
+    std::cout << "Parse old job info: \n" << old_job.getStrJsonOfJob().c_str();
+    Job job;
+    JSONNode node;
+    ResponseCode ret = DATA_SUCCESS;
+    try{
+      node = libjson::parse(old_job.getStrJsonOfJob());
+    } catch (...){
+      ret = DATA_ERROR;
+      std::cout << "Parsing error: " << old_job.getStrJsonOfJob().c_str() << std::endl;
+    }
+    if(ret == DATA_SUCCESS) {
+      std::cout << "Begin init a new job from old job\n";
+      ret = cs -> InitJob(node,job);
+    }
     if(ret == DATA_SUCCESS || ret == ACTION_WAIT_INPUT)
     {
         job.setHeader(header);

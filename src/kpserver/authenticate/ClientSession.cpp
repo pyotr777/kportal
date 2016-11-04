@@ -310,8 +310,8 @@ ResponseCode ClientSession::InitJob(JSONNode& n, Job &newJob) {
       }
     }
   }
-
-  //newJob.setStrJsonOfJob((n.write_formatted()));
+  // Save job message
+  newJob.setStrJsonOfJob((n.write_formatted()));
 
   //init
   ret = newJob.Init();
@@ -938,6 +938,7 @@ ResponseCode ClientSession::getJobsOfUsersByService(string serviceId, string use
 }
 
 ResponseCode ClientSession::getInfoOfJob(Job &job) {
+  cout << "ClientSession::getInfoOfJob(" << job.getId() << ")" <<std::endl;
   ResponseCode ret = DATA_ERROR;
   //pthread_mutex_lock(&g_listjobs_lock);
   std::map<std::string,Job>::iterator it=listJob.find(job.getId());
