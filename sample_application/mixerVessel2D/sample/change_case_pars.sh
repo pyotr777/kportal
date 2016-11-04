@@ -117,6 +117,37 @@ while test $# -gt 0; do
 	shift
 done
 
+# Adapt mesh to vessel geometry
+# Set mesh parameters
+Nr=$(printf "%.0f" $(awk "BEGIN {print ($rb-$r)*40}"))
+if [ $Nr -le 0 ]; then
+	echo "Impeller tip radius ($rb) must be grater than hub radius ($r)"
+	exit 1
+else
+	echo "Impeller mesh rows: $Nr"
+	sed -r -i "s/define\(\s*Nr\s*,.*/define(Nr, $Nr)/" $filename;
+	grep -C 1 "define(Nr," $filename;
+fi
+
+Ni=$(printf "%.0f" $(awk "BEGIN {print ($Rb-$rb)*20}"))
+if [ $Ni -le 0 ]; then
+	echo "Baffle tip radius ($Rb) must be grater than impeller radius ($rb)"
+	exit 1
+else
+	echo "Mesh rows between impeller and baffle: $Ni"
+	sed -r -i "s/define\(\s*Ni\s*,.*/define(Ni, $Ni)/" $filename;
+	grep -C 1 "define(Ni," $filename;
+fi
+
+NR=$(printf "%.0f" $(awk "BEGIN {print ($R-$Rb)*40}"))
+if [ $NR -le 0 ]; then
+	echo "Tank radius ($R) must be grater than baffle tip radius ($Rb)"
+	exit 1
+else
+	echo "Baffle mesh rows: $NR"
+	sed -r -i "s/define\(\s*NR\s*,.*/define(NR, $NR)/" $filename;
+	grep -C 1 "define(NR," $filename;
+fi
 
 
 printf "Mixer vessel configuration (distance from center, x10 cm):\n%3.1f  %3.1f  %3.1f  %3.1f\nRotation speed (rps):  %3.1f\nSimulation time (s):  %3.1f\n\n" $r $rb $Rb $R $rspeed $endT > parameters.txt
