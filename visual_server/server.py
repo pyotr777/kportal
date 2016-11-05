@@ -5,9 +5,10 @@ import os
 import tarfile, sys, re
 from subprocess import call
 import make_images
+import make_images_2
 app = Flask(__name__)
 
-version="0.19b"
+version="0.20b"
 print "Flask VTK->images->movie server version " + version
 
 movie_fname = "out.mp4"
@@ -37,7 +38,7 @@ def receive_files():
             os.remove(movie_fname)
 
         file.save(filename)
-        untar(filename)
+        untar(filename, make_images.make_image)
         print "Remove tar file " + filename
         os.remove(filename)
         print "Check that sample directory exists:"
@@ -55,6 +56,39 @@ def receive_files():
         return "415 Unsupported Media Type"
 
 
+@app.route('/files_2', methods = ['POST'])
+def receive_files_2():
+    response = ""
+    if request.files is not None:
+        file = request.files['file']
+        filename = file.filename
+        print "Accessed /files endpoint. Request files written =" + filename
+
+        # Clean files and directories
+        call(["rm",filename])
+        call(["rm","-rf","sample"])
+        call(["rm","-rf","export"])
+        if os.path.isfile(movie_fname):
+            os.remove(movie_fname)
+
+        file.save(filename)
+        untar(filename, make_images_2.make_image_cells)
+        print "Remove tar file " + filename
+        os.remove(filename)
+        print "Check that sample directory exists:"
+        for f in os.listdir("sample/VTK"):
+            print "sample/VTK/"+f
+
+        print "Check that export directory has been created."
+        for f in os.listdir("export"):
+            print "export/"+f
+        print "Read images with pattern export/img_%04d.png"
+        call("./make_movie.sh")
+        print "Movie file "+ movie_fname +" created."
+        return send_file(movie_fname, mimetype='video/mp4')
+    else:
+        return "415 Unsupported Media Type"
+
 
 def getsubdir_name(path):
     dir_ind = 2
@@ -70,7 +104,7 @@ targetpath = "sample/VTK/"
 targetname = "sample_"
 fname = "VTK.tar.gz"
 
-def untar(fname):
+def untar(fname, make_images_func):
     if (fname.endswith("tar.gz") or fname.endswith("tar")):
         n  = 0  # Image file counter
         tar = tarfile.open(fname)
@@ -93,7 +127,7 @@ def untar(fname):
                     f=tar.extract(tarpath)
                     # print "Moving " + tarpath.name + " -> " + newname
                     call(["mv", tarpath.name, newname])
-                    make_images.make_image(newname, n)
+                    make_images_func(newname, n)
                     n += 1
         tar.close()
 
