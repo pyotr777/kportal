@@ -11,11 +11,6 @@ RUN apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-#RUN echo "deb http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list
-#RUN apt-get update
-#RUN apt-get install -y --force-yes deb-multimedia-keyring
-RUN apt-get update
-
 RUN apt-get install -y build-essential ffmpeg && apt-get -y autoremove
 RUN apt-get install -y libtiff5-dev libjpeg8-dev && apt-get -y autoremove
 RUN apt-get install -y libmp3lame-dev libvorbis-dev libtheora-dev \

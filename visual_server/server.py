@@ -4,11 +4,11 @@ from flask import send_file
 import os
 import tarfile, sys, re
 from subprocess import call
-import make_images
-import make_images_2
+import make_cell_images
+import make_points_images
 app = Flask(__name__)
 
-version="0.20b"
+version="0.30b"
 print "Flask VTK->images->movie server version " + version
 
 movie_fname = "out.mp4"
@@ -22,42 +22,15 @@ if __name__ == '__main__':
     app.run()
 
 
-@app.route('/files', methods = ['POST'])
+@app.route('/files_old', methods = ['POST'])
 def receive_files():
-    response = ""
-    if request.files is not None:
-        file = request.files['file']
-        filename = file.filename
-        print "Accessed /files endpoint. Request files written =" + filename
+    return make_movie(request, make_points_images.make_image)
 
-        # Clean files and directories
-        call(["rm",filename])
-        call(["rm","-rf","sample"])
-        call(["rm","-rf","export"])
-        if os.path.isfile(movie_fname):
-            os.remove(movie_fname)
-
-        file.save(filename)
-        untar(filename, make_images.make_image)
-        print "Remove tar file " + filename
-        os.remove(filename)
-        print "Check that sample directory exists:"
-        for f in os.listdir("sample/VTK"):
-            print "sample/VTK/"+f
-
-        print "Check that export directory has been created."
-        for f in os.listdir("export"):
-            print "export/"+f
-        print "Read images with pattern export/img_%04d.png"
-        call("./make_movie.sh")
-        print "Movie file "+ movie_fname +" created."
-        return send_file(movie_fname, mimetype='video/mp4')
-    else:
-        return "415 Unsupported Media Type"
-
-
-@app.route('/files_2', methods = ['POST'])
+@app.route('/files', methods = ['POST'])
 def receive_files_2():
+    return make_movie(request, make_cell_images.make_image_cells)
+
+def make_movie(request, make_image_func):
     response = ""
     if request.files is not None:
         file = request.files['file']
@@ -72,7 +45,7 @@ def receive_files_2():
             os.remove(movie_fname)
 
         file.save(filename)
-        untar(filename, make_images_2.make_image_cells)
+        untar(filename, make_image_func)
         print "Remove tar file " + filename
         os.remove(filename)
         print "Check that sample directory exists:"
