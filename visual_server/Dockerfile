@@ -11,7 +11,7 @@ RUN apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install -y build-essential ffmpeg && apt-get -y autoremove
+RUN apt-get update && apt-get install -y build-essential ffmpeg && apt-get -y autoremove
 RUN apt-get install -y libtiff5-dev libjpeg8-dev && apt-get -y autoremove
 RUN apt-get install -y libmp3lame-dev libvorbis-dev libtheora-dev \
     libspeex-dev yasm pkg-config libopenjpeg-dev libx264-dev && apt-get -y autoremove
@@ -32,3 +32,4 @@ RUN pip freeze
 WORKDIR /root/server
 ENV FLASK_APP=server.py
 
+CMD /bin/bash -c "/usr/local/bin/flask run --host=0.0.0.0"
