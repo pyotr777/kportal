@@ -15,4 +15,3 @@
 **/kp_tool
 travis.yml
 src/include/websocketpp-0.2.3-dev/.travis.yml
-/installation/

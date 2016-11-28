@@ -3,7 +3,7 @@ body {
     font-family: "Helvetica Neue", "Arial", sans-serif;
     font-size: 9pt;
     line-height: 13pt;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0.3pt;
 }
 h1 {
@@ -20,7 +20,7 @@ table {
 }
 
 table td {
-    padding: 2px;
+    padding: 9px 2px 9px 4px;
     vertical-align: top;    
 }
 
@@ -32,7 +32,7 @@ table tr:nth-child(even) {
     background-color: #ffffff;
 }
 table tr:nth-child(odd) {
-    background-color: #f3f7f1;
+    background-color: rgba(205, 237, 189, 0.21);
 }
 
 table tr:hover {
@@ -66,6 +66,8 @@ td p {
 
 tr.inscript {
     color:#99b1be;
+    font-weight: 100;
+    letter-spacing: 0.8pt;
 }
 tr.inscript td p:before {
     content: "This step is executed by installation script";
@@ -73,7 +75,7 @@ tr.inscript td p:before {
     font-style: italic;
     display:block;
     position: relative;
-    top: -4px;
+    top: -10px;
     height: 1px;
     text-align: right;
     color:rgba(150,200,200, 0.3);
@@ -82,10 +84,16 @@ tr.inscript td p:before {
 note {
     font-family: "Noteworthy", "Comic Sans MS", "Comic Sans", "Helvetica Neue", Arial, fantasy;
     color: #858e8b;
-    font-style: italic;
+    font-style: italic;    
     font-stretch:expanded;
-    letter-spacing: 0.035em;
-    padding-left: 10px;    
+    letter-spacing: 0.7pt;
+    padding-left: 20px;
+    font-size: 90%;
+    display: inline-block;
+}
+
+tr.inscript note {
+    color:#c6c6c6;
 }
 
 code {
@@ -94,9 +102,14 @@ code {
     line-height: 1pt;
     letter-spacing: 0em;
     font-style: normal;
-    color:#8b8b8b;
-    background-color: #e2e2e2;
-    padding:1px;
+    color:#626262;
+    background-color: rgba(28, 51, 29, 0.1);
+    padding:3px;
+    border-radius: 3px;
+}
+
+tr.inscript code {
+    color:#a2a2a2;
 }
 
 /* Sticky table header */
@@ -111,26 +124,25 @@ table thead {
 }
 
 help {
-  -webkit-border-radius: 8;
-  -moz-border-radius: 8;
-  border-radius: 8px;
-  color: #585858;
-  background: #d1fdff;
+  -webkit-border-radius: 3;
+  -moz-border-radius: 3;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 85, 219, 0.25);
   padding: 2px 5px 3px 5px;
   text-decoration: none;
   font-style: italic;
-  box-shadow: inset 0px 0px 2px rgba(0,0,0,0.3);
   font-size: smaller;
 }
 
 help:hover {
-  background: #fadd65;
+  background: rgb(175, 221, 255);
   text-decoration: none;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.37);
 }
 
 help a {
     text-decoration: none;
-    color:#3461a8;
+    color:#2983dd;
 }
 
 help a:after {

@@ -20,13 +20,13 @@
             <td>&nbsp;</td>
             <td>Docker on local machine or AWS CLI installed</td>
             <td>Run AWS CLI in Docker container from AWS_CLI directory<br /><code>$ docker run -ti --name aws -v $(pwd):/aws pyotr777/aws</code><br />
-            <note>In container <code>awshelp</code> shows available shortcut commands.</note></td>
+            <note>In container <code>$ awshelp</code> shows available shortcut commands.</note></td>
             <td></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td>AWS root key <help><a href="http://docs.aws.amazon.com/cli/latest/userguide/tutorial-ec2-ubuntu.html#configure-cli-launch-ec2" target="_blank">Configure AWS CLI</a></help></td>
-            <td>[ Configure AWS CLI (root key, zone) ]<br/>
+            <td>Configure AWS CLI (root key, zone)<br/>
             <note>For convinience I stored configurations in AWS_CLI/.aws folder and parameters for launching new instances in launch.json. Configuration
             should be copied to /root/.aws in container.</note></td>
             <td></td>
@@ -34,39 +34,44 @@
         <tr>
             <td>&nbsp;</td>
             <td></td>
-            <td>[ Create Key Pair ]</td>
+            <td>Create Key Pair</td>
             <td></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td></td>
-            <td>[ Create Security Group ] <note>Open ports 22, [80], 9004, 9005</note></td>
             <td></td>
+            <td>Create Security Group<note>Open ports 22, [80], 9004, 9005</note></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
+            <td></td>
             <td></td>
             <td>Launch instance
             <note>Use Ubuntu ImageID: ami-a21529cc,<br/>
                 or use Image with K-portal installation files ami-d12fd0b0.<br/>
                 InstanceType: t2.small</note>
             </td>
-            <td></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
             <td></td>
-            <td>[ Copy installation files into VM ]
-            <br />
+            <td>Run  <code>$&nbsp;./install</code> with parameters: EC2 instance address for ssh login and DNS address.</td>
+            <td></td>
+        </tr>
+        <tr class="inscript">
+            <td>&nbsp;</td>
+            <td></td>
+            <td><p>Copy installation files into EC2 instance</p>
             <note>Use sync_up.sh script.</note></td>
             <td></td>
-        </tr>            
-        <tr>
+        </tr>
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td>Run installation script for Ubuntu
-            <note><code>$&nbsp;./installkportal_ubuntu.sh</code></note></td>            
+            <note><code>$&nbsp;./installkportal_ubuntu.sh</code></note></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
@@ -97,13 +102,13 @@
             <td></td>
             <td></td>
             <td><p>Create group "docker". chown /var/run/docker.sock to group "docker". Add user kportal to group "docker".</p></td>
-        </tr>    
+        </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td><p>Install Apache in container using Dockerfile</p>
-                <code>docker build --rm -t apachessl .</code></td>
+                <code>$ docker build --rm -t apachessl .</code></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
@@ -120,13 +125,6 @@
             <td><p>Start Apache with SSL port 443</p>
                 <note>Use start_apache.sh script</note></td>
         </tr>
-        <!--tr>
-        REMOVE THIS STEP FROM INSTALLATION SCRIPT. KP_SERVER CAN BE STARTED LATER.
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td>Start kp_server</td>
-        </tr-->
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
@@ -137,7 +135,7 @@
             <td>&nbsp;</td>
             <td>fixed IP and DNS address</td>
             <td></td>
-            <td><p>[ Obtain SSL certificate (or use self-signed) ]</p></td>
+            <td><p>Obtain SSL certificate (or use self-signed)</p></td>
         </tr>
         <tr class="inscript">
             <td>&nbsp;</td>
@@ -165,9 +163,9 @@
             <td>&nbsp;</td>
             <td>Google account and DNS address</td>
             <td></td>
-            <td>Create new credentials for Google API. 
-                <a href="https://console.developers.google.com/apis/credentials">Google API</a><br />
-                <note>Need hostname.</note></td>
+            <td>Create new credentials for Google API.
+                <help><a href="https://console.developers.google.com/apis/credentials" target="_blank">Google API</a></help><br />
+                </td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -180,19 +178,28 @@
             <td></td>
             <td></td>
             <td><p>Import Master Base Image</p>
-            <code>docker -H localhost:9555 load -i master_base_image.tar</code></td>
+            <code>$ docker -H localhost:9555 load -i master_base_image.tar</code></td>
         <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
             <td><p>Build Apps base image</p></td>
         </tr>
-        <tr>
+        <tr class="inscript">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Start kp_server</td>
+            <td><p>Start kp_server on port 9004 as kportal user.</p>
+            <code>$&nbsp;kp_server.sh 9004 -tls</code></td>
         </tr>
+        <tr class="inscript">
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td><p>Start Apache with SSL port 9005.</p>
+                <note>Use start_apache.sh script</note></td>
+        </tr>
+            
         <tr>
             <td>&nbsp;</td>
             <td></td>
@@ -201,7 +208,7 @@
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td colspan="3" align="center">Copy public SSH key to K account.</td>
+            <td colspan="3" align="center">Copy public SSH key to "K" computer account.</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -226,7 +233,31 @@
             <td>&nbsp;</td>
             <td></td>
             <td></td>
-            <td>Upload tar to K-portal.<br />Logint to K-portal as provider and use image management menu.</td>
+            <td>Upload tar to K-portal.<br /><note>Login to K-portal as provider and use image management menu.</note></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="3" align="center">Reinstalling K-portal</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td><p>Kill running kdeskdaemon on "K" computer (run script from EC2).</p>
+            <code>kportal:~/src/script$&nbsp;./find_kill_daemon.sh</code></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td><p>Remove old kdeskdaemon if changed.</p>
+            <code>kportal:~/src/script$&nbsp;./cleanup_daemon.sh</code></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td><p>Copy src/release/kdeskdaemon (built on "K") from repository to ~/kportal on "K".</p></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -240,90 +271,7 @@
             <td></td>
             <td></td>
         </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+        
         </tbody>
     </table>
 </body>
