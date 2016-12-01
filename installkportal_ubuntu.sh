@@ -52,7 +52,7 @@ if [[ -n "$KP_SELF_CERT" ]]; then
 	export KP_SKIP_SSL_CERT=1
 	echo "Using self-signed SSL certificates."
 else
-	if [[ -z "$KP_WEB_DNS" ]]; then 
+	if [[ -z "$KP_WEB_DNS" ]]; then
 		echo "Need your site domain name for obtaining SSL certificates."
 		echo -n "Enter domain name and press [ENTER]: "
 		read KP_WEB_DNS
@@ -90,7 +90,7 @@ sudo apt-get install -y curl libcurl4-openssl-dev libssl-dev bzip2 lbzip2 python
 # Test if AUFS is installed
 $SOURCE_DIR/install_aufs.sh
 
-if [[ -z $KP_SKIP_USER ]]; then 
+if [[ -z $KP_SKIP_USER ]]; then
 	message "1. Create user kportal"
 	sudo useradd -m kportal || true
 	echo "Create directory for kp_server logs"
@@ -107,7 +107,7 @@ if [[ -z $KP_SKIP_USER ]]; then
 	fi
 	echo "Source code in $KP_HOME (src dir)?"
 	ls -la --color=always "$KP_HOME"
-else 
+else
 	KP_HOME=$(sudo su kportal -c 'echo $HOME')
 	echo "KP_HOME=$KP_HOME"
 fi
@@ -122,12 +122,12 @@ for e in $(env | grep "KP_"); do
 done
 
 
-if [[ -z $KP_SKIP_KPSERVER ]]; then 
+if [[ -z $KP_SKIP_KPSERVER ]]; then
 	message "2. Install kp_server"
 	$SOURCE_DIR/install_kpserver.sh
 fi
 
-if [[ -z $KP_SKIP_DOCKER ]]; then	
+if [[ -z $KP_SKIP_DOCKER ]]; then
 	message "3. Install Docker and give permissions to user kportal"
 	sudo $SOURCE_DIR/install_docker.sh
 fi
@@ -170,13 +170,13 @@ start_apache.sh
 message "7. Starting kp_server"
 sudo -E su kportal -c 'kp_server.sh 9004 -tls'
 
-# Check that kp_server is still running 
+# Check that kp_server is still running
 echo "Check that kp_server is running on port 9004"
 ps ax | grep "kp_server" | grep 9004 || true
 
 
 if [[ -z $KP_SKIP_SSL_CERT ]]; then
-	message "8. SSL certificates from LetsEncrypt."	
+	message "8. SSL certificates from LetsEncrypt."
 	# Use saved certificates in tar if present
 	# Must be in src/ssl/letsencrypt.tar.gz file
 	CRT_TAR="$KP_HOME/src/ssl/letsencrypt.tar.gz"
@@ -197,12 +197,12 @@ if [[ -z $KP_SKIP_SSL_CERT ]]; then
 		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
 		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
 	else
-		# Copy script files		
+		# Copy script files
 		docker $D_HOST_OPT cp install_certbot.sh apache:/certbot/
-		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/	
-		# Obtain cerificates from LetsEncrypt and update Apache config file	
+		docker $D_HOST_OPT cp reconfigure_apache_ssl.sh apache:/certbot/
+		# Obtain cerificates from LetsEncrypt and update Apache config file
 		docker $D_HOST_OPT exec apache /certbot/install_certbot.sh
-		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh 
+		docker $D_HOST_OPT exec apache /certbot/reconfigure_apache_ssl.sh
 	fi
 	# Restarting Apache container with SSL port mapped to 9005.
 	$SOURCE_DIR/start_apache.sh 9005
@@ -258,7 +258,7 @@ fi
 if [[ -z $KP_SKIP_TARS ]]; then
 	IM_ID=$(docker $D_HOST_OPT images -q "base_image")
 	if [[ -z "$IM_ID" ]]; then
-		message "9. Loading Master Image"	
+		message "9. Loading Master Image"
 		cd "$KP_HOME/src/docker_images"
 		sudo -E su kportal -c "docker $D_HOST_OPT load -i master_base_image.tar"
 		echo "Image base_image loaded."
@@ -294,23 +294,15 @@ if [[ -z $KP_SKIP_TARS ]]; then
 	cat "/etc/kportal/kportal_conf.xml"
 fi
 
-export STARTUP_SCRIPT="/usr/local/bin/startup.sh"
+export STARTUP_SCRIPT="/etc/init.d/kportal"
 
-str=$(grep "startup" /etc/rc.local) || true
 if [[ -z "$str" ]]; then
 	message "11. Install startup script"
-	sudo cp "$SOURCE_DIR/startup.sh" /usr/local/bin/
-	if [[ -f /etc/rc.local ]]; then
-		sudo sed -i -r "s#^exit 0#echo \"executing /etc/rc.local\"\n$STARTUP_SCRIPT || exit 1\nexit 0\n#" /etc/rc.local
-		echo "Startup script installed."
-	else
-		echo "Not found /etc/rc.local." 1>&2
-		echo "To start K-portal after reboot use $STARTUP_SCRIPT script"
-	fi
-else 
+	sudo cp "$SOURCE_DIR/kportal" /etc/init.d/
+	sudo /usr/lib/insserv/insserv kportal
+else
 	echo "Startup script already installed."
 	ls -l $STARTUP_SCRIPT
-	cat /etc/rc.local
 fi
 
 export INSTALL_DIR="$KP_HOME/install"

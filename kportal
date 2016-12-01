@@ -1,0 +1,104 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          kportal
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: K-portal
+### END INIT INFO
+
+. /lib/lsb/init-functions
+STARTUP_SCRIPT="/usr/local/bin/startup.sh"
+
+start() {
+	echo "Starting K-portal."
+    if [ -x "$STARTUP_SCRIPT" ]; then
+        $STARTUP_SCRIPT
+        ES=$?
+        return $ES
+    fi
+}
+
+stop() {
+	# Stop Apache
+	echo "Stopping Apache"
+	DOCKER_COMMAND="docker -H 127.0.0.1:9555"
+	$DOCKER_COMMAND images &> /dev/null
+	if [ "$?" -ne 0 ]; then
+		export DOCKER_COMMAND="sudo docker"
+	fi
+	$DOCKER_COMMAND images &> /dev/null
+	if [ "$?" -ne 0 ]; then
+		echo "Cannot connect to docker daemon with sudo docker and docker -H localhost:9555."
+		exit 1
+	fi
+
+	$DOCKER_COMMAND stop apache
+
+	# Stop kp_server
+	echo "Stopping kp_server"
+	PID=$(sudo ps ax | grep kp_server | head -n 1 | awk '{ print $1 }')
+	if [ -n "$PID" ]; then
+		sudo kill "$PID"
+	else
+		echo "kp_server not running"
+	fi
+}
+
+status() {
+	DOCKER_COMMAND="docker -H 127.0.0.1:9555"
+	$DOCKER_COMMAND images &> /dev/null
+	docker_status="on port 9555"
+	if [ "$?" -ne 0 ]; then
+		export DOCKER_COMMAND="sudo docker"
+		docker_status=""
+	fi
+	$DOCKER_COMMAND images &> /dev/null
+	if [ "$?" -eq 0 ]; then
+		echo "Docker daemon is running $docker_status"
+	fi
+	apache=$($DOCKER_COMMAND ps | grep "apache")
+	if [ -n "$apache" ]; then
+		echo "Apache container is running"
+	fi
+	PS=$(sudo ps ax | grep kp_server | wc -l)
+	if [ "$PS" -ge 2 ]; then
+		echo "kp_server is running"
+	fi
+	apache_port=$(sudo lsof -i -n -P | grep ":9005")
+	if [ -n "$apache_port" ]; then
+		echo "Apache SSL on port 9005"
+	else
+		apache_port=$(sudo lsof -i -n -P | grep ":443")
+		if [ -n "$apache_port" ]; then
+			echo "Apache SSL on port 443"
+		fi
+	fi
+	kpserver_port=$(sudo lsof -i -n -P | grep ":9004")
+	if [ -n "$kpserver_port" ]; then
+		echo "kp_server on port 9004"
+	fi
+}
+
+
+case "$1" in
+    start)
+    	start
+        ;;
+    restart|reload|force-reload)
+		echo "Restaring K-portal"
+        stop
+        start
+        ;;
+    stop)
+		stop
+        ;;
+    status)
+		status
+        ;;
+    *)
+        echo "Usage: $0 start|restart|stop|status" >&2
+        exit 3
+        ;;
+esac
