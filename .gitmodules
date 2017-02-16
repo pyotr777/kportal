@@ -9,3 +9,6 @@
 	path = webint
     url = https://github.com/pyotr777/webint.git
     branch = master
+[submodule "aws_cli"]
+	path = aws_cli
+	url = https://github.com/pyotr777/aws_cli
