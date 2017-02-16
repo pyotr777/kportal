@@ -1,0 +1,62 @@
+#!/bin/bash
+# Copy visualisation server files from current directory to remote machine
+# and install it as a service.
+# Require 1 parameter: remote [user@]hostname.
+
+read -rd '' USAGE <<EOF
+    Script for visualisation server installation.
+    Usage:
+    $(basename $0) [user@]host [-i SSH identity file]
+    Requires working SSH connection to host.
+EOF
+
+if [[ $# < 1 ]]; then
+    echo "$USAGE"
+    exit 0
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+        -h | --help)
+            echo $USAGE
+            exit 0
+            ;;
+        -i)
+            KEY="-i $2";shift;
+            ;;
+        --)
+            shift
+            break;;
+        -*)
+            echo "Invalid option: $1"
+            echo "$USAGE"
+            exit 1;;
+        *)
+            REMOTE="$1"
+            ;;
+    esac
+    shift
+done
+
+if [[ -z "$REMOTE" ]]; then
+    echo "$USAGE"
+    exit 1
+fi
+
+set -e
+
+REMOTEDIR="/home/ubuntu/"
+echo "Installing Visualisation server on host $REMOTE in directory $REMOTEDIR."
+
+SSH_COM="$KEY $REMOTE"
+ssh $SSH_COM whoami &>/dev/null || (echo "Cannot connect with 'SSH $SSH_COM'." && exit 1)
+
+OPT="-av"
+
+# Copy files to remote
+echo "Synchronising installation files with remote location."
+eval rsync $OPT $KEY --exclude-from 'rsyncexclude.txt' ./ $REMOTE:$REMOTEDIR
+
+echo "Install as a service"
+ssh $SSH_COM sudo cp "$REMOTEDIR/vserver" /etc/init.d/
+ssh $SSH_COM sudo /usr/lib/insserv/insserv vserver

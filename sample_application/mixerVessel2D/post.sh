@@ -22,7 +22,7 @@ tar -czvf VTK.tar.gz sample/VTK >> post.log
 ls -l >> post.log
 echo "Contacting image server at $vserver" >> post.log
 curl -F file=@"VTK.tar.gz" $vserver > $mfile 2>> post.log
-rm VTK.tar.gz
+#rm VTK.tar.gz
 ls -l >> post.log
 
 # Get job information

@@ -1,0 +1,61 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          vserver
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Visualisation server
+### END INIT INFO
+
+. /lib/lsb/init-functions
+# STARTUP_SCRIPT="/home/ubuntu/start_server_container.sh"
+
+start() {
+    echo "Starting visualisation server."
+    CONT=$(docker ps -a | grep " flask$")
+    if [ -n "$CONT" ]; then
+        docker rm flask
+    fi
+    docker run -ti --rm --name flask -v /home/ubuntu:/root/server -p 8080:5000 pyotr777/vis-serv
+    ES=$?
+    return $ES
+}
+
+stop() {
+    # Stop Vis server
+    echo "Stopping visualisation server"
+    docker kill flask
+}
+
+status() {
+    docker ps | grep flask &> /dev/null
+    if [ "$?" -eq 0 ]; then
+        HOST_PORT=$(docker port flask | grep -Po "(?<=:)[0-9]*")
+        echo "Visualisation server running on port $HOST_PORT"
+    else
+        echo "Visualisation server is stopped"
+    fi
+}
+
+
+case "$1" in
+    start)
+        start
+        ;;
+    restart|reload|force-reload)
+        echo "Restaring visualisation server"
+        stop
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "Usage: $0 start|restart|stop|status" >&2
+        exit 3
+        ;;
+esac

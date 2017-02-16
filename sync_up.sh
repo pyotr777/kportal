@@ -30,11 +30,11 @@ while test $# -gt 0; do
 		-do)
 			OPT="-av"
 			echo "Live run"
-			;;		
-		--) 
+			;;
+		--)
 			shift
 			break;;
-		-*)	
+		-*)
 			echo "Invalid option: $1"
 			echo "$USAGE"
 			exit 1;;
@@ -50,4 +50,4 @@ if [[ "$OPT" == *n* ]]; then
 	echo "Dry run with options \"$OPT\". To actually transfer files run with \"-do\" option."
 fi
 
-eval rsync $OPT $KEY $EXCLUDE --exclude-from 'rsyncexclude.txt' ./ $server:$DIR/
+eval rsync $OPT $KEY $EXCLUDE --exclude-from 'rsyncexclude.txt' --size-only ./ $server:$DIR/
